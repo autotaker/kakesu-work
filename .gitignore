@@ -1,0 +1,5 @@
+.DS_Store
+.locks/
+worktrees/
+viewer/index.html
+*.tmp

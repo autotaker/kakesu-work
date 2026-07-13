@@ -1,0 +1,8 @@
+version: 1
+project_id: agent-harness
+repository_path: ../agent-harness
+default_branch: main
+timezone: Pacific/Guam
+worktree_root: worktrees
+task_branch_pattern: task/{task_id}-{slug}
+merge_strategy: no-ff

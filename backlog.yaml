@@ -1,0 +1,25 @@
+version: 1
+project: agent-harness
+epics:
+  - id: EPIC-001
+    title: 開発プロセスと品質ガバナンス
+    target_start: 2026-07-14
+    target_end: 2026-07-31
+tasks:
+  - id: TASK-0001
+    title: 開発プロセスとガイドラインを整備する
+    type: chore
+    epic: EPIC-001
+    status: qa
+    priority: P1
+    estimate_points: 8
+    task_dir: tasks/TASK-0001-development-process-foundation
+    depends_on: []
+    assignees:
+      main: main-agent
+      planner: main-agent-bootstrap
+      dev: main-agent-bootstrap
+      reviewer: bootstrap-reviewer
+      qa: main-agent-bootstrap
+    bootstrap_exception: true
+    merged_commit: 32a2b3710753d4652014fe690c536ce1c0b91c3e

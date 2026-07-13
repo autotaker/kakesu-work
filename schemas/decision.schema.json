@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agent-harness-work:decision:v1",
+  "title": "Wiki Decision frontmatter",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "decision_id", "title", "status", "decided_at", "supersedes"],
+  "properties": {
+    "kind": { "const": "decision" },
+    "decision_id": { "type": "string", "pattern": "^DECISION-[0-9]{4}$" },
+    "title": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["accepted", "superseded"] },
+    "decided_at": { "type": "string", "format": "date" },
+    "supersedes": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^DECISION-[0-9]{4}$" },
+      "uniqueItems": true
+    }
+  }
+}

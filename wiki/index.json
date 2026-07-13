@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "pages": [
+    {
+      "path": "wiki/decisions/DECISION-0001-plan-dev-qa-process.md",
+      "kind": "decision",
+      "title": "PLAN DEV QA Process",
+      "decision_id": "DECISION-0001",
+      "status": "accepted",
+      "links": [
+        "../../tasks/TASK-0001-development-process-foundation/TASK.md"
+      ]
+    },
+    {
+      "path": "wiki/decisions/DECISION-0002-work-repository-and-wiki-ownership.md",
+      "kind": "decision",
+      "title": "Work Repository and Wiki Ownership",
+      "decision_id": "DECISION-0002",
+      "status": "accepted",
+      "links": [
+        "../../tasks/TASK-0001-development-process-foundation/TASK.md"
+      ]
+    },
+    {
+      "path": "wiki/semantic/case-patterns/qa-fail-attribution.md",
+      "kind": "case-pattern",
+      "title": "QA FAIL Attribution",
+      "links": [
+        "../scripts/task-delivery.md"
+      ]
+    },
+    {
+      "path": "wiki/semantic/concepts/development-task.md",
+      "kind": "concept",
+      "title": "Development Task",
+      "links": [
+        "../scripts/task-delivery.md",
+        "../schemas/work-repository-boundary.md",
+        "../../decisions/DECISION-0001-plan-dev-qa-process.md"
+      ]
+    },
+    {
+      "path": "wiki/semantic/schemas/work-repository-boundary.md",
+      "kind": "schema",
+      "title": "Work Repository Boundary",
+      "links": [
+        "../../decisions/DECISION-0002-work-repository-and-wiki-ownership.md"
+      ]
+    },
+    {
+      "path": "wiki/semantic/scripts/task-delivery.md",
+      "kind": "script",
+      "title": "Task Delivery",
+      "links": [
+        "../case-patterns/qa-fail-attribution.md",
+        "../../decisions/DECISION-0001-plan-dev-qa-process.md"
+      ]
+    },
+    {
+      "path": "wiki/semantic/scripts/wiki-ingestion.md",
+      "kind": "script",
+      "title": "Wiki Ingestion",
+      "links": []
+    }
+  ]
+}
