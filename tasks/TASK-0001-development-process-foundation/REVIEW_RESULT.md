@@ -2,10 +2,10 @@
 task_id: "TASK-0001"
 status: complete
 reviewer_agent: "bootstrap-reviewer"
-reviewed_commit: "32a2b3710753d4652014fe690c536ce1c0b91c3e"
+reviewed_commit: "f88222c0427a6b9173fc7bb1632ab68e3762c82e"
 decision: pass
 make_check: pass
-reviewed_at: "2026-07-14T08:22:10+10:00"
+reviewed_at: "2026-07-14T08:44:46+10:00"
 ---
 
 # TASK-0001 REVIEW RESULT
@@ -13,7 +13,7 @@ reviewed_at: "2026-07-14T08:22:10+10:00"
 ## 対象
 
 - ブランチ: `main`（ブートストラップ例外）
-- commit: `32a2b3710753d4652014fe690c536ce1c0b91c3e`
+- commit: `f88222c0427a6b9173fc7bb1632ab68e3762c82e`
 - Task / PLAN / QA PLAN: revision 2の8ポイント見積もりと実装後QA再確認を含む。
 
 ## 実行した検査
@@ -23,6 +23,7 @@ reviewed_at: "2026-07-14T08:22:10+10:00"
 | `make check` | pass | Go、Python、Rust、tabletop、用語、開発プロセステストを完走 |
 | `make work-check` | pass | Ajv Schema、Taskゲート、Wiki索引を検証 |
 | `git diff --check` | pass | 空白エラーなし |
+| Terraランチャー再レビュー | pass | P0=0、P1=0。Codex CLI 0.144.3と引数順を確認 |
 
 ## 受け入れ条件の確認
 

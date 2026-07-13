@@ -2,16 +2,16 @@
 task_id: "TASK-0001"
 status: complete
 qa_agent: "main-agent-bootstrap"
-tested_commit: "32a2b3710753d4652014fe690c536ce1c0b91c3e"
+tested_commit: "f88222c0427a6b9173fc7bb1632ab68e3762c82e"
 decision: pass
-tested_at: "2026-07-14T08:22:10+10:00"
+tested_at: "2026-07-14T08:44:46+10:00"
 ---
 
 # TASK-0001 QA RESULT
 
 ## 対象
 
-- `main` commit: `32a2b3710753d4652014fe690c536ce1c0b91c3e`
+- `main` commit: `f88222c0427a6b9173fc7bb1632ab68e3762c82e`
 - QA PLAN revision: 1、実装後再確認済み、期待値変更なし
 - 環境: macOS、Node.js、Go、Python、Rust、Pacific/Guam
 
@@ -33,7 +33,7 @@ tested_at: "2026-07-14T08:22:10+10:00"
 
 | ID | FAIL分類 | 影響 | 差し戻し候補 | 内容 |
 |---|---|---|---|---|
-| - | - | - | - | なし |
+| QA-FINDING-001 | environment_issue | Wiki ingest開始不能 | QA | Codex CLI 0.142.2と`gpt-5.6-sol`が非互換。CLIを0.144.3へ更新し、Wiki Agent既定を`gpt-5.6-terra`へ変更して解消。 |
 
 ## main Agent判断
 

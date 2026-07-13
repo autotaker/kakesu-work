@@ -22,4 +22,4 @@ tasks:
       reviewer: bootstrap-reviewer
       qa: main-agent-bootstrap
     bootstrap_exception: true
-    merged_commit: 32a2b3710753d4652014fe690c536ce1c0b91c3e
+    merged_commit: f88222c0427a6b9173fc7bb1632ab68e3762c82e

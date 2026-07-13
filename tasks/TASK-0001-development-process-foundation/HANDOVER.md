@@ -15,6 +15,7 @@ completed_at: "2026-07-14T08:22:10+10:00"
 
 - Task生成、規則ベース見積もり、フェーズゲート、worktree作成・解放、全Agent writer、Wiki Agent ingest、viewer生成をNode.js CLIとして実装した。
 - 共通ロック、共有pre-commit、Ajv Schema、Decision不変性、commit親関係、HANDOVER digestで境界を機械検査する。
+- Codex CLIを0.144.3へ更新し、Wiki Agentは既定で低コストな`gpt-5.6-terra`を使う。profileとmodelはランチャー単位で上書きできる。
 
 ## 検証結果
 
@@ -22,6 +23,7 @@ completed_at: "2026-07-14T08:22:10+10:00"
 - work`make work-check`: pass
 - 開発プロセス単体テスト: 7件pass
 - 独立レビュー: P0=0、P1=0、pass
+- Terra対応差分の独立再レビュー: P0=0、P1=0、pass
 - viewer: 1280pxで7状態とEpic進捗を目視確認済み
 
 ## Decision
