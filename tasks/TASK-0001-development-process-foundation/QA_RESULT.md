@@ -2,7 +2,7 @@
 task_id: "TASK-0001"
 status: complete
 qa_agent: "main-agent-bootstrap"
-tested_commit: "f88222c0427a6b9173fc7bb1632ab68e3762c82e"
+tested_commit: "2af86dd51c7a29c828247f043ca600882bc41ea9"
 decision: pass
 tested_at: "2026-07-14T08:44:46+10:00"
 ---
@@ -11,7 +11,7 @@ tested_at: "2026-07-14T08:44:46+10:00"
 
 ## 対象
 
-- `main` commit: `f88222c0427a6b9173fc7bb1632ab68e3762c82e`
+- `main` commit: `2af86dd51c7a29c828247f043ca600882bc41ea9`
 - QA PLAN revision: 1、実装後再確認済み、期待値変更なし
 - 環境: macOS、Node.js、Go、Python、Rust、Pacific/Guam
 

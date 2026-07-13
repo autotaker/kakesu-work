@@ -2,7 +2,7 @@
 task_id: "TASK-0001"
 status: complete
 reviewer_agent: "bootstrap-reviewer"
-reviewed_commit: "f88222c0427a6b9173fc7bb1632ab68e3762c82e"
+reviewed_commit: "2af86dd51c7a29c828247f043ca600882bc41ea9"
 decision: pass
 make_check: pass
 reviewed_at: "2026-07-14T08:44:46+10:00"
@@ -13,7 +13,7 @@ reviewed_at: "2026-07-14T08:44:46+10:00"
 ## 対象
 
 - ブランチ: `main`（ブートストラップ例外）
-- commit: `f88222c0427a6b9173fc7bb1632ab68e3762c82e`
+- commit: `2af86dd51c7a29c828247f043ca600882bc41ea9`
 - Task / PLAN / QA PLAN: revision 2の8ポイント見積もりと実装後QA再確認を含む。
 
 ## 実行した検査
