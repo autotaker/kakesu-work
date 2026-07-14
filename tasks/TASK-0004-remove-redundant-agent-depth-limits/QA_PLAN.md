@@ -1,9 +1,9 @@
 ---
 task_id: "TASK-0004"
-status: draft
+status: approved
 qa_agent: "qa-agent-terra-medium"
-approved_by: ""
-approved_at: ""
+approved_by: "main-agent-sol-high"
+approved_at: "2026-07-14"
 revision: 1
 implementation_reviewed_at: ""
 expectation_changed: false
@@ -62,4 +62,4 @@ QAはmain Agentが`--no-ff`で統合し、adapterを同期した後のproduct `m
 
 | 改訂 | 日付 | 変更者 | 変更内容 | main承認 |
 |---:|---|---|---|---|
-| 1 | 2026-07-14 | qa-agent-terra-medium | approved PLAN、TASK-0002のapproved QA evidence、関連Wikiに基づく実装前QA計画 | `pending` |
+| 1 | 2026-07-14 | qa-agent-terra-medium | approved PLAN、TASK-0002のapproved QA evidence、関連Wikiに基づく実装前QA計画 | `approved` |
