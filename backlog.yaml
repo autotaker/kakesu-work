@@ -375,3 +375,13 @@ tasks:
       dev: dev-agent-sol-high
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
+  - id: TASK-0022
+    title: Linux P0ファイルシステム強制隔離を実装する
+    type: feature
+    epic: EPIC-002
+    status: backlog
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0022-linux-filesystem-isolation
+    depends_on: []
+    assignees: {}
