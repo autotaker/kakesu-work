@@ -27,9 +27,11 @@ tasks:
     title: Codex Agentのモデルルーティングを導入する
     type: chore
     epic: EPIC-001
-    status: backlog
+    status: plan
     priority: P1
     estimate_points: 1
     task_dir: tasks/TASK-0002-codex-agent-model-routing
     depends_on: []
-    assignees: {}
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
