@@ -27,7 +27,7 @@ tasks:
     title: Codex Agentのモデルルーティングを導入する
     type: chore
     epic: EPIC-001
-    status: qa
+    status: done
     priority: P1
     estimate_points: 8
     task_dir: tasks/TASK-0002-codex-agent-model-routing
