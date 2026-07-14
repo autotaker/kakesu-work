@@ -25,18 +25,18 @@ estimate_points: 5
 
 - `docs/00-kakesu.md` §§2.4/6/8、`docs/01-domain-model.md` §§1–3。
 - `docs/02-task-lifecycle.md`, `docs/03-agent-lifecycle.md`, `docs/06-tools-and-async.md`のTask入力。
-- Task-0007 atomic Control store、Task-0009 Linux P0 workspace manager。
+- TASK-0007 atomic Control store、TASK-0009 Linux runtime manager、TASK-0022 fail-closed filesystem isolation。安全なroot workspace開始にはTASK-0022が必要である。
 
 ## 設計
 
 ### 選択案
 
-`kakesu task create`はCobra/stdlibのthin adapterとしてJSONまたはflagsをparseし、`RootTaskService.Create`を呼ぶ。Serviceはinput validation、idempotency key、idle Agent reservation、`empty` Linux P0 workspace prepare、Task-0007のatomic persistを順に実行する。DB commit前の物理resourceはcompensation cleanup対象、commit後の実行開始は別Taskに委ねる。出力はstableなJSON resultとhuman summary、失敗はtyped error→exit codeへ変換する。
+`kakesu task create`はCobra/stdlibのthin adapterとしてJSONまたはflagsをparseし、`RootTaskService.Create`を呼ぶ。Serviceはinput validation、idempotency key、idle Agent reservation、TASK-0022がadmitした`empty` Linux P0 workspace prepare、TASK-0007のatomic persistを順に実行する。DB commit前の物理resourceはcompensation cleanup対象、commit後の実行開始は別Taskに委ねる。出力はstableなJSON resultとhuman summary、失敗はtyped error→exit codeへ変換する。
 
 ### 代替案と不採用理由
 
 - CLIがSQLiteを直接更新: transaction/compensationを迂回するため不採用。
-- workspaceをDB commit後に作成: commit済みTaskが実行不能になり補償しにくいため不採用。
+- TASK-0022未admitのruntimeを安全なworkspaceとして開始: FS escapeを許すため不採用。
 - Agent自動作成: profile capacity運用を隠すためMVPでは不採用。
 
 ### 責務と境界
@@ -93,12 +93,12 @@ estimate_points = 1, 2, 3, 5, 8, 13のうちmax(1, file_score, line_score)以上
 ## 検証計画
 
 - `go test ./...`とCLI subprocess integrationでDB/filesystemの事後状態を検査する。
-- Linux P0対応runnerでcreate成功後のworkspace identity/no inherited grantを確認する。
+- Linux P0対応runnerでTASK-0022のFS profile admission後だけcreate成功し、workspace identity/no inherited grantを確認する。
 - `make check`、`git diff --check`。Task-0007/0009のconsumer contract testsを必須にする。
 
 ## 未解決事項
 
-- root human authorityの永続field名とCLI入力のidempotency key形式は、既存schemaに同名fieldがないためDEVでSchema ownerと照合して固定する。Task/owner/workspace原子性は変更しない。
+- root human authorityの永続field名とCLI入力のidempotency key形式は、既存schemaに同名fieldがないためDEVでSchema ownerと照合して固定する。TASK-0022のprofile admission contractとTask/owner/workspace原子性は変更しない。
 
 ## main Agentレビュー
 

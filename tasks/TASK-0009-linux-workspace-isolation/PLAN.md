@@ -5,9 +5,9 @@ planner_agent: "planner-agent-terra-medium"
 approved_by: ""
 approved_at: ""
 approved_dev_profile: "sol-high"
-planned_implementation_files: 18
-planned_implementation_lines: 1170
-estimate_points: 8
+planned_implementation_files: 14
+planned_implementation_lines: 860
+estimate_points: 5
 ---
 
 # TASK-0009 PLAN
@@ -17,44 +17,44 @@ estimate_points: 8
 | 条件 | 観測方法 | 根拠 |
 |---|---|---|
 | profile admission | required Linux capabilitiesを欠くhostでsandbox起動が拒否される | `docs/07` §2 |
-| filesystem/IPC | host secret・管理socket・非allowlist pathへのアクセス試験が失敗する | `docs/07` P0表 |
+| workspace identity | workspace IDごとのnamespace/cgroup/process identityが一意に生成される | `docs/07` §2 |
 | process lifecycle | cancel/failure後にprocess group/cgroup内の子孫が残らない | `docs/07` P0表 |
-| network | proxy/DNS以外へのdirect routeが拒否され、強制失敗時にworkloadを起動しない | `docs/07` §§3–5 |
+| fail closed | namespace/cgroup/create/exec失敗時にworkloadを開始せずresourceを回収する | `docs/07` §2 |
 
 ## 関連Wikiと判断
 
 - `docs/00-kakesu.md` §§2.1–2.2, `docs/01-domain-model.md` §3。
-- `docs/07-governance.md` §§2–5のLinux P0表とfail-closed要件。
+- `docs/07-governance.md` §2のLinux P0表（namespace/cgroup/process lifecycle）。FS強制はTASK-0022、DNS/proxy/firewallはTASK-0017、HTTPS正規化はTASK-0023の正本とする。
 - `docs/13-technology-stack.md`のGo Core/Execution boundary、Task-0006 wire schema。
 
 ## 設計
 
 ### 選択案
 
-Go Execution PlaneにLinux専用`P0WorkspaceManager`を置く。profile probeがuser/mount/PID/IPC/network namespaces、cgroup v2、必要なfirewall backendを確認する。createはprivate runtime/work root、秘密値を除いたenvironment、mount namespace/read-only runtime allowlist、PID/IPC namespace、network namespace、rootless/no_new_privs/capability drop、cgroupを準備してからexecする。どの強制点も失敗したらworkloadを開始せず全resourceをcleanupする。networkはproxy/DNS endpointだけをnamespace内で許可する。
+Go Execution PlaneにLinux専用`WorkspaceRuntimeManager`を置く。profile probeがuser/mount/PID/IPC/network namespacesとcgroup v2を確認する。createは`empty` workspace root、秘密値を継承しないprocess environment、namespace/cgroup、rootless/no_new_privs/capability drop、workspace-scoped process identityを準備してからexecする。一つでも失敗したらworkloadを開始せず全resourceをcleanupする。
 
 ### 代替案と不採用理由
 
-- container runtimeへの丸投げ: P0証拠とidentity bindingを明示できないため不採用。
+- container runtimeへの丸投げ: namespace/cgroup/process identityの証拠を明示できないため不採用。
 - partial isolation fallback: P0を満たさないので不採用。
-- macOS/Windows adapter: 初期Linux P0の範囲外。
+- Landlock/LSM FS強制やfirewall/DNS/proxyを同居: 各強制境界の負例と所有者を曖昧にするため不採用。
 
 ### 責務と境界
 
-- profile probe/admission、workspace layout、namespace/mount/network setup、process/cgroup lifecycle、audit recordを別packageにする。
+- profile probe/admission、workspace layout、namespace/cgroup/process lifecycle、audit recordを別packageにする。
 - Controlはlogical workspaceを所有し、Executionは物理resourceを所有する。Governanceはpolicy/enforcementを所有し、本Taskはproxyそのものを実装しない。
 
 ### 不変条件
 
 - `workspace_id`は一つのnamespace/cgroup/audit identityへ対応し、Task/Agent変更でpolicy主体を変えない。
-- workspace外書込み、host credential、host IPC/management socket、直接外向き通信、privilege escalationはdefault deny。
+- FS allowlist/escape、DNS/proxy/firewall route、HTTPS canonical requestはこのTaskの保証に含めない。それぞれTASK-0022、TASK-0017、TASK-0023が強制・試験する。
 - isolate/create/execが一つでも失敗すればcommandをexecしない。cleanupは冪等で子孫全体に及ぶ。
 - P0は`empty`だけで、grant継承は空、fork/shared-readonlyは許可しない。
 
 ### 失敗時・移行・互換性
 
 - capability probe失敗はunsupported profileとして明示し、best-effortで起動しない。
-- mount/network/cgroup途中失敗はreverse-order cleanup、cleanup失敗は監査しretry可能なorphanとして残す。
+- namespace/cgroup途中失敗はreverse-order cleanup、cleanup失敗は監査しretry可能なorphanとして残す。
 - process exitはaudit/eventを記録し、cancel/timeout/shutdownは同じkill/reap pathを使う。既存workspace形式の移行はない。
 
 ## 変更予定
@@ -66,21 +66,16 @@ Go Execution PlaneにLinux専用`P0WorkspaceManager`を置く。profile probeが
 | `core/internal/execution/linux/profile.go` | implementation | 75 | P0 capability probe/admission |
 | `core/internal/execution/linux/profile_test.go` | implementation | 60 | probe failure tests |
 | `core/internal/execution/linux/workspace.go` | implementation | 130 | empty root/layout/create cleanup |
-| `core/internal/execution/linux/mounts.go` | implementation | 105 | mount namespace/allowlist |
 | `core/internal/execution/linux/namespaces.go` | implementation | 115 | user/PID/IPC namespace setup |
-| `core/internal/execution/linux/network.go` | implementation | 120 | namespace/firewall/proxy-only routing |
 | `core/internal/execution/linux/process.go` | implementation | 105 | exec/no_new_privs/cap drop |
 | `core/internal/execution/linux/cgroup.go` | implementation | 75 | cgroup tracking/reap |
 | `core/internal/execution/linux/audit.go` | implementation | 60 | lifecycle/violation records |
 | `core/internal/execution/linux/cleanup.go` | implementation | 70 | idempotent reverse cleanup |
-| `core/internal/execution/linux/integration_test.go` | implementation | 160 | fs/ipc/net/process isolation tests |
+| `core/internal/execution/linux/integration_test.go` | implementation | 130 | namespace/cgroup/process lifecycle tests |
 | `core/internal/execution/service.go` | implementation | 65 | manager lifecycle wiring |
 | `core/internal/execution/workspace.go` | implementation | 75 | platform-neutral port/models |
-| `core/internal/execution/testdata/allowlist.json` | fixture | 25 | runtime mount policy |
-| `core/internal/execution/testdata/proxy-routes.json` | fixture | 25 | allowed endpoints |
 | `core/cmd/kakesu/main.go` | implementation | 35 | Linux profile config bootstrap |
-| `core/go.mod` | config | 10 | Linux syscall/cgroup dependency |
-| `schemas/draft-v0/execution-plane/workspace-created.schema.json` | schema | 40 | P0 empty/profile binding validation |
+| `schemas/draft-v0/execution-plane/workspace-created.schema.json` | schema | 40 | empty/profile/runtime identity binding validation |
 
 ## 見積もり
 
@@ -94,19 +89,19 @@ estimate_points = 1, 2, 3, 5, 8, 13のうちmax(1, file_score, line_score)以上
 
 1. Linux P0 acceptance matrixをtestable probe・isolation casesへ変換する。
 2. platform-neutral portとLinux probe/workspace/cgroup primitivesを実装する。
-3. mount/PID/IPC/user/network isolationとproxy-only firewallを失敗時cleanup込みで接続する。
-4. process supervisor/auditを追加し、host-path/credential/socket/network/descendant testsを実行する。
+3. namespace/cgroup/process identityを失敗時cleanup込みで接続する。
+4. process supervisor/auditを追加し、probe/identity/descendant/cleanup testsを実行する。
 5. Task-0010 consumerが`empty` workspaceをprepare/cleanupできる契約を確定する。
 
 ## 検証計画
 
-- Linux runner上でrootless profile admission、negative filesystem/IPC/credential tests、direct network reject/proxy allow test、cancel descendant reapingを実行する。
+- Linux runner上でrootless profile admission、namespace/cgroup identity、cancel descendant reaping、create/cleanup失敗を実行する。
 - unit testsはprivileged host依存をmockし、integrationはP0機能を実測する。機能不足をPASS扱いにしない。
 - `go test ./...`、schema validation、`make check`、`git diff --check`。
 
 ## 未解決事項
 
-- P0 firewall backend（nftables等）とrootless環境の正確な要件はDEV開始前に対象Linux CI imageでprobeして固定する。満たせないimageはP0対応として扱わない。
+- rootless user/mount/PID/IPC/network namespaceとcgroup v2の正確なCI要件はDEV開始前にprobeして固定する。Landlock/LSMとfirewall backendは後続Taskの前提として別途固定する。
 
 ## main Agentレビュー
 

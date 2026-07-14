@@ -16,8 +16,8 @@ estimate_points: 8
 
 | 条件 | 観測方法 | 根拠 |
 |---|---|---|
-| forced phases | start/subtask/resume/context_gapのrequest/job重複試験 | docs/08 §9 |
-| response validation | bad schema/ref/version/budgetを注入前拒否 | docs/08 §§10-11 |
+| forced phases | start/subtask/resume/context_gap/contract_change/escalation/egress_grantのrequest/job重複試験 | docs/08 §9 |
+| response validation | bad schema/ref/version/budgetとstale contract/version responseを注入前拒否 | docs/08 §§10-11 |
 | compartment injection | 4区画、contract優先、direct-read不可試験 | docs/05 §2, docs/08 §12 |
 | failure recovery | timeout/degraded/retry/mailbox再配送試験 | docs/06 §§12-17 |
 
@@ -29,7 +29,7 @@ estimate_points: 8
 
 ### 選択案
 
-Control/context builderがlifecycle eventごとにidempotent MemoryContextRequestをmemory inboxへ送り、memory query workerがread-only semantic repository/evidence episode indexからbudget内のcontextを組み立てる。Harnessはresponseを検証し、4区画のcontext viewをWork Agentへ渡す。context gapは既存async/mailbox契約を再利用する。
+Control/context builderが7 triggerごとにcontract/versionを固定したidempotent MemoryContextRequestを送る。Harnessはschema/ref/budgetに加え現行contract/version一致を検証し、stale responseを注入せず再要求してから4区画を渡す。
 
 ### 代替案と不採用理由
 

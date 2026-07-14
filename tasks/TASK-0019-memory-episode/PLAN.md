@@ -23,13 +23,13 @@ estimate_points: 8
 
 ## 関連Wikiと判断
 
-- docs/04, 05, 08, 11-13。依存: TASK-0006、0008、0015。EpisodeはTask終端後に一度だけ確定し、SDKの実行状態を正本にしない。
+- docs/04, 05, 07, 08, 11-13。依存: TASK-0006、TASK-0008、TASK-0015、TASK-0018。terminal snapshotはEgressChallenge/Grant/OutboundTransactionの不変evidence refを含み、EpisodeはTask終端後に一度だけ確定する。
 
 ## 設計
 
 ### 選択案
 
-Memory serviceがinboxをwatermark順に受け、terminal snapshot/evidence tablesとidempotent jobを同一DBへ作る。lease workerはtask-filtered temporary read-only viewsを作り、Agents SDK runnerへschema化outputと`query_evidence`だけを渡す。validator後にepisodeを一件保存する。
+Memory serviceがinboxをwatermark順に受け、terminal snapshot/evidence tablesとidempotent jobを同一DBへ作る。snapshotはEgressChallenge、Grant、OutboundTransaction refとTask/Workspace bindingを含み、validatorはその不変性を検証してからepisodeを一件保存する。
 
 ### 代替案と不採用理由
 

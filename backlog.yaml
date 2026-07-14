@@ -140,12 +140,12 @@ tasks:
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
   - id: TASK-0009
-    title: Linux P0 Workspace隔離とプロセス実行を実装する
+    title: Linux Workspace namespace・cgroup・process identity/lifecycle基盤を実装する
     type: feature
     epic: EPIC-002
     status: plan
     priority: P1
-    estimate_points: 8
+    estimate_points: 5
     task_dir: tasks/TASK-0009-linux-workspace-isolation
     depends_on:
       - TASK-0006
@@ -166,6 +166,7 @@ tasks:
     depends_on:
       - TASK-0007
       - TASK-0009
+      - TASK-0022
     assignees:
       main: main-agent-sol-high
       planner: planner-agent-terra-medium
@@ -291,6 +292,7 @@ tasks:
     depends_on:
       - TASK-0009
       - TASK-0016
+      - TASK-0023
     assignees:
       main: main-agent-sol-high
       planner: planner-agent-terra-medium
@@ -328,6 +330,7 @@ tasks:
       - TASK-0006
       - TASK-0008
       - TASK-0015
+      - TASK-0018
     assignees:
       main: main-agent-sol-high
       planner: planner-agent-terra-medium
@@ -347,6 +350,7 @@ tasks:
       - TASK-0010
       - TASK-0011
       - TASK-0014
+      - TASK-0018
       - TASK-0019
     assignees:
       main: main-agent-sol-high
@@ -376,22 +380,39 @@ tasks:
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
   - id: TASK-0022
-    title: Linux P0ファイルシステム強制隔離を実装する
+    title: Linux P0 Landlock/LSM多層ファイルシステム隔離を実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 8
     task_dir: tasks/TASK-0022-linux-filesystem-isolation
-    depends_on: []
-    assignees: {}
+    depends_on:
+      - TASK-0006
+      - TASK-0009
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0023
     title: P0 HTTPS傍受・正規化プロキシを実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 8
     task_dir: tasks/TASK-0023-https-interception-proxy
-    depends_on: []
-    assignees: {}
+    depends_on:
+      - TASK-0006
+      - TASK-0008
+      - TASK-0009
+      - TASK-0016
+      - TASK-0022
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium

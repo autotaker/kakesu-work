@@ -9,7 +9,7 @@ created_at: "2026-07-15"
 
 ## 目的
 
-Harnessが`task_start`、`subtask_start`、`resume`、`context_gap`でWiki AgentにMemoryContextを要求し、検証済みの組織記憶をWork Agentの明示的な強制区画へ注入する。
+Harnessが`task_start`、`subtask_start`、`resume`、`context_gap`、`contract_change`、`escalation`、`egress_grant`でWiki AgentにMemoryContextを要求し、現行contract/versionに適合する組織記憶をWork Agentの強制区画へ注入する。
 
 ## 背景
 
@@ -19,7 +19,7 @@ TASK-0019が確定episodeを供給しても、Work Agentの自由検索では記
 
 ### 対象
 
-- MemoryContext request/response/job、phase別の強制query、Wiki Agent query mode、source ref/memory version/contract version検証。
+- MemoryContext request/response/job、7 trigger別の強制query、Wiki Agent query mode、source ref/memory version/contract version検証とstale response拒否。
 - context builderによる`[AGENT CONTRACT]`、`[CURRENT TASK STATE]`、`[ORGANIZATIONAL MEMORY]`、`[MEMORY USAGE RULE]`区画注入。
 - `report_context_gap`の非同期再問合せとmailbox結果、token budget/timeout/fallback。
 
@@ -30,8 +30,8 @@ TASK-0019が確定episodeを供給しても、Work Agentの自由検索では記
 
 ## 受け入れ条件
 
-- [ ] task/subtask開始、resume、context gapが一意なphase requestを作り、同じtriggerの再配送は同じjob/resultへ収束する。
-- [ ] Wiki queryはTask contractを入力にsemantic/episode/unresolved/source refsとmemory versionを返し、Harnessがschema/version/ref/token budgetを検証する。
+- [ ] task/subtask開始、resume、context gap、contract change、escalation、egress grantが一意なphase requestを作り、同じtriggerの再配送は同じjob/resultへ収束する。
+- [ ] Wiki queryはTask contract/versionを入力にsemantic/episode/unresolved/source refsとmemory versionを返し、Harnessがschema/version/ref/token budgetと現行contract/version一致を検証し、stale responseを拒否する。
 - [ ] Work AgentはWiki filesystem/storeを直接読めず、開始/resume contextには契約・現Task state・組織記憶・usage ruleの4区画が常に存在する。
 - [ ] context gapは非同期mailboxで返り、Wiki失敗/timeoutはTask stateを壊さず空の明示degraded contextまたは再試行へ収束する。
 
