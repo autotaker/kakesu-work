@@ -8,7 +8,7 @@ completed_at: ""
 
 ## 成果
 
-- 製品Task branch `task/TASK-0004-remove-redundant-agent-depth-limits`のcommit `32a1c38ace6b1395b82c5b001777355b459a9558`で、通常6 roleの重複したagent-local `max_depth = 1`を削除した。
+- 製品Task branch `task/TASK-0004-remove-redundant-agent-depth-limits`のcommit `32a1c38ace6b1395b82c5b001777355b459a9558`で、通常6 roleの重複したagent-local `max_depth = 1`を削除し、2-parent merge `514facbb461927c0e5fc376a56ab8f975c054940`として製品`main`へ統合した。
 - project-scopedな`agents.max_depth = 2` / `agents.max_threads = 2`を全体トポロジー上限として維持し、Explorer固有の`max_depth = 0` / `max_threads = 1`と既存の明示launcher contractを維持した。
 - canonical parser、digest、adapter render/checkが、通常roleへのlocal depth再導入とExplorer no-childの欠落・緩和を別の理由で同期前にfail closedするようにした。
 
@@ -26,6 +26,9 @@ completed_at: ""
 - `node --test scripts/task/development-process.test.mjs`: 21件pass、0件fail。
 - 製品`make check`: pass。Go build/test/vet、Python build/pytest/ruff、Rust build/test/fmt/clippy、tabletop・用語・文書検査、process tests 32件がすべて成功した。
 - 検証後の製品Task worktreeはcleanである。
+- 独立Reviewerは実装commit `32a1c38ace6b1395b82c5b001777355b459a9558`を再検査し、`pass`と判定した。
+- 製品merge commit `514facbb461927c0e5fc376a56ab8f975c054940`は、第1親`a0661057b56461c1a0e0f01a326d487b094e5ea1`、第2親review済みcommit `32a1c38ace6b1395b82c5b001777355b459a9558`の正確な2-parent mergeである。
+- generated work adapterはcanonical digest `5566794aaf22a890ef432e4e45b63a3a07e1bcb3eaf0cf620a47883c705c3445`と完全一致し、同期はno-opである。
 
 ## 判断
 
@@ -35,14 +38,14 @@ completed_at: ""
 
 ## 既知の制約と未解決事項
 
-- `REVIEW_RESULT.md`の先行`fail`は、TASK-0004実装前のproduct `main` commit `a0661057b56461c1a0e0f01a326d487b094e5ea1`を対象にした結果であり、実装commit `32a1c38ace6b1395b82c5b001777355b459a9558`は未レビューである。独立Reviewerによる正しいcommitの再レビューが必要である。
-- product `main`への`--no-ff` merge、main Agent所有のwork adapter同期と完全一致検査、`make -C ../agent-harness work-check`、マージ後QAは未実施である。
+- マージ後QA、QA後のmain Agent最終判断、HANDOVERのWiki ingestは未実施である。
+- lock所有の親実行環境での`make work-config-sync WORK_ROOT=/Users/autotaker/git/agent-harness-work CHECK=1`と`make -C ../agent-harness work-check`の最終証跡は、マージ後QAで記録する。read-onlyの直接照合ではadapterの完全一致を確認済みである。
 
 ## 運用上の注意
 
 - DEVはproduct Task worktreeだけを変更した。work repositoryの`.codex/config.toml`はmain Agentがlock下の専用sync launcherで同期・commitする。
-- product `main`にはTask外の未commit `.codex/config.toml`変更が観測されたが、DEVは変更・stage・commitしていない。main Agentはmerge前にこの既存差分を分類する必要がある。
-- 再レビューではbranch名ではなく実装commit `32a1c38ace6b1395b82c5b001777355b459a9558`を明示して対象を固定する。
+- product `main`にはTask外の未commit `.codex/config.toml`変更として`features.multi_agent_v2`の4行が残っている。TASK-0004のmerge commitには含まれず、DEV、Reviewer、main Agentはいずれも変更・stage・commitしていない。マージ後QAでもTASK-0004のcanonical depth contractとこの既存差分を分離して評価する。
+- マージ後QAはproduct `main`のmerge commit `514facbb461927c0e5fc376a56ab8f975c054940`以降を対象にし、QA PLAN revision 1の期待結果を変更せずに実施する。
 
 ## Wikiへ引き渡す知識
 

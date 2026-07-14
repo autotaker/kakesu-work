@@ -5,7 +5,7 @@ qa_agent: "qa-agent-terra-medium"
 approved_by: "main-agent-sol-high"
 approved_at: "2026-07-14"
 revision: 1
-implementation_reviewed_at: ""
+implementation_reviewed_at: "2026-07-14T21:38:56+10:00"
 expectation_changed: false
 expectation_change_approved_by: ""
 ---
@@ -52,11 +52,11 @@ QAはmain Agentが`--no-ff`で統合し、adapterを同期した後のproduct `m
 
 ## 実装後の再確認
 
-- [ ] 実装差分とレビュー結果を確認した。
-- [ ] merge済みproduct `main`とmain-owned generated work adapterを確認した。
-- [ ] QA-001〜QA-007の操作手順を現行実装に合わせた。
-- [ ] 期待結果または試験範囲の変更有無を確認した。
-- [ ] 期待結果または範囲を変更した場合、main Agentの承認を得た。
+- [x] 実装差分とレビュー結果を確認した。review対象は`32a1c38ace6b1395b82c5b001777355b459a9558`、判定は`pass`である。
+- [x] merge済みproduct `main`の`514facbb461927c0e5fc376a56ab8f975c054940`とmain-owned generated work adapterを確認した。adapterはdigest `5566794aaf22a890ef432e4e45b63a3a07e1bcb3eaf0cf620a47883c705c3445`で完全一致し、再生成はno-opである。
+- [x] QA-001〜QA-007の操作手順を現行実装に照合し、変更不要であることを確認した。
+- [x] 期待結果または試験範囲の変更がないことを確認した。
+- [x] 期待結果または範囲の変更がないため、追加のmain Agent承認は不要であることを確認した。
 
 ## 改訂履歴
 
