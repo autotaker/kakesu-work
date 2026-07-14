@@ -78,18 +78,18 @@ TASK-0002 では、root -> role Agent -> Explorer の深さ2の調査、最大2 
 
 ### 意味 Wiki
 
-- [Codex Agent Model Routing](../../wiki/semantic/schemas/codex-agent-model-routing.md): Explorer の固定model、read-only、一質問、深さ・thread上限、no-child、runtime trace による検証を本Taskの非交渉条件とする。
+- [Codex Agent Model Routing](../../wiki/semantic/schemas/codex-agent-model-routing.md): Explorer の固定model、read-only、一質問、深さ・thread上限、no-child、固定prompt・負例試験・launcher traceによる検証を本Taskの非交渉条件とする。製品側TOMLを正本とする決定的adapterとdigest検査、lock所有launcherだけが持つcommit権限も適用する。
 - [Development Task](../../wiki/semantic/concepts/development-task.md): 本Taskを、目的、受け入れ条件、証跡を持つ運用上の開発単位として扱う。
 - [Task Delivery](../../wiki/semantic/scripts/task-delivery.md): PLAN承認、実装前QA計画、独立レビュー、mainへのマージ、マージ後QAの進行順を維持する。
 - [Work Repository Boundary](../../wiki/semantic/schemas/work-repository-boundary.md): 製品側の正規設定と運用側の生成 adapter、共通ロック、Agent所有範囲を維持する。
-- [QA FAIL Attribution](../../wiki/semantic/case-patterns/qa-fail-attribution.md): sandbox、state DB、app-server 初期化による失敗を環境・要件・実装・QA計画に分類し、自動的に DEV 不具合としない。
+- [QA FAIL Attribution](../../wiki/semantic/case-patterns/qa-fail-attribution.md): sandbox、state DB、app-server 初期化による失敗を環境・要件・実装・QA計画に分類する。必要な権限とlock状態での再実行結果と分けて記録し、自動的に DEV 不具合としない。
 
 ### 判断
 
 - [DECISION-0001 PLAN DEV QA Process](../../wiki/decisions/DECISION-0001-plan-dev-qa-process.md): PLAN Agent に調査手段を追加しても、main Agentの承認、DEV・Reviewer・QAの独立性、マージ判断を委譲しない。
 - [DECISION-0002 Work Repository and Wiki Ownership](../../wiki/decisions/DECISION-0002-work-repository-and-wiki-ownership.md): 運用証跡の正本、main一本運用、共通ロック、Wiki所有権を変更しない。
-- [DECISION-0003 Codex Agent Model Routing](../../wiki/decisions/DECISION-0003-codex-agent-model-routing.md): Explorer の固定routing、bounded read-only 調査、深さ2、2 thread、no-child、trace検証を維持する。同 Decision が明記する明示 launcher と MultiAgentV2 経路の整合性は PLAN で明示的に判断する。
+- [DECISION-0003 Codex Agent Model Routing](../../wiki/decisions/DECISION-0003-codex-agent-model-routing.md): Explorer の固定routing、bounded read-only 調査、深さ2、2 thread、no-child、trace検証を維持する。同 Decision が明記する明示launcherを、PLAN内のMultiAgentV2明示role起動でどのように満たすかは未決であり、暗黙に置換しない。
 
 ### 適用しなかった重要な判断
 
-- なし。DECISION-0001〜0003の権限・進行・routing境界をすべて適用する。DECISION-0003 の明示 launcher を MultiAgentV2 の明示role起動で代替できるかは未決の設計論点であり、判断を不適用とみなして先行しない。
+- なし。DECISION-0001〜0003の権限・進行・routing境界をすべて適用する。DECISION-0003の明示launcherをMultiAgentV2の明示role起動で代替できるかは未決の設計論点であり、判断を不適用とみなして先行しない。置換が必要なら、既存Decisionを暗黙に上書きせず、HANDOVERでWiki Agentへの判断候補として引き渡す。
