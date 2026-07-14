@@ -171,3 +171,13 @@ tasks:
     task_dir: tasks/TASK-0013-mailbox-task-resume
     depends_on: []
     assignees: {}
+  - id: TASK-0014
+    title: 子Task委譲と直接キャンセルを実装する
+    type: feature
+    epic: EPIC-002
+    status: backlog
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0014-child-task-delegation
+    depends_on: []
+    assignees: {}
