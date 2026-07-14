@@ -91,3 +91,13 @@ tasks:
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
     merged_commit: d3b620343c805b7d6aec39aa57c1b60f73d7b33f
+  - id: TASK-0006
+    title: MVP通信契約とローカル設定を確立する
+    type: feature
+    epic: EPIC-002
+    status: backlog
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0006-mvp-wire-contracts
+    depends_on: []
+    assignees: {}
