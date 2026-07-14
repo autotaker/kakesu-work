@@ -131,3 +131,13 @@ tasks:
     task_dir: tasks/TASK-0009-linux-workspace-isolation
     depends_on: []
     assignees: {}
+  - id: TASK-0010
+    title: ルートTask CLIとOwner・Workspace割当を実装する
+    type: feature
+    epic: EPIC-002
+    status: backlog
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0010-root-task-cli
+    depends_on: []
+    assignees: {}
