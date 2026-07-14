@@ -23,3 +23,13 @@ tasks:
       qa: main-agent-bootstrap
     bootstrap_exception: true
     merged_commit: 2af86dd51c7a29c828247f043ca600882bc41ea9
+  - id: TASK-0002
+    title: Codex Agentのモデルルーティングを導入する
+    type: chore
+    epic: EPIC-001
+    status: backlog
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0002-codex-agent-model-routing
+    depends_on: []
+    assignees: {}
