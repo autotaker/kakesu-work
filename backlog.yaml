@@ -57,9 +57,12 @@ tasks:
     epic: EPIC-001
     status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 3
     task_dir: tasks/TASK-0004-remove-redundant-agent-depth-limits
     depends_on: []
     assignees:
       main: main-agent-sol-high
       planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium

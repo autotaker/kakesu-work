@@ -1,9 +1,9 @@
 ---
 task_id: "TASK-0004"
-status: draft
+status: approved
 planner_agent: "planner-agent-terra-medium"
-approved_by: ""
-approved_at: ""
+approved_by: "main-agent-sol-high"
+approved_at: "2026-07-14"
 approved_dev_profile: "sol-high"
 approved_dev_profile_reason: "canonical TOML、parser/digest/drift検査、生成adapter、Explorerのfail-closed権限境界、fixtureを横断する設定契約変更であるため"
 approved_dev_profile_risk_signals:
@@ -121,8 +121,9 @@ estimate_points = 1, 2, 3, 5, 8, 13のうちmax(1, file_score, line_score)以上
 
 ## main Agentレビュー
 
-- [ ] 受け入れ条件が検証可能である。
-- [ ] 設計観点と代替案を検討している。
-- [ ] QA計画を作成できる。
-- [ ] 見積もりが規則どおりである。
-- [ ] DEV開始を承認した。
+- [x] 受け入れ条件が検証可能である。
+- [x] 設計観点と代替案を検討している。
+- [x] QA計画を作成できる。
+- [x] 見積もりが規則どおりである。
+- [x] DEV profile `sol-high`、選定理由、risk signalsを承認した。
+- [x] DEV開始を承認した。
