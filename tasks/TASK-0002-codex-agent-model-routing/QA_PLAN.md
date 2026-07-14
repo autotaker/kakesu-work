@@ -1,9 +1,9 @@
 ---
 task_id: "TASK-0002"
-status: draft
+status: approved
 qa_agent: "qa-agent-terra-medium"
-approved_by: ""
-approved_at: ""
+approved_by: "main-agent-sol-high"
+approved_at: "2026-07-14"
 revision: 1
 implementation_reviewed_at: ""
 expectation_changed: false
@@ -65,4 +65,4 @@ live model の応答品質には依存せず、canonical role contract、launche
 
 | 改訂 | 日付 | 変更者 | 変更内容 | main承認 |
 |---:|---|---|---|---|
-| 1 | 2026-07-14 | qa-agent-terra-medium | approved PLAN と local Wiki に基づく実装前 QA 計画 | `pending` |
+| 1 | 2026-07-14 | qa-agent-terra-medium | approved PLAN と local Wiki に基づく実装前 QA 計画 | `approved` |
