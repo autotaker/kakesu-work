@@ -71,3 +71,13 @@ tasks:
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
     merged_commit: 514facbb461927c0e5fc376a56ab8f975c054940
+  - id: TASK-0005
+    title: main AgentのTask実行効率化スキルを整備する
+    type: chore
+    epic: EPIC-001
+    status: backlog
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0005-main-agent-efficient-delivery
+    depends_on: []
+    assignees: {}
