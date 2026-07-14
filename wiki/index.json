@@ -86,7 +86,8 @@
       "title": "Task Delivery",
       "links": [
         "../case-patterns/qa-fail-attribution.md",
-        "../../decisions/DECISION-0001-plan-dev-qa-process.md"
+        "../../decisions/DECISION-0001-plan-dev-qa-process.md",
+        "../../../tasks/TASK-0005-main-agent-efficient-delivery/HANDOVER.md"
       ]
     },
     {
