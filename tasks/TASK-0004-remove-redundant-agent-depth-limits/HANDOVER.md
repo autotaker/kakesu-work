@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0004"
-status: draft
-completed_at: ""
+status: complete
+completed_at: "2026-07-14T21:44:08+10:00"
 ---
 
 # TASK-0004 HANDOVER
@@ -29,6 +29,9 @@ completed_at: ""
 - 独立Reviewerは実装commit `32a1c38ace6b1395b82c5b001777355b459a9558`を再検査し、`pass`と判定した。
 - 製品merge commit `514facbb461927c0e5fc376a56ab8f975c054940`は、第1親`a0661057b56461c1a0e0f01a326d487b094e5ea1`、第2親review済みcommit `32a1c38ace6b1395b82c5b001777355b459a9558`の正確な2-parent mergeである。
 - generated work adapterはcanonical digest `5566794aaf22a890ef432e4e45b63a3a07e1bcb3eaf0cf620a47883c705c3445`と完全一致し、同期はno-opである。
+- 独立QAは製品`main`のmerge commit `514facbb461927c0e5fc376a56ab8f975c054940`をQA PLAN revision 1で検証し、QA-001〜QA-007をすべて`pass`、未実施項目なし、受け入れを妨げる未解消事項なしと判定した。
+- マージ後QAではrouting tests 11件、development-process tests 21件、製品`make check`、adapter complete-match、`make -C /Users/autotaker/git/agent-harness work-check`がすべてpassした。
+- 最初のQA sandbox内`make check`はPyPI DNS制約で停止したが、同一gateを許可済みビルド環境で再実行してpassしたため、解消済みの環境所見であり製品acceptance failureではない。
 
 ## 判断
 
@@ -38,14 +41,14 @@ completed_at: ""
 
 ## 既知の制約と未解決事項
 
-- マージ後QA、QA後のmain Agent最終判断、HANDOVERのWiki ingestは未実施である。
-- lock所有の親実行環境での`make work-config-sync WORK_ROOT=/Users/autotaker/git/agent-harness-work CHECK=1`と`make -C ../agent-harness work-check`の最終証跡は、マージ後QAで記録する。read-onlyの直接照合ではadapterの完全一致を確認済みである。
+- 受け入れを妨げる既知の制約または未解決事項はない。
+- QA後の最終フェーズ判断はmain Agent、HANDOVERのWiki ingestはWiki Agentが所有する後続処理である。QA RESULTの判定は`pass`で、未実施項目はない。
 
 ## 運用上の注意
 
 - DEVはproduct Task worktreeだけを変更した。work repositoryの`.codex/config.toml`はmain Agentがlock下の専用sync launcherで同期・commitする。
-- product `main`にはTask外の未commit `.codex/config.toml`変更として`features.multi_agent_v2`の4行が残っている。TASK-0004のmerge commitには含まれず、DEV、Reviewer、main Agentはいずれも変更・stage・commitしていない。マージ後QAでもTASK-0004のcanonical depth contractとこの既存差分を分離して評価する。
-- マージ後QAはproduct `main`のmerge commit `514facbb461927c0e5fc376a56ab8f975c054940`以降を対象にし、QA PLAN revision 1の期待結果を変更せずに実施する。
+- product `main`にはTask外の未commit `.codex/config.toml`変更として`features.multi_agent_v2`の4行が残っている。TASK-0004のmerge commitには含まれず、DEV、Reviewer、main Agentはいずれも変更・stage・commitしていない。マージ後QAでもTASK-0004のcanonical depth contractとこの既存差分を分離して評価し、変更しなかった。
+- マージ後QAはproduct `main`のmerge commit `514facbb461927c0e5fc376a56ab8f975c054940`を対象にし、QA PLAN revision 1の期待結果と範囲を変更せずに完了した。
 
 ## Wikiへ引き渡す知識
 
