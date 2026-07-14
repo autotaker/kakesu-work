@@ -385,3 +385,13 @@ tasks:
     task_dir: tasks/TASK-0022-linux-filesystem-isolation
     depends_on: []
     assignees: {}
+  - id: TASK-0023
+    title: P0 HTTPS傍受・正規化プロキシを実装する
+    type: feature
+    epic: EPIC-002
+    status: backlog
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0023-https-interception-proxy
+    depends_on: []
+    assignees: {}
