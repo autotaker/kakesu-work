@@ -57,7 +57,8 @@
       "links": [
         "../case-patterns/qa-fail-attribution.md",
         "../../decisions/DECISION-0003-codex-agent-model-routing.md",
-        "../../../tasks/TASK-0002-codex-agent-model-routing/HANDOVER.md"
+        "../../../tasks/TASK-0002-codex-agent-model-routing/HANDOVER.md",
+        "../../../tasks/TASK-0004-remove-redundant-agent-depth-limits/HANDOVER.md"
       ]
     },
     {
