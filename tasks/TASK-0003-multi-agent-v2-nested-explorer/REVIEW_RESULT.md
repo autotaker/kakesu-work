@@ -2,9 +2,9 @@
 task_id: "TASK-0003"
 status: complete
 reviewer_agent: "reviewer-agent-terra-medium"
-reviewed_commit: "a4cefff"
-decision: PASS
-make_check: PASS
+reviewed_commit: "a4cefffe2a56a2386c86ac8525dedd6fc95352e7"
+decision: pass
+make_check: pass
 reviewed_at: "2026-07-15"
 ---
 
@@ -13,14 +13,14 @@ reviewed_at: "2026-07-15"
 ## 対象
 
 - ブランチ: `task/TASK-0003-multi-agent-v2-nested-explorer`
-- コミット: `a4cefff` (`docs: prefer internal spawn agents`)
+- コミット: `a4cefffe2a56a2386c86ac8525dedd6fc95352e7` (`docs: prefer internal spawn agents`)
 - Task / PLAN / QA PLAN: `TASK.md` / 承認済み`PLAN.md` / `QA_PLAN.md`
 
 ## 実行した検査
 
 | コマンド | 結果 | 備考 |
 |---|---|---|
-| `git diff --check a4cefff^ a4cefff` | `PASS` | 空白エラーなし。 |
+| `git diff --check a4cefffe2a56a2386c86ac8525dedd6fc95352e7^ a4cefffe2a56a2386c86ac8525dedd6fc95352e7` | `PASS` | 空白エラーなし。 |
 | `make check` | `PASS` | Go build/test/vet、Python test/lint、Rust build/test/clippy、tabletop検証、用語検証、process test、docs lint、生成確認を完走。 |
 | `git status --short` | `PASS` | `make check`後も対象ワークツリーはclean。 |
 
