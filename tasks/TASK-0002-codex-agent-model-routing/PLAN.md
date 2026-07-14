@@ -1,9 +1,9 @@
 ---
 task_id: "TASK-0002"
-status: draft
+status: approved
 planner_agent: "planner-agent-terra-medium"
-approved_by: ""
-approved_at: ""
+approved_by: "main-agent-sol-high"
+approved_at: "2026-07-14"
 approved_dev_profile: "sol-high"
 approved_dev_profile_reason: "launcher、sandbox/commit所有権、兄弟2 repository root、project設定、起動証跡、テストを横断し、権限境界の契約変更を伴うため"
 approved_dev_profile_risk_signals:
@@ -153,9 +153,9 @@ fixed-role不一致override、未知DEV profile、PLAN証跡欠落、depth違反
 
 ## main Agentレビュー
 
-- [ ] 受け入れ条件が検証可能である。
-- [ ] 設計観点と代替案を検討している。
-- [ ] QA計画を作成できる。
-- [ ] 見積もりが規則どおりである。
-- [ ] DEV profile `sol-high`、選定理由、promotion規則を承認した。
-- [ ] DEV開始を承認した。
+- [x] 受け入れ条件が検証可能である。
+- [x] 設計観点と代替案を検討している。
+- [x] QA計画を作成できる。
+- [x] 見積もりが規則どおりである。
+- [x] DEV profile `sol-high`、選定理由、promotion規則を承認した。
+- [x] DEV開始を承認した。
