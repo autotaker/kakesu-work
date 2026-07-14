@@ -5,6 +5,10 @@ epics:
     title: 開発プロセスと品質ガバナンス
     target_start: 2026-07-14
     target_end: 2026-07-31
+  - id: EPIC-002
+    title: Kakesu Linux-only MVP実装
+    target_start: 2026-07-16
+    target_end: 2026-10-31
 tasks:
   - id: TASK-0001
     title: 開発プロセスとガイドラインを整備する
