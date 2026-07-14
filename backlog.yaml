@@ -241,3 +241,13 @@ tasks:
     task_dir: tasks/TASK-0020-wiki-context-injection
     depends_on: []
     assignees: {}
+  - id: TASK-0021
+    title: Linux-only MVP E2Eと再起動復旧を完成する
+    type: feature
+    epic: EPIC-002
+    status: backlog
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0021-mvp-e2e-release
+    depends_on: []
+    assignees: {}
