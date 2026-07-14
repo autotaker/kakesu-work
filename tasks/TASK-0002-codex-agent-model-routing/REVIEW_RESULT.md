@@ -2,10 +2,10 @@
 task_id: "TASK-0002"
 status: complete
 reviewer_agent: "reviewer-agent-terra-medium"
-reviewed_commit: "1b4013bb9563adb53939b1b9fd632b440f1ee918"
+reviewed_commit: "35fcaf209a65d17acd5d215298ff6175b0671572"
 decision: pass
-make_check: environment-blocked
-reviewed_at: "2026-07-14T12:07:22+10:00"
+make_check: pass
+reviewed_at: "2026-07-14T12:00:00+10:00"
 ---
 
 # TASK-0002 REVIEW RESULT
@@ -13,40 +13,38 @@ reviewed_at: "2026-07-14T12:07:22+10:00"
 ## 対象
 
 - ブランチ: `task/TASK-0002-codex-agent-model-routing`
-- コミット: `1b4013bb9563adb53939b1b9fd632b440f1ee918`（指定されたTASK-0002 product worktreeのHEADと完全一致）
-- レビュー範囲: 既レビュー済み`cb9b3dadddccfa301913a747b83db48067cd8324`から当該HEADまでの8ファイルの増分だけ。TASK / 承認済み`sol-high` PLAN / revision 1のQA PLAN / 関連local Wikiを照合した。
+- コミット: `35fcaf209a65d17acd5d215298ff6175b0671572`（指定されたTASK-0002 product worktreeのHEADと完全一致）
+- レビュー範囲: 既レビュー済み`1b4013bb9563adb53939b1b9fd632b440f1ee918..35fcaf209a65d17acd5d215298ff6175b0671572`の8ファイルの増分だけ。TASK、承認済みPLAN/QA evidence、関連local Wikiを照合した。
 
 ## 実行した検査
 
 | コマンド | 結果 | 備考 |
 |---|---|---|
-| `node --test scripts/task/agent-routing.test.mjs scripts/task/development-process.test.mjs` | pass | 24件pass、0件fail。新しいExplorer launcher、固定CLI引数、closed stdin、質問制約、work launcherへの明示launcher注入を含む。 |
-| `make explorer-agent DRY_RUN=true QUESTION='Which file owns the routing contract?'` | pass | 固定`gpt-5.6-luna` / `medium` / `read-only`、`stdin:"closed"`、write scopeなし、commitなしのJSONを確認。Make recipeは環境変数を二重引用符で展開し、質問をshellコードとして再解釈しない。 |
-| `make -C /Users/autotaker/git/agent-harness work-check WORK_ROOT=/Users/autotaker/git/agent-harness-work` | pass | Epic 1件、Task 2件、Wiki page 7件を検証。 |
-| `git diff --check cb9b3dadddccfa301913a747b83db48067cd8324..1b4013bb9563adb53939b1b9fd632b440f1ee918` | pass | 増分diffに空白エラーなし。 |
-| `make check` | environment-blocked | `memory`の`uv build`が`hatchling`取得時にDNS解決不能となり失敗（exit 2）。実装・試験失敗ではなく、process test前の外部依存取得失敗。 |
+| `node --test scripts/task/development-process.test.mjs` | pass | 21件pass、0件fail。専用sync親の共通lock、共有hook環境、`.codex/config.toml`限定scope、commit、post-check、no-op/check、hook/post-check失敗時rollback、drift拒否を確認。 |
+| `node --test scripts/task/agent-routing.test.mjs` | pass | 8件pass、0件fail。canonical adapterの決定性/drift検査および既存role/Explorer contractを確認。 |
+| `UV_OFFLINE=1 make check` | pass | 29件のprocess testを含むGo/Python/Rust/tabletop/terminology/docs/format/lint検査がexit 0。 |
+| `git diff --check 1b4013bb9563adb53939b1b9fd632b440f1ee918..35fcaf209a65d17acd5d215298ff6175b0671572` | pass | 空白エラーなし。 |
 
 ## 受け入れ条件の確認
 
 | 条件 | 結果 | 根拠 |
 |---|---|---|
-| 明示Explorer launcherとrole access | pass | rootは`make explorer-agent`、work roleは絶対パスの`run-explorer-agent.mjs`だけをpromptで受け取る。natural-language/custom-agent delegationは明示的に禁止され、既存roleのmax depth/thread契約をExplorer実行経路へ誤用しない。 |
-| Luna/medium/read-only、closed stdin、質問検証 | pass | launcherはCLIに`--sandbox read-only -m gpt-5.6-luna -c model_reasoning_effort="medium"`を明示し、stdinを`ignore`で閉じる。質問は一件のみ、空白のみ・前後空白・改行・500文字超を起動前に拒否する。 |
-| Make invocation safety、evidence、tests、docs | pass | Make targetは`QUESTION`/`EXPLORER_ROOT`をshell変数として二重引用符で渡す。dry-run evidenceはwrite scopeなし・commit nullであり、unit/process試験と`agent-roles.md`の実行手順は実装と整合する。 |
-| 回帰ゲート | partial | focused process testsとwork-checkはPASS。`make check`は外部PyPI DNS障害により完走不能で、incremental product diffのFAILは観測されなかった。 |
+| parent-owned work-config-sync | pass | 専用launcherはlockを取得して開始前HEADからhook付きcommit、post-check、cleanupまで保持する。子Agent・generic `ACTION=governance`はadapter同期を経由しない。 |
+| exact scope・shared hook・commit environment | pass | 変更・stagingは`.codex/config.toml`一件のみ。`core.hooksPath=.githooks`と実行可能hookを事前確認し、`WORK_REPO_LOCK_HELD=1`、`WORK_PARENT_COMMIT=1`、`WORK_ACTION=work-config-sync`、allowlistを親commitへ渡す。hook bypassはない。 |
+| deterministic adapter、drift、no-op/check、evidence | pass | canonical rendererを用い、sync後の完全一致check、committed drift fail-closed、no-changeでcommit null、checkで書込み/commitなし、一行の簡潔なJSON evidenceを確認。 |
+| failure rollback | pass | hook failureとcommit後post-check failureの双方で開始前HEAD、index、worktree、untracked状態を復元し、lockを解放して`commit:null` evidenceを出す。 |
+| generic governance・role/Explorer contract | pass | `ACTION_ROLES`、generic governance launcher、role TOML、Explorer launcher/policyはこのincremental diffで変更されない。文書も専用経路と既存generic経路の分離を明記する。 |
 
 ## 指摘
 
 | ID | 重大度 | 状態 | 内容 | 根拠 |
 |---|---|---|---|---|
-| - | - | - | 増分diffに未解消の製品指摘なし。 | 明示Explorer launcher、質問validation、Make target、role prompt、focused tests、docsを照合。 |
+| - | - | - | 未解消の製品指摘なし。 | bounded diff、targeted process tests、offline full check。 |
 
 ## 残存リスク
 
-- live Codex serviceの可用性・モデル応答品質は、PLAN/QA PLANどおり決定的な設定・fixture試験の対象外である。
-- `make check`は、この環境ではPyPIの`hatchling` DNS解決不能のため再実行が必要である。これは製品指摘ではないが、main Agentはmerge gateとしてネットワーク利用可能な環境で再実行する。
-- product mainへの`--no-ff` merge、main-owned adapterのgovernance commit、merge後QA-001〜QA-013は後続gateであり、本レビューの範囲外である。
+- product mainへの`--no-ff` merge、main-owned adapterの実運用governance commit、merge後QA-001〜QA-013は後続gateであり、本レビュー範囲外である。
 
 ## 結論
 
-`pass`。指定HEADのbounded incremental diffは、承認済みPLAN、QA PLAN、関連Wikiの責務・境界に整合し、未解消のレビュー指摘はない。focused process testsとwork-checkはPASSした。`make check`のDNS起因のenvironment blockはmain Agentがmerge gateとして再実行する必要がある。
+`pass`。指定commitのbounded incremental diffは、専用parent-owned work-config-syncのlock lifetime、厳密scope、共有hook、commit環境、決定的adapter/drift、no-op/check、簡潔evidence、失敗時rollbackを満たす。generic governanceおよびrole/Explorer contractに変更はない。
