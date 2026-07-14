@@ -161,3 +161,13 @@ tasks:
     task_dir: tasks/TASK-0012-terminal-async-operations
     depends_on: []
     assignees: {}
+  - id: TASK-0013
+    title: Mailbox待機とTask再開を実装する
+    type: feature
+    epic: EPIC-002
+    status: backlog
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0013-mailbox-task-resume
+    depends_on: []
+    assignees: {}
