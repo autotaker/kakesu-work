@@ -191,3 +191,13 @@ tasks:
     task_dir: tasks/TASK-0015-completion-review
     depends_on: []
     assignees: {}
+  - id: TASK-0016
+    title: Governance永続ポリシーストアとfail-closed判断を実装する
+    type: feature
+    epic: EPIC-002
+    status: backlog
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0016-governance-policy-store
+    depends_on: []
+    assignees: {}
