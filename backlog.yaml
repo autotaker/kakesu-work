@@ -43,7 +43,7 @@ tasks:
     title: MultiAgentV2の内部Spawn Agentを標準起動経路にする
     type: chore
     epic: EPIC-001
-    status: plan
+    status: dev
     priority: P1
     estimate_points: 2
     task_dir: tasks/TASK-0003-multi-agent-v2-nested-explorer
@@ -54,6 +54,8 @@ tasks:
       dev: dev-agent-luna-xhigh
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
+    branch: task/TASK-0003-multi-agent-v2-nested-explorer
+    worktree: worktrees/TASK-0003-multi-agent-v2-nested-explorer
   - id: TASK-0004
     title: 通常Agentの重複した深度上限を削除しExplorerの再委譲禁止を維持する
     type: chore
