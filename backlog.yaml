@@ -75,7 +75,7 @@ tasks:
     title: main AgentのTask実行効率化スキルを整備する
     type: chore
     epic: EPIC-001
-    status: plan
+    status: dev
     priority: P1
     estimate_points: 1
     task_dir: tasks/TASK-0005-main-agent-efficient-delivery
@@ -86,3 +86,5 @@ tasks:
       dev: dev-agent-luna-xhigh
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
+    branch: task/TASK-0005-main-agent-efficient-delivery
+    worktree: worktrees/TASK-0005-main-agent-efficient-delivery
