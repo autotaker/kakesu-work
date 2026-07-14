@@ -75,9 +75,14 @@ tasks:
     title: main AgentのTask実行効率化スキルを整備する
     type: chore
     epic: EPIC-001
-    status: backlog
+    status: plan
     priority: P1
     estimate_points: 1
     task_dir: tasks/TASK-0005-main-agent-efficient-delivery
     depends_on: []
-    assignees: {}
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-luna-xhigh
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
