@@ -5,7 +5,7 @@ reviewer_agent: "reviewer-agent-terra-medium"
 reviewed_commit: "32a1c38ace6b1395b82c5b001777355b459a9558"
 decision: pass
 make_check: pass
-reviewed_at: "2026-07-14T21:45:00+10:00"
+reviewed_at: "2026-07-14T21:33:29+10:00"
 ---
 
 # TASK-0004 REVIEW RESULT
@@ -21,8 +21,8 @@ reviewed_at: "2026-07-14T21:45:00+10:00"
 
 | コマンド | 結果 | 備考 |
 |---|---|---|
-| `node --test scripts/task/agent-routing.test.mjs` | pass | 11件pass、0件fail。通常6 roleのlocal depth key不在、値を問わない再導入のfail-closed、Explorer/project depth/thread drift、depth/thread/question/Explorer child拒否、explicit launcher contract、adapter driftを確認。 |
-| `node --test scripts/task/development-process.test.mjs` | pass | 21件pass、0件fail。lock、parent-owned commit、adapter check、hook/post-check失敗時rollbackを確認。 |
+| `node --test scripts/task/agent-routing.test.mjs` | pass | ReviewerがTask worktreeで再実行。11件pass、0件fail。通常6 roleのlocal depth key不在、値を問わない再導入のfail-closed、Explorer/project depth/thread drift、depth/thread/question/Explorer child拒否、explicit launcher contract、adapter driftを確認。 |
+| `node --test scripts/task/development-process.test.mjs` | pass | ReviewerがTask worktreeで再実行。21件pass、0件fail。lock、parent-owned commit、adapter check、hook/post-check失敗時rollbackを確認。 |
 | `git diff --check HEAD^ HEAD` | pass | 空白エラーなし。 |
 | canonical TOML、parser/test、`docs/development/agent-roles.md`の直接照合 | pass | 通常6 roleは`max_depth`なし、projectはdepth/thread 2、Explorerだけがdepth 0/thread 1。文書もこの責務分離を説明する。 |
 | `make check` | pass | DEV HANDOVER記録によりpassを照合した。本レビューではproduct build出力を変更しないため再実行しない。 |
