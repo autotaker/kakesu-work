@@ -7,8 +7,8 @@ approved_at: "2026-07-15"
 approved_dev_profile: "luna-xhigh"
 approved_dev_profile_reason: "変更は起動ポリシーを説明する文書だけであり、runtime、TOML、launcher、hook、lock、Git権限を変更しない。対象文書の既存契約へ指定済みの実機観測を整合させる、局所的で機械レビュー可能な編集であるため。"
 approved_dev_profile_risk_signals: []
-planned_implementation_files: 4
-planned_implementation_lines: 180
+planned_implementation_files: 6
+planned_implementation_lines: 220
 estimate_points: 2
 ---
 
@@ -27,7 +27,7 @@ profile: luna-xhigh
 model: gpt-5.6-luna
 reasoning_effort: xhigh
 decision_rule: "runtime・権限境界・設定生成を変更しない局所的な docs-only Task は luna-xhigh を使う"
-reason: "4つのポリシー文書へ同一の明示ランチャー契約とfallback条件を記載するだけであり、コード、TOML、script、lock、hook、Git責務を変更しない"
+reason: "4つのポリシー文書と、そこから検出される用語集・生成indexへ同一の起動契約を反映するだけであり、コード、TOML、script、lock、hook、Git責務を変更しない"
 ```
 
 DEV は文書間の既存契約が矛盾する、または記載に runtime/configuration の変更が必要だと判明した時点で停止し、main Agent に `sol-high` への再評価とTask再設計を報告する。DEV はこのPLANの範囲で sandbox の保証表現を追加してはならない。
@@ -44,6 +44,7 @@ DEV は文書間の既存契約が矛盾する、または記載に runtime/conf
 | fallback | `agent_type` が利用不能、internal `spawn_agent` が利用不能、または runtime の model/effort が指定roleと不整合の場合に限り、`make work-agent` または `make explorer-agent` を fallback にする。通常経路で make launcher を必須・優先と記載しない。 |
 | mismatch時の扱い | 起動結果で期待する model/effort と異なる場合は、その子の成果を採用せず、実行を停止して role、requested/observed model・effort、runtime 条件を証跡化する、と記載する。sandbox は未観測なら未保証として同じ証跡に記録する。 |
 | 文書整合 | `AGENTS.md`、`docs/development/README.md`、`docs/development/agent-roles.md`、必要な work repository `AGENTS.md` が矛盾しない。既存の `make work-agent` の親lock・scope検査・hook・commit責務は削除・緩和しない。 |
+| 用語整合 | 新規・更新された用語は `uv run --project memory python scripts/validate-terminology.py --write` により `docs/glossary.yml` と `docs/99-glossary-index.md` へ機械反映され、用語検証でinventory driftが残らない。 |
 
 ## 設計
 
@@ -83,8 +84,10 @@ role TOML の `sandbox_mode` は意図する role contract である。spawn met
 | `docs/development/README.md` | documentation | 30 | 開発プロセスの入口として、native spawn優先と例外的fallback、および順次gateが変わらないことを短く案内する。 |
 | `docs/development/agent-roles.md` | documentation / policy | 80 | role→agent_type対応、呼出し契約、Explorer制約、model/effort mismatch証跡、sandboxの観測限界、work launcherとの責務分担を正本として詳記する。既存の「Explorerは明示launcherのみ」の文言を native spawn優先・fallback launcherへ置換する。 |
 | `../agent-harness-work/AGENTS.md` | documentation / policy | 20 | 運用リポジトリに固有の起動案内が存在する場合に限り、product側ポリシーへの参照と、証跡書込み時の `make work-agent` fallback/親lock責務を整合させる。固有の重複ポリシーがない場合は変更しない。 |
+| `docs/glossary.yml` | generated documentation inventory | 15 | 新規tokenと既存用語のinventoryを、指定の用語検証スクリプトの `--write` 出力としてのみ更新する。直接編集しない。 |
+| `docs/99-glossary-index.md` | generated documentation index | 25 | `docs/glossary.yml` と同じ `--write` 実行で再生成する。直接編集しない。 |
 
-見積もり対象は4文書、最大180行である。`file_score = ceil(4 / 3) = 2`、`line_score = ceil(180 / 200) = 1` のため、許容scaleの最小値 `2` を採用する。テストコード、TOML、launcher、adapter、hook、work Task証跡は変更しない。
+見積もり対象は6文書、最大220行である。`file_score = ceil(6 / 3) = 2`、`line_score = ceil(220 / 200) = 2` のため、許容scaleの最小値 `2` を維持する。用語集とindexは生成文書であり、既存スクリプト以外で編集しない。テストコード、TOML、launcher、adapter、hook、work Task証跡は変更しない。
 
 ## 実装手順
 
@@ -93,7 +96,8 @@ role TOML の `sandbox_mode` は意図する role contract である。spawn met
 3. READMEには詳細規約へのリンクと、native優先・make fallback・既存gate不変だけを記し、規約の複製を最小化する。
 4. `agent-roles.md` を主たる詳細契約として更新し、古い「明示launcherのみ」の表現を置換する。sandboxについては「role TOMLの意図する設定であり、今回の観測では実効保証でない」と明記する。
 5. work repository `AGENTS.md` に起動方法の重複規約がある場合だけ、運用証跡書込みの lock所有親・scope/hook/commit責務を保持したfallback説明へ整合させる。
-6. DEV は差分を読み、用語、role表、fallback条件、禁止事項が全対象文書で一致することを確認する。既存検査がdocsを対象にする範囲で `make check` を実行し、失敗は文書変更との因果を分けて記録する。
+6. 用語集を直接編集せず、`uv run --project memory python scripts/validate-terminology.py --write` を一度実行して、`docs/glossary.yml` と `docs/99-glossary-index.md` を機械更新する。
+7. DEV は差分を読み、用語、role表、fallback条件、禁止事項が全対象文書で一致することを確認する。既存検査がdocsを対象にする範囲で `make check` を実行し、失敗は文書変更との因果を分けて記録する。
 
 ## QA計画可能な検証手順
 
@@ -103,11 +107,13 @@ role TOML の `sandbox_mode` は意図する role contract である。spawn met
 4. `agent_type` 欠落、internal spawn不可、model/effort mismatch の三条件以外で make launcherへfallbackしていないこと、および mismatch時に停止・証跡化すると書かれていることを確認する。
 5. sandboxをmetadataまたはTOMLだけで保証したという断定がなく、未観測であることと既存の子Git禁止・親lock責務が明記されていることを確認する。
 6. PLAN→DEV→review→QA、独立性、子Git禁止、親のscope/hook/commit責務に緩和がないことを確認する。
-7. `make check` を実行し、docs-only差分で既存品質ゲートを通ることを確認する。失敗時はQAガイドラインに従い文書・環境・既存不具合を分類し、DEV不具合と自動帰責しない。
+7. `uv run --project memory python scripts/validate-terminology.py --write` の後に同じ検証を実行し、新規tokenとinventory driftがないこと、`docs/glossary.yml` と `docs/99-glossary-index.md` が生成出力以外で編集されていないことを確認する。
+8. `make check` を実行し、docs-only差分で既存品質ゲートを通ることを確認する。失敗時はQAガイドラインに従い文書・環境・既存不具合を分類し、DEV不具合と自動帰責しない。
 
 ## 不変条件・対象外
 
 - 製品コード、`.codex/config.toml`、`.codex/agents/*.toml`、launcher、adapter、digest、hook、lock、Task schemaは変更しない。
+- `docs/glossary.yml` と `docs/99-glossary-index.md` は手編集せず、用語検証スクリプトの生成出力以外では変更しない。
 - sandboxのruntime enforcementやmetadata露出を追加しない。
 - make launcherの親lock、scope検査、hook、stage、commit、rollback責務を削除・子へ移譲しない。
 - mainだけが承認、commit、merge、FAIL分類を所有する。DEV、reviewer、QAの分離と既存gateを変更しない。

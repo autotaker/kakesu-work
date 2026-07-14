@@ -24,6 +24,7 @@ openai/codex Issue #32705では、MultiAgentV2において`agent_type`等のrout
 - product `AGENTS.md`へのsubagent起動手順の追加
 - `docs/development/README.md`と`docs/development/agent-roles.md`の正本更新
 - 必要な`agent-harness-work/AGENTS.md`の整合
+- 新規用語を`docs/glossary.yml`と生成済み`docs/99-glossary-index.md`へ機械反映する用語整合
 - roleと`agent_type`の対応、`task_name`との責務分離、`fork_turns = "none"`の明示
 - model/effort不一致時の停止と、fallback条件の明文化
 - Explorerの一質問、読み取り専用、再委譲禁止の維持
@@ -49,6 +50,7 @@ openai/codex Issue #32705では、MultiAgentV2において`agent_type`等のrout
 - [ ] model/effort不一致時は子の成果を採用せず停止し、requested/observed値とruntime条件を証跡化する。
 - [ ] sandboxは観測できた値だけを記録し、未観測の場合はrole TOMLだけで保証済みと表現しない。
 - [ ] 対象文書間に矛盾がなく、`make check`がPASSする。
+- [ ] `validate-terminology.py --write`で用語集と生成indexを更新し、inventory driftが残っていない。
 
 ## 完成の定義
 
