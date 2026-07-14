@@ -40,17 +40,20 @@ tasks:
       qa: qa-agent-terra-medium
     merged_commit: a0661057b56461c1a0e0f01a326d487b094e5ea1
   - id: TASK-0003
-    title: MultiAgentV2のPLANからExplorerを起動可能にする
+    title: MultiAgentV2の内部Spawn Agentを標準起動経路にする
     type: chore
     epic: EPIC-001
     status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 2
     task_dir: tasks/TASK-0003-multi-agent-v2-nested-explorer
     depends_on: []
     assignees:
       main: main-agent-sol-high
       planner: planner-agent-terra-medium
+      dev: dev-agent-luna-xhigh
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0004
     title: 通常Agentの重複した深度上限を削除しExplorerの再委譲禁止を維持する
     type: chore

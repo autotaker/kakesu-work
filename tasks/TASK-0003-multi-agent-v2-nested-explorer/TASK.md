@@ -1,95 +1,69 @@
 ---
 task_id: "TASK-0003"
-title: "MultiAgentV2のPLANからExplorerを起動可能にする"
-status: draft
+title: "MultiAgentV2の内部Spawn Agentを標準起動経路にする"
+status: plan
 created_at: "2026-07-14"
 ---
 
-# TASK-0003 MultiAgentV2のPLANからExplorerを起動可能にする
+# TASK-0003 MultiAgentV2の内部Spawn Agentを標準起動経路にする
 
 ## 目的
 
-`work-agent` から起動した PLAN Agent が、MultiAgentV2 の明示的な Explorer role を使って一件の限定的なリポジトリ調査を完了できるようにする。Explorer の Luna / `medium` / read-only / no-child 契約と、ロックを保持する launcher 親の scope検査・commit 権限を維持しながら、管理環境でも調査結果を PLAN の根拠に利用できる状態にする。
+Codex内部の`agents.spawn_agent`で名前付きroleを選択できることを確認できたため、PLAN、DEV、REVIEW、QA、Explorerの標準起動経路を内部Spawn Agentへ切り替える。`make work-agent`と`make explorer-agent`は、内部起動を利用できない場合のfallbackとして残す。
 
 ## 背景
 
-TASK-0002 では、root -> role Agent -> Explorer の深さ2の調査、最大2 thread、一件の bounded question、Explorer の `gpt-5.6-luna` / `medium` / read-only / no-child を正規契約とした。製品リポジトリの `.codex/config.toml` は MultiAgentV2 の tool namespace と Explorer role を定義し、Planner role 定義も Explorer の子起動を許可している。
+openai/codex Issue #32705では、MultiAgentV2において`agent_type`等のrouting入力が隠れる、`fork_turns`の既定値`all`では異種role overrideが拒否される、`task_name`はrole selectorではない、role固有sandboxが親permission profileで上書きされ得る、という相互作用が報告されている。
 
-一方、運用リポジトリの生成 adapter には MultiAgentV2 の feature 契約が含まれていない。さらに現行の `run-work-agent.mjs` は、PLAN Agent への prompt で natural-language / custom-agent delegation を禁止し、別 process の `run-explorer-agent.mjs` を実行するよう指示している。この実行経路は、子の `codex exec` が `~/.codex` の state DB や app-server 初期化を必要とする環境では read-only 制約により起動できず、PLAN から Explorer を使えない。
-
-そのため、調査の権限境界は緩和せず、PLAN の実行経路と生成 adapter を MultiAgentV2 の正規設定に整合させる必要がある。
+本リポジトリでは`hide_spawn_agent_metadata = false`と`tool_namespace = "agents"`により`agent_type`が公開され、`fork_turns = "none"`を明示した実機検証でPlanner、QA、Reviewer、DEV Luna、DEV Sol、およびPlanner配下のExplorerについて期待するmodel/effortが選択された。一方、実効sandboxは同じ証跡から確認できていないため、role TOMLの宣言だけを実効権限の証明とは扱わない。
 
 ## スコープ
 
 ### 対象
 
-- `ACTION=plan` で起動される PLAN Agent から MultiAgentV2 Explorer を明示的に子起動する実行契約
-- 製品リポジトリの正規 MultiAgentV2 設定と、運用リポジトリの決定的な生成 adapter・digest・drift検査の整合
-- PLAN の調査指示、Explorer の bounded question・read-only・no-child 制約、簡潔な結果受け渡し
-- MultiAgentV2 の正常系と、複数質問、深さ超過、fan-out、write / Git操作、再委譲を拒否する異常系の自動テスト
-- 管理された sandbox で PLAN -> Explorer の一連の実行が完了することの受け入れ検証
-- Explorer の利用方法、制約、起動証跡を説明する必要最小限の製品文書
+- product `AGENTS.md`へのsubagent起動手順の追加
+- `docs/development/README.md`と`docs/development/agent-roles.md`の正本更新
+- 必要な`agent-harness-work/AGENTS.md`の整合
+- roleと`agent_type`の対応、`task_name`との責務分離、`fork_turns = "none"`の明示
+- model/effort不一致時の停止と、fallback条件の明文化
+- Explorerの一質問、読み取り専用、再委譲禁止の維持
+- 子AgentのGit禁止と、親のlock、scope検査、hook、commit責務の維持
 
 ### 対象外
 
-- PLAN 以外のmain、DEV、QA、REVIEW Agent の Explorer 実行経路の一括変更
-- Explorer のmodel、reasoning effort、read-only sandbox、一質問制約、no-child 制約の緩和
-- Explorer による編集、stage、commit、scope拡大、実装方針や承認の決定
-- ロール最大深さ2または最大2 threadを超える並列化と fan-out
-- 利用者の global Codex 設定、`~/.codex` の書き込み権限、未文書化の model alias への依存
-- PLAN / DEV / QA ゲート、運用リポジトリの共通ロック、launcher 親の scope検査・stage・hook・commit・事後検査の責務変更
-- 製品機能、ドメインモデル、Wiki Schema の変更
+- 製品コード、`.codex`設定、launcher、adapter、hook、lock、Task Schemaの変更
+- MultiAgentV2 runtimeまたはsandbox enforcementの修正
+- role TOMLだけを根拠とした実効sandboxの保証
+- PLAN / DEV / REVIEW / QAのgate、独立性、mainの承認・merge責務の緩和
+- `make *-agent` fallbackの削除
 
 ## 受け入れ条件
 
-- [ ] `work-agent` の `ACTION=plan` で起動した PLAN Agent が、MultiAgentV2 の Explorer role へ一件の bounded question を渡し、同じ PLAN 実行中に簡潔な根拠要約とファイル参照を受け取れる。
-- [ ] PLAN -> Explorer の実効契約が `gpt-5.6-luna`、reasoning effort `medium`、read-only sandbox、write scopeなし、commitなしであることを、Agent の自己申告ではなく構造化された起動証跡または同等の runtime 証跡で検査できる。
-- [ ] Explorer は調査対象 root の読み取りだけを行い、ファイル編集、Git 書き込み、scope拡大、raw log転送、子Agent起動を行えない。
-- [ ] root -> PLAN -> Explorer を深さ2として許可し、Explorer -> child、深さ3、3 thread以上、0件または2件以上の質問を起動前に拒否できる。
-- [ ] 製品リポジトリの MultiAgentV2 正規設定が運用リポジトリの生成 adapter へ決定的に反映され、feature、tool namespace、role、model、effort、sandbox、depth、thread、no-child の drift を検出できる。
-- [ ] PLAN からの Explorer 起動は、子 Explorer が `~/.codex` へ書き込めることや、別の in-process app-server client を初期化できることを前提とせず、運用リポジトリの管理環境で実調査を完了できる。
-- [ ] Explorer を起動した場合の成功、起動前拒否、子実行失敗を区別でき、失敗時に Explorer 由来の差分、stage、commitを残さない。PLAN 全体への失敗伝播方針は PLAN で明示する。
-- [ ] PLAN Agent の `gpt-5.6-terra` / `medium`、`PLAN.md` のみの write scope、launcher 親のロック・scope検査・stage・hook・commit・rollback責務が維持される。
-- [ ] PLAN 以外のロールの Explorer 契約と、root からの既存の明示 Explorer launcher 経路に回帰がない。互換範囲と移行方針は PLAN で明示する。
-- [ ] 正常系・異常系の自動テスト、管理環境での PLAN -> Explorer 受け入れ証跡、既存検査と `make check` が PASS する。
-
-## 検討すべき設計観点
-
-- MultiAgentV2 の feature、tool namespace、role registry をどこで正本化し、生成 adapter・digest・drift検査で完全一致をどう証明するか
-- `ACTION=plan` だけに Explorer の nested launch を許可し、generic delegation、他role起動、natural-language による不定なrole選択と区別する方法
-- root = 0、PLAN = 1、Explorer = 2 の深さと thread上限を、MultiAgentV2 の実際の runtime semantics と launcher 契約の両方で検査する方法
-- Explorer の一質問制約、質問長、調査 root、返却形式を、prompt だけでなく起動前検査とテストで保証する方法
-- child の write、Git操作、scope拡大、再委譲を、sandbox、role設定、tool公開範囲、固定prompt、事後検査のどの層で防ぐか
-- MultiAgentV2 の nested launch 証跡から model、effort、cwd、sandbox、write scope、child result、commit不在を raw log なしで検証する方法
-- Explorer の必要性を PLAN Agent が判断して最大一回だけ使う方法と、成功、起動前拒否、子実行失敗を過度なraw logなしで観測・伝播する方法
-- 既存の `run-explorer-agent.mjs` と PLAN の MultiAgentV2 経路の責務分担、後方互換性、移行順序、重複した契約の drift 防止
-- DECISION-0003 が定めた「明示 launcher」と、PLAN 内の MultiAgentV2 明示role起動の整合性。実装経路の置換が判断の変更に当たる場合は、既存 Decision を暗黙に上書きせず、置換判断の候補を HANDOVER で Wiki Agent へ引き渡すこと
-- プロセス初期化の環境制約と製品不具合を区別し、独立QAの FAIL を自動的に DEV へ帰責しない検証証跡の残し方
+- [ ] 子Agentの標準起動経路が`agents.spawn_agent`であると`AGENTS.md`に明記されている。
+- [ ] `task_name`は識別用、`agent_type`はrole選択用であり、異種roleでは`fork_turns = "none"`を明示する手順がある。
+- [ ] Planner=`planner`、QA=`qa`、Reviewer=`reviewer`、DEV Luna=`dev-luna`、DEV Sol=`dev-sol`、Explorer=`explorer`の対応と期待model/effortが一致している。
+- [ ] PLAN、DEV、REVIEW、QAを一体ずつ順番に起動し、DEVとReviewer、DEVとQAを分離する既存gateが維持されている。
+- [ ] Explorerは一件の限定質問だけを扱い、ファイル編集、Git操作、scope拡大、再委譲を行わない。
+- [ ] 子Agentはstage、commit、merge、`.git`書込みを行わず、mainまたは親がlock、scope検査、hook、commit、事後検査を所有する。
+- [ ] `agent_type`が利用不能、内部Spawn Agentが利用不能、またはruntimeのmodel/effortがrole契約と不一致の場合だけ`make work-agent`または`make explorer-agent`へfallbackする。
+- [ ] model/effort不一致時は子の成果を採用せず停止し、requested/observed値とruntime条件を証跡化する。
+- [ ] sandboxは観測できた値だけを記録し、未観測の場合はrole TOMLだけで保証済みと表現しない。
+- [ ] 対象文書間に矛盾がなく、`make check`がPASSする。
 
 ## 完成の定義
 
 - [ ] 受け入れ条件を満たしている。
-- [ ] 必要な実装、テスト、文書が完成している。
+- [ ] 承認済みPLANとQA計画に従って文書が更新されている。
 - [ ] 独立レビューと`make check`がPASSしている。
-- [ ] マージ後QAが完了している。
-- [ ] HANDOVERがWiki Agentに取り込みされている。
+- [ ] mainへの`--no-ff`マージ後にQAが完了している。
+- [ ] HANDOVERがWiki Agentに取り込まれている。
 
 ## 関連コンテキスト
 
-### 意味 Wiki
-
-- [Codex Agent Model Routing](../../wiki/semantic/schemas/codex-agent-model-routing.md): Explorer の固定model、read-only、一質問、深さ・thread上限、no-child、固定prompt・負例試験・launcher traceによる検証を本Taskの非交渉条件とする。製品側TOMLを正本とする決定的adapterとdigest検査、lock所有launcherだけが持つcommit権限も適用する。
-- [Development Task](../../wiki/semantic/concepts/development-task.md): 本Taskを、目的、受け入れ条件、証跡を持つ運用上の開発単位として扱う。
-- [Task Delivery](../../wiki/semantic/scripts/task-delivery.md): PLAN承認、実装前QA計画、独立レビュー、mainへのマージ、マージ後QAの進行順を維持する。
-- [Work Repository Boundary](../../wiki/semantic/schemas/work-repository-boundary.md): 製品側の正規設定と運用側の生成 adapter、共通ロック、Agent所有範囲を維持する。
-- [QA FAIL Attribution](../../wiki/semantic/case-patterns/qa-fail-attribution.md): sandbox、state DB、app-server 初期化による失敗を環境・要件・実装・QA計画に分類する。必要な権限とlock状態での再実行結果と分けて記録し、自動的に DEV 不具合としない。
-
-### 判断
-
-- [DECISION-0001 PLAN DEV QA Process](../../wiki/decisions/DECISION-0001-plan-dev-qa-process.md): PLAN Agent に調査手段を追加しても、main Agentの承認、DEV・Reviewer・QAの独立性、マージ判断を委譲しない。
-- [DECISION-0002 Work Repository and Wiki Ownership](../../wiki/decisions/DECISION-0002-work-repository-and-wiki-ownership.md): 運用証跡の正本、main一本運用、共通ロック、Wiki所有権を変更しない。
-- [DECISION-0003 Codex Agent Model Routing](../../wiki/decisions/DECISION-0003-codex-agent-model-routing.md): Explorer の固定routing、bounded read-only 調査、深さ2、2 thread、no-child、trace検証を維持する。同 Decision が明記する明示launcherを、PLAN内のMultiAgentV2明示role起動でどのように満たすかは未決であり、暗黙に置換しない。
-
-### 適用しなかった重要な判断
-
-- なし。DECISION-0001〜0003の権限・進行・routing境界をすべて適用する。DECISION-0003の明示launcherをMultiAgentV2の明示role起動で代替できるかは未決の設計論点であり、判断を不適用とみなして先行しない。置換が必要なら、既存Decisionを暗黙に上書きせず、HANDOVERでWiki Agentへの判断候補として引き渡す。
+- openai/codex Issue #32705: MultiAgentV2のrouting入力、fork既定値、role選択、sandbox継承の既知問題
+- [Codex Agent Model Routing](../../wiki/semantic/schemas/codex-agent-model-routing.md)
+- [Task Delivery](../../wiki/semantic/scripts/task-delivery.md)
+- [Work Repository Boundary](../../wiki/semantic/schemas/work-repository-boundary.md)
+- [DECISION-0001 PLAN DEV QA Process](../../wiki/decisions/DECISION-0001-plan-dev-qa-process.md)
+- [DECISION-0002 Work Repository and Wiki Ownership](../../wiki/decisions/DECISION-0002-work-repository-and-wiki-ownership.md)
+- [DECISION-0003 Codex Agent Model Routing](../../wiki/decisions/DECISION-0003-codex-agent-model-routing.md)
