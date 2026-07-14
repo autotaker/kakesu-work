@@ -43,7 +43,7 @@ tasks:
     title: MultiAgentV2の内部Spawn Agentを標準起動経路にする
     type: chore
     epic: EPIC-001
-    status: qa
+    status: done
     priority: P1
     estimate_points: 2
     task_dir: tasks/TASK-0003-multi-agent-v2-nested-explorer

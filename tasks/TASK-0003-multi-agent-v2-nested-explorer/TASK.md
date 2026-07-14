@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0003"
 title: "MultiAgentV2の内部Spawn Agentを標準起動経路にする"
-status: qa
+status: done
 created_at: "2026-07-14"
 ---
 
