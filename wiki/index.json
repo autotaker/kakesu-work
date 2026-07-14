@@ -26,9 +26,19 @@
       "kind": "decision",
       "title": "Codex Agent Model Routing",
       "decision_id": "DECISION-0003",
-      "status": "accepted",
+      "status": "superseded",
       "links": [
         "../../tasks/TASK-0002-codex-agent-model-routing/TASK.md"
+      ]
+    },
+    {
+      "path": "wiki/decisions/DECISION-0004-multiagentv2-role-startup.md",
+      "kind": "decision",
+      "title": "MultiAgentV2 Role Startup",
+      "decision_id": "DECISION-0004",
+      "status": "accepted",
+      "links": [
+        "../../tasks/TASK-0003-multi-agent-v2-nested-explorer/HANDOVER.md"
       ]
     },
     {
@@ -56,8 +66,9 @@
       "title": "Codex Agent Model Routing",
       "links": [
         "../case-patterns/qa-fail-attribution.md",
-        "../../decisions/DECISION-0003-codex-agent-model-routing.md",
+        "../../decisions/DECISION-0004-multiagentv2-role-startup.md",
         "../../../tasks/TASK-0002-codex-agent-model-routing/HANDOVER.md",
+        "../../../tasks/TASK-0003-multi-agent-v2-nested-explorer/HANDOVER.md",
         "../../../tasks/TASK-0004-remove-redundant-agent-depth-limits/HANDOVER.md"
       ]
     },

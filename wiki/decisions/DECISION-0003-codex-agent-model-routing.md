@@ -2,7 +2,7 @@
 kind: decision
 decision_id: DECISION-0003
 title: Codex Agent Model Routing
-status: accepted
+status: superseded
 decided_at: 2026-07-14
 supersedes: []
 ---

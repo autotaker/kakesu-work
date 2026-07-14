@@ -15,9 +15,13 @@ title: Codex Agent Model Routing
 
 固定roleと異なるmodel、profile、effortのoverrideは起動前に拒否する。互換overrideはfixed roleを経由しない、明示されたlegacy経路に限る。
 
+起動時の`task_name`は追跡用の識別子であり、roleを選択しない。role選択は`agent_type`で行う。内部`agents.spawn_agent`を標準経路とし、`agent_type`の欠落、内部spawnが利用不能、または起動後に観測したmodel/effortが契約と不一致の場合だけ、停止してrequested値・observed値・ランタイム条件を証跡化したうえで限定的なfallbackを判断する。不一致の子成果を採用して処理を継続してはならない。
+
+呼出元と異なるroleを起動するときは`fork_turns="none"`を明示する。既定値`all`は呼出元の設定を継承し、名前付きroleによる契約適用を拒否し得るためである。PLAN→DEV→REVIEW→QAの順次gateとDEVからReviewer・QAを分離する境界は、この起動経路の選択とは別の不変条件として維持する。
+
 ## Explorer境界
 
-Explorerは明示launcherから、一回につき一つのboundedなread-only質問だけを受ける。rootから直接、またはroot→role→Explorerで起動できるが、最大depthは2、最大threadsは2である。編集、Git操作、scope拡大、再委譲を行わず、簡潔な根拠要約とfile referenceだけを返す。read-only sandboxだけで完結せず、固定prompt、closed stdin、no-child設定、負例試験、launcher traceでこの境界を検証する。
+Explorerは明示launcherから、一回につき一つのboundedなread-only質問だけを受ける。rootから直接、またはroot→role→Explorerで起動できるが、最大depthは2、最大threadsは2である。編集、Git操作、scope拡大、再委譲を行わず、簡潔な根拠要約とfile referenceだけを返す。read-only sandboxだけで完結せず、固定prompt、closed stdin、no-child設定、負例試験、launcher traceでこの境界を検証する。設定ファイルの`sandbox_mode`は意図する契約を表すが、実効sandboxがランタイムで観測されるまでは保証済みと扱わない。
 
 通常roleのchild到達可能性はproject-scoped設定だけを正本とし、role-localの`max_depth` keyは存在してはならない。一方Explorerはrole-local `max_depth = 0`と`max_threads = 1`を明示的に必須とする。同じdepth keyを一律に扱わず、通常roleの重複key再導入とExplorerのno-child緩和を別の構造検査・エラー理由で拒否する。通常roleのthread policyもproject上限との一致を検査する。
 
@@ -25,7 +29,7 @@ Explorerは明示launcherから、一回につき一つのboundedなread-only質
 
 work repositoryのadapterは正本から決定的に生成し、digest付き完全一致検査でdriftを拒否する。global設定、未文書include、model alias、Agentの自己申告を入力にしない。canonical parserをdigest計算、adapter render、adapter checkの共通入口とし、構造driftはadapterの生成・同期より前にfail closedする。これによりdriftした正本からadapterを更新しない。
 
-専用sync launcherの親が共通lockを全工程で保持し、生成対象、scope検査、stage、shared hook、commit、post-checkを所有する。子Agentとgeneric governance経路はadapter同期やcommit authorityを持たない。child failure、scope・stage・commit drift、hook failure、pre/post-check failureでは、開始前のHEAD、index、worktree、untracked状態へrollbackし、`commit:null`を記録する。no-opとCHECKは書込みもcommitもしない。
+専用sync launcherの親が共通lockを全工程で保持し、生成対象、scope検査、stage、shared hook、commit、post-checkを所有する。子Agentとgeneric governance経路はadapter同期やcommit authorityを持たない。子Agentはstage、commit、merge、`.git`書込みを行わない。child failure、scope・stage・commit drift、hook failure、pre/post-check failureでは、開始前のHEAD、index、worktree、untracked状態へrollbackし、`commit:null`を記録する。no-opとCHECKは書込みもcommitもしない。
 
 ## 検証と環境帰属
 
@@ -38,6 +42,7 @@ project上限だけを照合する試験では通常roleへの重複key再導入
 ## 関連
 
 - [QA FAIL attribution](../case-patterns/qa-fail-attribution.md)
-- [Codex agent model routing](../../decisions/DECISION-0003-codex-agent-model-routing.md)
+- [MultiAgentV2 role startup](../../decisions/DECISION-0004-multiagentv2-role-startup.md)
 - [TASK-0002 HANDOVER](../../../tasks/TASK-0002-codex-agent-model-routing/HANDOVER.md)
+- [TASK-0003 HANDOVER](../../../tasks/TASK-0003-multi-agent-v2-nested-explorer/HANDOVER.md)
 - [TASK-0004 HANDOVER](../../../tasks/TASK-0004-remove-redundant-agent-depth-limits/HANDOVER.md)
