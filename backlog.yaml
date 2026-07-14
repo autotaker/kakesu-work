@@ -95,159 +95,283 @@ tasks:
     title: MVP通信契約とローカル設定を確立する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 5
     task_dir: tasks/TASK-0006-mvp-wire-contracts
     depends_on: []
-    assignees: {}
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-luna-xhigh
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0007
     title: Control Planeの永続Taskストアとライフサイクルを実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 8
     task_dir: tasks/TASK-0007-control-durable-task-store
-    depends_on: []
-    assignees: {}
+    depends_on:
+      - TASK-0006
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0008
     title: Plane間の永続メッセージ配送とサービス監督を実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 8
     task_dir: tasks/TASK-0008-cross-plane-transport
-    depends_on: []
-    assignees: {}
+    depends_on:
+      - TASK-0006
+      - TASK-0007
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0009
     title: Linux P0 Workspace隔離とプロセス実行を実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 8
     task_dir: tasks/TASK-0009-linux-workspace-isolation
-    depends_on: []
-    assignees: {}
+    depends_on:
+      - TASK-0006
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0010
     title: ルートTask CLIとOwner・Workspace割当を実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 5
     task_dir: tasks/TASK-0010-root-task-cli
-    depends_on: []
-    assignees: {}
+    depends_on:
+      - TASK-0007
+      - TASK-0009
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-luna-xhigh
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0011
     title: Work Agent Responses APIランタイムを実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 8
     task_dir: tasks/TASK-0011-work-agent-runtime
-    depends_on: []
-    assignees: {}
+    depends_on:
+      - TASK-0007
+      - TASK-0008
+      - TASK-0010
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0012
     title: terminalツールと永続非同期操作を実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 8
     task_dir: tasks/TASK-0012-terminal-async-operations
-    depends_on: []
-    assignees: {}
+    depends_on:
+      - TASK-0009
+      - TASK-0011
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0013
     title: Mailbox待機とTask再開を実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 8
     task_dir: tasks/TASK-0013-mailbox-task-resume
-    depends_on: []
-    assignees: {}
+    depends_on:
+      - TASK-0007
+      - TASK-0011
+      - TASK-0012
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0014
     title: 子Task委譲と直接キャンセルを実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 8
     task_dir: tasks/TASK-0014-child-task-delegation
-    depends_on: []
-    assignees: {}
+    depends_on:
+      - TASK-0007
+      - TASK-0010
+      - TASK-0011
+      - TASK-0013
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0015
     title: 完了候補と独立Acceptance Reviewを実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 8
     task_dir: tasks/TASK-0015-completion-review
-    depends_on: []
-    assignees: {}
+    depends_on:
+      - TASK-0007
+      - TASK-0011
+      - TASK-0013
+      - TASK-0014
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0016
     title: Governance永続ポリシーストアとfail-closed判断を実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 8
     task_dir: tasks/TASK-0016-governance-policy-store
-    depends_on: []
-    assignees: {}
+    depends_on:
+      - TASK-0006
+      - TASK-0008
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0017
     title: Linux外向き通信強制ブリッジを実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 8
     task_dir: tasks/TASK-0017-linux-egress-enforcement
-    depends_on: []
-    assignees: {}
+    depends_on:
+      - TASK-0009
+      - TASK-0016
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0018
     title: 一時許可申請とone-use有効化を実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 8
     task_dir: tasks/TASK-0018-grant-activation
-    depends_on: []
-    assignees: {}
+    depends_on:
+      - TASK-0011
+      - TASK-0013
+      - TASK-0016
+      - TASK-0017
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0019
     title: Taskエピソード取込と編纂を実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 8
     task_dir: tasks/TASK-0019-memory-episode
-    depends_on: []
-    assignees: {}
+    depends_on:
+      - TASK-0006
+      - TASK-0008
+      - TASK-0015
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0020
     title: 意味Wiki照会とWork Agent強制注入を実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 8
     task_dir: tasks/TASK-0020-wiki-context-injection
-    depends_on: []
-    assignees: {}
+    depends_on:
+      - TASK-0008
+      - TASK-0010
+      - TASK-0011
+      - TASK-0014
+      - TASK-0019
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0021
     title: Linux-only MVP E2Eと再起動復旧を完成する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 5
     task_dir: tasks/TASK-0021-mvp-e2e-release
-    depends_on: []
-    assignees: {}
+    depends_on:
+      - TASK-0012
+      - TASK-0013
+      - TASK-0014
+      - TASK-0015
+      - TASK-0018
+      - TASK-0020
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium

@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0020"
 title: "意味Wiki照会とWork Agent強制注入を実装する"
-status: draft
+status: ready
 created_at: "2026-07-15"
 ---
 
@@ -9,29 +9,35 @@ created_at: "2026-07-15"
 
 ## 目的
 
-<!-- 達成したい結果を記載する。 -->
+Harnessが`task_start`、`subtask_start`、`resume`、`context_gap`でWiki AgentにMemoryContextを要求し、検証済みの組織記憶をWork Agentの明示的な強制区画へ注入する。
 
 ## 背景
 
-<!-- なぜ今必要か、現在の問題、関連する制約を記載する。 -->
+TASK-0019が確定episodeを供給しても、Work Agentの自由検索では記憶の欠落・古い反例の無秩序な利用・予算逸脱を防げない。Task/contract stateを優先するcontext builderが必要である。依存: TASK-0008、0010、0011、0014、0019。
 
 ## スコープ
 
 ### 対象
 
-- TODO
+- MemoryContext request/response/job、phase別の強制query、Wiki Agent query mode、source ref/memory version/contract version検証。
+- context builderによる`[AGENT CONTRACT]`、`[CURRENT TASK STATE]`、`[ORGANIZATIONAL MEMORY]`、`[MEMORY USAGE RULE]`区画注入。
+- `report_context_gap`の非同期再問合せとmailbox結果、token budget/timeout/fallback。
 
 ### 対象外
 
-- TODO
+- Wiki maintenanceの高度な自動patch・自動publish、semantic schema変更、Work AgentのWiki/episode直接read。
+- task_start以外の各responseごとの検索、Memoryの新しいepisode編纂。
 
 ## 受け入れ条件
 
-- [ ] TODO
+- [ ] task/subtask開始、resume、context gapが一意なphase requestを作り、同じtriggerの再配送は同じjob/resultへ収束する。
+- [ ] Wiki queryはTask contractを入力にsemantic/episode/unresolved/source refsとmemory versionを返し、Harnessがschema/version/ref/token budgetを検証する。
+- [ ] Work AgentはWiki filesystem/storeを直接読めず、開始/resume contextには契約・現Task state・組織記憶・usage ruleの4区画が常に存在する。
+- [ ] context gapは非同期mailboxで返り、Wiki失敗/timeoutはTask stateを壊さず空の明示degraded contextまたは再試行へ収束する。
 
 ## 検討すべき設計観点
 
-- TODO
+- 記憶はinstructionでなく区画化された参考情報で、現行contractが常に優先する。queryとmaintenanceを別job/権限に分ける。
 
 ## 完成の定義
 
@@ -45,12 +51,10 @@ created_at: "2026-07-15"
 
 ### 意味 Wiki
 
-- 未調査
-
+- docs/04 §7、docs/05 §§2,6,9、docs/06 §§2,12、docs/08 §§7-13,19、docs/11 §2、docs/12 §6。依存: TASK-0008、0010、0011、0014、0019。
 ### 判断
 
-- 未調査
-
+- Harnessがphaseを強制し、Memoryを明示区画に注入してcontract優先を固定する。
 ### 適用しなかった重要な判断
 
-- なし
+- 高度な自動patch/publish、自由検索、毎response query、Work AgentによるWiki直接アクセスを採用しない。
