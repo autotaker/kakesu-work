@@ -5,7 +5,7 @@ qa_agent: "qa-agent-terra-medium"
 approved_by: "main-agent-sol-high"
 approved_at: "2026-07-15"
 revision: 2
-implementation_reviewed_at: ""
+implementation_reviewed_at: "2026-07-15T07:53:05+10:00"
 expectation_changed: false
 expectation_change_approved_by: ""
 ---
@@ -51,9 +51,9 @@ expectation_change_approved_by: ""
 
 ## 実装後の再確認
 
-- [ ] 実装差分、REVIEW_RESULT、HANDOVER、merge済みmainを確認した。
-- [ ] QA-001〜QA-008の操作を現行実装へ対応付けた。
-- [ ] 期待結果または試験範囲の変更有無を確認した。
+- [x] 実装差分、REVIEW_RESULT、HANDOVER、merge済みmainを確認した。
+- [x] QA-001〜QA-008の操作を現行実装へ対応付けた。
+- [x] 期待結果または試験範囲の変更有無を確認した。
 - [ ] 期待結果または範囲を変更した場合、理由を改訂履歴へ記録しmain Agentの承認を得た。
 
 ## 改訂履歴
@@ -62,3 +62,4 @@ expectation_change_approved_by: ""
 |---:|---|---|---|---|
 | 1 | 2026-07-15 | | 初版placeholder | `pending` |
 | 2 | 2026-07-15 | qa-agent-terra-medium | TASK、承認済みPLAN、skill-creator規約、関連Wikiに基づく実装前QA計画 | `approved` |
+| 2 | 2026-07-15 | qa-agent-terra-medium | 実装後のmain照合、REVIEW_RESULT・HANDOVER確認、QA-001〜QA-008実施。期待結果・試験範囲は変更なし。 | `approved` |
