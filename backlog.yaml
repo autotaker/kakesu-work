@@ -39,3 +39,13 @@ tasks:
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
     merged_commit: a0661057b56461c1a0e0f01a326d487b094e5ea1
+  - id: TASK-0003
+    title: MultiAgentV2のPLANからExplorerを起動可能にする
+    type: chore
+    epic: EPIC-001
+    status: backlog
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0003-multi-agent-v2-nested-explorer
+    depends_on: []
+    assignees: {}
