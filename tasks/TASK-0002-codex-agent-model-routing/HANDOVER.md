@@ -1,78 +1,50 @@
 ---
 task_id: "TASK-0002"
-status: draft
-completed_at: ""
+status: complete
+completed_at: "2026-07-14T12:37:29+10:00"
 ---
 
 # TASK-0002 HANDOVER
 
-## 成果
+## 完了証跡
 
-- 製品Taskブランチのコミット`cfbf299`で、main / PLAN / DEV / QA / REVIEW / explorerのCodex model routingとreasoning effortをproject-scoped設定として実装した。
-- 承認済み`sol-high`で、DEV profile証跡、限定read-only explorer、両repository rootの設定整合、親所有commit、簡潔な起動証跡を実装・検証した。
-- 独立レビュー、製品`main`へのmerge、work adapterのgovernance commit、merge後QAは後続gateであり、本HANDOVERはDEV完了時点の`draft`である。
+- 独立Reviewerは製品commit `35fcaf209a65d17acd5d215298ff6175b0671572`をreviewし、最終判定は`pass`。
+- main Agentは同commitを正確な2-parent `--no-ff` merge `a0661057b56461c1a0e0f01a326d487b094e5ea1`として製品`main`へ統合した。
+- main-owned work adapterはcommit `27d04061f5f7858e59e61998d28c673d12e31b6c`、digest `5566794aaf22a890ef432e4e45b63a3a07e1bcb3eaf0cf620a47883c705c3445`で同期済み。
+- `QA_RESULT.md`はQA-001〜QA-013の最終`pass`。process tests 29/29、`UV_OFFLINE=1 make check`、`make work-check`、`make task-check TASK=TASK-0002`、adapter CHECK（`make work-config-sync ... CHECK=1`、`changed=false`）はすべてpassした。
 
-## 主要な変更
+## 最終routing contract
 
-- 製品`.codex/config.toml`と7個のrole TOMLを正規契約とし、main=`gpt-5.6-sol/high`、PLAN/QA/REVIEW=`gpt-5.6-terra/medium`、DEV=`gpt-5.6-luna/xhigh`または`gpt-5.6-sol/high`、explorer=`gpt-5.6-luna/medium/read-only`を明示した。
-- `agent-routing.mjs`に固定role override、DEVリスク選定とpromotion、最大depth/thread、bounded question、adapter digest/drift、起動証跡、子Agent結果のfail-closed検査を集約した。
-- work / Wiki launcherは子stdinをclosedにし、子Agentのstage・commit・scope外変更を拒否する。子成功後だけ、共通lockを持つ親がscope検査、stage、共有hook、検証、commit後検査を行う。
-- `make work-config-sync`で製品側の正規契約からwork側adapterを決定的に生成・検査できるようにした。adapterの更新とcommitは製品merge後にmain Agentが別のgovernance操作として行う。
-- role、DEV選定、explorer、adapter drift、redaction、親所有commitのテストを追加し、Agent責務と開発プロセス文書、用語集を同期した。
+- 製品repositoryのproject-scoped TOMLを正本とし、main=`gpt-5.6-sol/high`、PLAN/QA/REVIEW=`gpt-5.6-terra/medium`、DEV=`gpt-5.6-luna/xhigh`または`gpt-5.6-sol/high`、Explorer=`gpt-5.6-luna/medium/read-only`へ固定する。
+- Luna DEVは明確・局所的・機械検証可能で高risk signalが一つもない場合だけ許可する。横断性、契約、Schema、security、concurrency、migration、不明点のいずれかがあればSolへ倒し、promotionは履歴とmain承認を要し、降格は許可しない。
+- fixed roleと異なるmodel/profile/effort overrideは起動前にfail closedとする。互換overrideはroleを経由しない明示legacy経路だけに限定する。
+- Explorerは明示launcherから一回につき一つのbounded read-only質問だけを受け、編集、Git操作、scope拡大、再委譲を行わない。root→role→Explorerまでの最大depth 2、最大threads 2とし、簡潔な根拠要約とfile referenceだけを返す。
+- work repositoryのadapterは正本から決定的に生成し、digestと完全一致検査でdriftを拒否する。global設定、未文書include、model alias、Agentの自己申告には依存しない。
 
-## 検証結果
+## 親所有sync / rollback
 
-- `node --test scripts/task/agent-routing.test.mjs scripts/task/development-process.test.mjs`: 16件pass、0件fail。
-- 製品Task worktreeの`make check`: pass。Go、Python、Rust、tabletop、用語、process test、lint、format、Clippy、文書lint、`git diff --check`を含む全検査が成功した。
-- 製品Task worktreeからの`make work-check WORK_ROOT=/Users/autotaker/git/agent-harness-work`: pass。1 Epic、2 Task、7 Wiki pageを検証した。
-- 製品`main`からの`make -C ../agent-harness work-check`は、merge前の旧validatorがwork側の割当symlinkとGit登録先の実体pathを文字列比較するため、実在するTASK-0002 worktreeを未登録と誤判定してFAILした。本Task実装は`realpath`比較へ変更しており、同じwork repositoryの検査がpassすることを確認した。
-- 検査後の製品Task worktree: clean。検証対象コミットは`cfbf299`。
-- `REVIEW_RESULT.md`と`QA_RESULT.md`はpendingであり、独立レビューおよびQA-001〜QA-013のmerge後受け入れ判定は未実施である。
+- 専用`work-config-sync` launcher親が共通lockを全工程で保持し、`.codex/config.toml`だけを生成・scope検査・stageし、共有hook、commit、post-checkまで所有する。子Agentとgeneric governance経路へadapter同期やcommit authorityを渡さない。
+- child failure、scope/stage/commit drift、hook failure、pre/post-check failureはすべてfail closedとし、開始前HEAD、index、worktree、untracked状態へrollbackして`commit:null`を記録する。no-opとCHECKは書込みもcommitもしない。
+- launcher childのstdinは必ずcloseし、子のexit 0だけでcommitせず、親がscope、HEAD、stage、hook、検証結果を確認する。
 
-## 判断
+## 再利用可能な知識
 
-- DEV profileは承認済み`sol-high`を使用した。launcher、sandbox/commit所有権、兄弟2 repository root、設定契約、起動証跡を横断する高リスク変更であり、Luna条件を満たさない。
-- role契約の正本は製品repositoryに一元化し、work repositoryにはmain-ownedの生成adapterだけを置く。手動複写やglobal設定、未文書include、model aliasには依存しない。
-- fixed roleの不一致overrideは起動前FAILとし、同一値の冗長指定だけを許可する。既存override互換は固定roleを経由しないWiki legacy経路に限定する。
-- 子AgentへGit権限を渡さず、lockとcommit権限をlauncher親へ集約する。role Agent、explorerへ承認・merge・commit権限を移さない。
+- role routingは正規TOML、launcher入力検査、決定的な正負テスト、簡潔なlauncher traceを組み合わせると監査できる。Explorerについては自己申告ではなくlauncher traceを信頼する。
+- 複数repository rootで設定を共有するときは、一方を正本、他方をmain-owned生成adapterとし、digest付きdrift検査をfail closedにすると所有境界を保てる。
+- 書き込み子とlock所有親を分離し、親だけがscope検査、hook付きcommit、再検証、rollbackを行うことでAgent責務とcommit authorityが一致する。
+- read-only sandboxだけではExplorerの境界は十分でない。固定prompt、明示launcher、closed stdin、no-child設定、負例テストを重ねる。
 
-## 既知の制約と未解決事項
+## 初回運用の教訓
 
-- 独立Reviewerの判定、製品`main`への`--no-ff` merge、main-owned work adapterの生成・governance commit、merge済みmainでのQA-001〜QA-013は未完了である。
-- work adapterは製品側の正規設定をmergeした後でなければ同期しない。drift検査とwork側governance commitが完了するまで、merge後QAへ進めない。
-- merge前の製品`main`にある旧`work-check`は、worktree symlinkのpath差を吸収できない。本TaskをmergeするまではTASK-0002の現行Task worktreeから検査する必要がある。
-- 本DEV検証は決定的な設定・fixtureを対象とし、live modelの応答品質やサービス可用性を受け入れ判定に含めていない。
+- Close child stdin: 子プロセスのstdinをcloseしないと、入力待ちでlauncherが停止し得る。
+- Trust launcher trace rather than self-report for Explorer: model、sandbox、質問数、commit不在はAgentの自己報告ではなくtraceで判定する。
+- An outer evidence-writer lock prevents nested lock-owning checks. そのcheckは外側lock解放後に適切な親実行contextで行う。
+- QA product build outputs require a suitable execution context with write access to their output paths. 今回の制約はmain再実行で解消し、製品acceptance failureではない。
+- Generic work-agent prompts currently reread too much context and consumed excessive tokens. Prompt/context minimization is a follow-up improvement rather than a product acceptance failure.
 
-## 運用上の注意
-
-- role Agentは役割別launcherから起動し、固定契約と異なる`PROFILE` / `MODEL` / `EFFORT`を指定しない。
-- explorerへの委譲は一回につき一件の限定されたrepository調査だけとし、短い根拠要約とファイル参照だけを受け取る。編集、Git操作、scope拡大、再委譲を許可しない。
-- 製品merge後、main Agentは共通lock下で`make work-config-sync`を実行し、生成された`.codex/config.toml`だけを別のgovernance commitとして記録する。その後に`make work-config-sync CHECK=1`とmerge後QAを行う。
-- launcher childは編集と検証だけを行う。stage、commit、merge、`.git`書き込みは行わず、親のscope・hook・検証が失敗した場合は`commit:null`として終了する。
-
-## Wikiへ引き渡す知識
-
-### 再利用可能な知識
-
-- role別model routingは、正規TOML、launcherの入力検査、決定的テストを組み合わせると、利用者のglobal設定や自己申告に依存せず監査できる。
-- 複数repository rootで同じproject設定を使う場合、正本を一方へ固定し、他方をdigest付き生成adapterにしてdriftをfail closedにすると所有境界を維持できる。
-- DEVの低コストprofileは全低リスク条件を満たす場合だけ許可し、高リスクsignal、不明、横断性が一つでもあれば高能力profileへ倒す。promotionは履歴とmain承認を必要とし、降格は許可しない。
-- 書き込み子Agentとlock所有launcher親を分離し、親だけがscope検査、stage、hook、commit、再検証を行うと、Agent責務とcommit authorityを一致させられる。
-
-### 反例・失敗・注意点
-
-- role値を複数launcherや両repositoryへ手動複写するとdriftする。正規契約から生成し、完全一致を検査する。
-- read-only sandboxだけではexplorerのscopeと再委譲を説明し切れない。設定、固定指示、launcher検査、負例テストを重ねる。
-- 子Agentのexit 0だけでcommitしてはいけない。HEAD、stage、変更scope、hook、変更前後の検証を親が確認する。
-- `luna-xhigh`を単なる既定値にすると、契約、Schema、security、concurrency、migration、不明リスクを過小評価する。
-
-### 更新候補ページ
+## Wiki取り込み候補
 
 - `wiki/semantic/scripts/task-delivery.md`
 - `wiki/semantic/schemas/work-repository-boundary.md`
 - `wiki/semantic/schemas/codex-agent-model-routing.md`（新規候補）
 - `wiki/decisions/DECISION-0003-codex-agent-model-routing.md`（新規候補）
-
-## ブートストラップ例外
-
-- routing実装自身を起動するTASK-0002に限り、承認済み`sol-high`を一時的な明示profileとしてlauncher親から指定した。これは自己ホスト開始時の起動方法だけの例外であり、role分離、Task worktree、親所有commit、独立レビュー、`--no-ff` merge、merge後QAのgateは緩和しない。
