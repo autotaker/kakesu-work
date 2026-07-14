@@ -5,7 +5,7 @@
 ## 書き込み規則
 
 1. 書き込み前に`main`であることとcleanな作業ツリーを確認する。
-2. `make -C ../agent-harness work-agent TASK=... ACTION=...`または役割別の専用コマンドからAgentを起動し、編集開始からコミット後検査まで`.locks/`の共通排他制御を保持する。直接並行編集しない。
+2. 子Agentは製品リポジトリの`AGENTS.md`に従い、内部`agents.spawn_agent`を標準経路として`agent_type`でロールを選び、異種ロールでは`fork_turns="none"`を明示して一体ずつ起動する。親は編集開始前からコミット後検査まで`.locks/`の共通排他制御を保持し、直接並行編集しない。`agent_type`欠落、内部spawn利用不能、またはmodel/effort不一致を停止・証跡化した場合だけ、`make -C ../agent-harness work-agent TASK=... ACTION=...`または役割別の専用コマンドをfallbackとして使う。
 3. 一度のコミットへ複数Taskまたは複数フェーズの無関係な変更を混ぜない。
 4. 各Agentは所有する証跡だけを変更する。
 5. `backlog.yaml`のフェーズ変更、例外、FAILの差し戻し先はmain Agentが決定する。
