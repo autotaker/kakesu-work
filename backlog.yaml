@@ -75,7 +75,7 @@ tasks:
     title: main AgentのTask実行効率化スキルを整備する
     type: chore
     epic: EPIC-001
-    status: qa
+    status: done
     priority: P1
     estimate_points: 1
     task_dir: tasks/TASK-0005-main-agent-efficient-delivery
