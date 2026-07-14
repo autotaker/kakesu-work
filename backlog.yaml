@@ -55,7 +55,7 @@ tasks:
     title: 通常Agentの重複した深度上限を削除しExplorerの再委譲禁止を維持する
     type: chore
     epic: EPIC-001
-    status: qa
+    status: done
     priority: P1
     estimate_points: 3
     task_dir: tasks/TASK-0004-remove-redundant-agent-depth-limits
