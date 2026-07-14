@@ -66,6 +66,4 @@ tasks:
       dev: dev-agent-sol-high
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
-    branch: task/TASK-0004-remove-redundant-agent-depth-limits
-    worktree: worktrees/TASK-0004-remove-redundant-agent-depth-limits
     merged_commit: 514facbb461927c0e5fc376a56ab8f975c054940
