@@ -211,3 +211,13 @@ tasks:
     task_dir: tasks/TASK-0017-linux-egress-enforcement
     depends_on: []
     assignees: {}
+  - id: TASK-0018
+    title: 一時許可申請とone-use有効化を実装する
+    type: feature
+    epic: EPIC-002
+    status: backlog
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0018-grant-activation
+    depends_on: []
+    assignees: {}
