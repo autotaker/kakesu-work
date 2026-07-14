@@ -38,6 +38,4 @@ tasks:
       dev: dev-agent-sol-high
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
-    branch: task/TASK-0002-codex-agent-model-routing
-    worktree: worktrees/TASK-0002-codex-agent-model-routing
     merged_commit: a0661057b56461c1a0e0f01a326d487b094e5ea1
