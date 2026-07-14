@@ -51,3 +51,13 @@ tasks:
     assignees:
       main: main-agent-sol-high
       planner: planner-agent-terra-medium
+  - id: TASK-0004
+    title: 通常Agentの重複した深度上限を削除しExplorerの再委譲禁止を維持する
+    type: chore
+    epic: EPIC-001
+    status: backlog
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0004-remove-redundant-agent-depth-limits
+    depends_on: []
+    assignees: {}
