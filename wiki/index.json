@@ -51,6 +51,15 @@
       ]
     },
     {
+      "path": "wiki/semantic/case-patterns/schema-artifact-digest-drift.md",
+      "kind": "case-pattern",
+      "title": "Schema Artifact Digest Drift",
+      "links": [
+        "../schemas/mvp-wire-contracts.md",
+        "../../../tasks/TASK-0006-mvp-wire-contracts/HANDOVER.md"
+      ]
+    },
+    {
       "path": "wiki/semantic/concepts/development-task.md",
       "kind": "concept",
       "title": "Development Task",
@@ -70,6 +79,15 @@
         "../../../tasks/TASK-0002-codex-agent-model-routing/HANDOVER.md",
         "../../../tasks/TASK-0003-multi-agent-v2-nested-explorer/HANDOVER.md",
         "../../../tasks/TASK-0004-remove-redundant-agent-depth-limits/HANDOVER.md"
+      ]
+    },
+    {
+      "path": "wiki/semantic/schemas/mvp-wire-contracts.md",
+      "kind": "schema",
+      "title": "MVP Wire Contracts",
+      "links": [
+        "../case-patterns/schema-artifact-digest-drift.md",
+        "../../../tasks/TASK-0006-mvp-wire-contracts/HANDOVER.md"
       ]
     },
     {
