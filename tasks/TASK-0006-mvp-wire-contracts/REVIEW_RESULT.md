@@ -2,7 +2,7 @@
 task_id: "TASK-0006"
 status: completed
 reviewer_agent: "reviewer-agent-terra-medium"
-reviewed_commit: "3e28420"
+reviewed_commit: "3e2842052e8229cfb3eef023124d651bca4cbd4d"
 decision: pass
 make_check: pass
 reviewed_at: "2026-07-18T12:38:12+09:00"
@@ -13,7 +13,7 @@ reviewed_at: "2026-07-18T12:38:12+09:00"
 ## 対象
 
 - ブランチ: `task/TASK-0006-mvp-wire-contracts`
-- コミット: `3e28420` (`feat: establish MVP wire contracts`、親 `9f66c8943e1b1060339b1c58ae2ca0acf8ac5d32`)
+- コミット: `3e2842052e8229cfb3eef023124d651bca4cbd4d` (`feat: establish MVP wire contracts`、親 `9f66c8943e1b1060339b1c58ae2ca0acf8ac5d32`)
 - Task / PLAN / QA PLAN: 承認済みの `TASK.md`、`PLAN.md`、`QA_PLAN.md` を独立に照合した。
 
 ## 実行した検査

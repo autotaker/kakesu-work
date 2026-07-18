@@ -5,7 +5,7 @@ qa_agent: "qa-agent-terra-medium"
 approved_by: "main-agent-sol-high"
 approved_at: "2026-07-18T12:19:27+09:00"
 revision: 1
-implementation_reviewed_at: ""
+implementation_reviewed_at: "2026-07-18T12:40:01+09:00"
 expectation_changed: false
 expectation_change_approved_by: ""
 ---
@@ -65,12 +65,12 @@ expectation_change_approved_by: ""
 
 ## 実装後の再確認
 
-- [ ] マージ済み`main`の実装差分、commit、`REVIEW_RESULT.md`を確認した。
-- [ ] shared fixture 5件、explicit null/欠落、UTC `Z`/offset、catalog ID/revision/raw-byte digest、one-byte temporary catalog mutationを実装に即した操作で確認した。
-- [ ] 3 component、root-relative catalog、相対・非重複endpointとconfig負例を3言語で確認した。
-- [ ] Go/Python/Rust focused testを実行し、matrix全15判定を記録した。
-- [ ] `make check`を一度実行し、結果を記録した。
-- [ ] 期待結果または試験範囲の変更有無を確認した。変更する場合は理由を改訂履歴に記録し、main Agentの承認を得た。
+- [x] マージ済み`main`の実装差分、commit、`REVIEW_RESULT.md`を確認した。
+- [x] shared fixture 5件、explicit null/欠落、UTC `Z`/offset、catalog ID/revision/raw-byte digest、one-byte temporary catalog mutationを実装に即した操作で確認した。
+- [x] 3 component、root-relative catalog、相対・非重複endpointとconfig負例を3言語で確認した。
+- [x] Go/Python/Rust focused testを実行し、matrix全15判定を記録した。
+- [x] `make check`を一度実行し、結果を記録した。
+- [x] 期待結果または試験範囲の変更有無を確認した。変更する場合は理由を改訂履歴に記録し、main Agentの承認を得た。
 
 ## 改訂履歴
 

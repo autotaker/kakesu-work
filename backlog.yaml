@@ -95,7 +95,7 @@ tasks:
     title: MVP通信契約とローカル設定を確立する
     type: feature
     epic: EPIC-002
-    status: dev
+    status: qa
     priority: P1
     estimate_points: 5
     task_dir: tasks/TASK-0006-mvp-wire-contracts
@@ -108,6 +108,7 @@ tasks:
       qa: qa-agent-terra-medium
     branch: task/TASK-0006-mvp-wire-contracts
     worktree: worktrees/TASK-0006-mvp-wire-contracts
+    merged_commit: 2a80256510901acbb063f12396fde152f5348de7
   - id: TASK-0007
     title: Control Planeの永続Taskストアとライフサイクルを実装する
     type: feature
