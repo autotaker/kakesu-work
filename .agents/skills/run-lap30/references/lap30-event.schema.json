@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://autotaker.dev/schemas/lap30-event-v1.schema.json",
+  "title": "Lap30 event v1",
+  "description": "One append-only event in a Lap30 JSONL log.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "ts",
+    "sequence",
+    "lap_id",
+    "task_id",
+    "goal",
+    "event",
+    "stage",
+    "attempt",
+    "actor_role",
+    "status",
+    "elapsed_ms",
+    "active_ms",
+    "wait_ms",
+    "retries",
+    "classification",
+    "planned_production_sloc",
+    "actual_production_sloc",
+    "test_loc",
+    "branch",
+    "commit",
+    "pr",
+    "merge_commit",
+    "summary",
+    "next_action",
+    "annotations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "ts": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "lap_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "task_id": {
+      "type": "string",
+      "pattern": "^TASK-[0-9]{4}$"
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "event": {
+      "enum": [
+        "lap_started",
+        "stage_started",
+        "stage_finished",
+        "checkpoint",
+        "failure",
+        "lap_stopped",
+        "lap_completed",
+        "correction"
+      ]
+    },
+    "stage": {
+      "enum": [
+        "lap",
+        "preflight",
+        "plan",
+        "qa_plan",
+        "dev",
+        "review",
+        "qa",
+        "git",
+        "remeasurement"
+      ]
+    },
+    "attempt": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "actor_role": {
+      "enum": [
+        "main",
+        "planner",
+        "dev",
+        "reviewer",
+        "qa",
+        "system"
+      ]
+    },
+    "status": {
+      "enum": [
+        "started",
+        "pass",
+        "fail",
+        "stopped",
+        "not_started",
+        "blocked",
+        "completed"
+      ]
+    },
+    "elapsed_ms": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "active_ms": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "wait_ms": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "retries": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "classification": {
+      "type": ["string", "null"],
+      "enum": [
+        "implementation_defect",
+        "planning_defect",
+        "qa_plan_defect",
+        "requirement_gap",
+        "regression",
+        "environment_issue",
+        "permission_issue",
+        null
+      ]
+    },
+    "planned_production_sloc": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "actual_production_sloc": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "test_loc": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "branch": {
+      "type": ["string", "null"],
+      "maxLength": 512
+    },
+    "commit": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-fA-F]{7,64}$"
+    },
+    "pr": {
+      "type": ["integer", "null"],
+      "minimum": 1
+    },
+    "merge_commit": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-fA-F]{7,64}$"
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "next_action": {
+      "type": ["string", "null"],
+      "maxLength": 2000
+    },
+    "annotations": {
+      "type": "object",
+      "maxProperties": 16,
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]{0,63}$"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "maxLength": 1000
+      }
+    }
+  }
+}

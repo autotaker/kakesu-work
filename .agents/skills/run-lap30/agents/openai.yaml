@@ -1,0 +1,4 @@
+interface:
+  display_name: "Lap30"
+  short_description: "30分周回の開発実績を固定JSONLスキーマで継続記録"
+  default_prompt: "Use $run-lap30 to run this task in 30-minute laps and record structured evidence."
