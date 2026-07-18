@@ -106,8 +106,6 @@ tasks:
       dev: dev-agent-sol-high
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
-    branch: task/TASK-0006-mvp-wire-contracts
-    worktree: worktrees/TASK-0006-mvp-wire-contracts
     merged_commit: 2a80256510901acbb063f12396fde152f5348de7
   - id: TASK-0007
     title: Control Planeの永続Taskストアとライフサイクルを実装する
