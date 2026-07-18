@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0006"
 title: "MVP通信契約とローカル設定を確立する"
-status: ready
+status: complete
 created_at: "2026-07-15"
 ---
 

@@ -1,6 +1,6 @@
 ---
 task_id: "TASK-0006"
-status: completed
+status: complete
 completed_at: "2026-07-18T03:47:52Z"
 ---
 

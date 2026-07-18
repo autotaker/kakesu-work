@@ -95,7 +95,7 @@ tasks:
     title: MVP通信契約とローカル設定を確立する
     type: feature
     epic: EPIC-002
-    status: qa
+    status: done
     priority: P1
     estimate_points: 5
     task_dir: tasks/TASK-0006-mvp-wire-contracts

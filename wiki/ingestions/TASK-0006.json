@@ -1,8 +1,8 @@
 {
   "version": 1,
   "task_id": "TASK-0006",
-  "handover_sha256": "ba9d6fea0eb0332cd04b64b415177543b1f5f90cb068195d6d08c2fd3030315e",
-  "ingested_at": "2026-07-18T00:00:00+09:00",
+  "handover_sha256": "0d9a7e0a5f5fc7f7b298c0fa2dfd2d65022196a19558432b6e2e4552cd038c40",
+  "ingested_at": "2026-07-18T12:54:13+09:00",
   "updated_pages": [
     "wiki/semantic/schemas/mvp-wire-contracts.md",
     "wiki/semantic/case-patterns/schema-artifact-digest-drift.md"
