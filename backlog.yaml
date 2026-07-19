@@ -440,7 +440,7 @@ tasks:
     title: task-checkを安全契約変更の軽量経路へ対応させる
     type: chore
     epic: EPIC-001
-    status: dev
+    status: qa
     priority: P1
     estimate_points: 1
     task_dir: tasks/TASK-0025-safety-contract-task-check
@@ -453,6 +453,7 @@ tasks:
       qa: qa-agent-terra-medium
     branch: task/TASK-0025-safety-contract-task-check
     worktree: worktrees/TASK-0025-safety-contract-task-check
+    merged_commit: 53542a8d30b08cb9609dc9d93a4d6553aba9d00a
   - id: TASK-0026
     title: ReviewerとQAの軽微修正コミットを許可する
     type: chore

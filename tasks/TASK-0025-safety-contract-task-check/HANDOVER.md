@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0025"
-status: draft
-completed_at: ""
+status: complete
+completed_at: "2026-07-20"
 ---
 
 # TASK-0025 HANDOVER
@@ -42,7 +42,7 @@ completed_at: ""
 - Main判断の旧新コミット/tree、全差分とダイジェスト、影響ケース集合、レビュアー/`make check`証拠、理由: TODO
 - carry-forward時の`QA_RESULT.md` `CF-1`から`CF-7`: `not-applicable | complete | incomplete`
 - 影響QAケース集合が空でない場合の再実行証拠: TODO
-- `merge_tree`と案 treeの比較: `pending`
+- `merge_tree`と案 treeの比較: `4d4309217a5d4d1dcc1150fc1cf5009813b91cc6 == 4d4309217a5d4d1dcc1150fc1cf5009813b91cc6`、PASS。
 
 ## 既知の制約と未解決事項
 

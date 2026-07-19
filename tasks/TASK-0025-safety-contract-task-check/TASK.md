@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0025"
 title: "task-checkを安全契約変更の軽量経路へ対応させる"
-status: ready
+status: qa
 created_at: "2026-07-20"
 ---
 

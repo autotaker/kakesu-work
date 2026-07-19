@@ -2,10 +2,10 @@
 task_id: "TASK-0025"
 status: complete
 qa_agent: "qa-agent-terra-medium"
-tested_commit: "bd8186eead0681fc3e963de715ba5d266b4a0379"
+tested_commit: "53542a8d30b08cb9609dc9d93a4d6553aba9d00a"
 candidate_commit: "bd8186eead0681fc3e963de715ba5d266b4a0379"
 candidate_tree: "4d4309217a5d4d1dcc1150fc1cf5009813b91cc6"
-merge_tree: ""
+merge_tree: "4d4309217a5d4d1dcc1150fc1cf5009813b91cc6"
 decision: pass
 tested_at: "2026-07-20"
 ---
@@ -45,4 +45,4 @@ tested_at: "2026-07-20"
 - FAIL分類: なし
 - `qa_carry_forward`: `not-applicable`。QAは最終candidateを直接評価した。
 - 影響QAケース集合: 全QA-001〜006を最終candidateで実施済み。
-- merge後: `merge_tree`をcandidate treeと比較し、環境依存caseがないため一致時は全面再実行を省略する。
+- merge後: merge commit `53542a8d30b08cb9609dc9d93a4d6553aba9d00a`のtreeはcandidate treeと一致した。環境依存caseがないため全面再実行を省略し、同一treeのQA結果を統合commitへ束縛した。
