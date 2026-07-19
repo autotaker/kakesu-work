@@ -4,7 +4,7 @@ status: approved
 qa_agent: "qa-agent-terra-medium"
 approved_by: "main-agent-sol-high"
 approved_at: "2026-07-20"
-revision: 2
+revision: 3
 implementation_reviewed_at: ""
 expectation_changed: false
 expectation_change_approved_by: ""
@@ -31,6 +31,7 @@ expectation_change_approved_by: ""
 - QAは固定された同一`candidate_commit`/`candidate_tree`に対して、REVIEWのPASSを待たず独立に開始する。
 - DEV evidenceはcase ID、candidate commit/tree、実行command/test、環境/fixture、cache条件、exit、artifact digest、未実施理由をHANDOVERへ記録する。QAはそれらと候補差分を突合し、negative検出能力とtest弱体化の有無を確認する。
 - 分類の正本は`backlog.yaml.change_class`、計画review/Main承認は`PLAN.md`の`planning_reviewed_by`、`planning_review_decision`、`planning_reviewed_at`、`classification_approved_by`、`classification_approved_at`、閉鎖検査は`HANDOVER.md`の`safety_checks`、`safety_checked_at`、`safety_check_digest`、`safety_candidate_tree`、`safety_merge_tree`とする。
+- `backlog.yaml`、PLAN、QA_PLANの分類値一致、reviewer担当への計画review束縛、`classification_approval_reason`と承認時系列、`process_tests`/`contract_scope`/`docs_lint`/`make_check`の完全な検査集合、candidate/merge treeと検査集合から再計算したdigestを個別にnegative検査する。rename/copyによる許可pathへの移動は安全契約として拒否する。
 - `focused-rerun` fixtureは、実運用のTask証跡を変更せず、`checkTask`又はCLIの実経路を使用する一時ディレクトリで作る。各fixtureの入力、期待errors又はexit、削除/cleanup結果を残す。
 - 安全契約Taskの対象検査は少なくともprocess test、`make task-check TASK=TASK-0025`、変更契約のscope検査、`git diff --check`である。`make check`は候補の広域退行確認として実行するが、製品QA PASSを捏造する根拠にはしない。
 
@@ -90,3 +91,4 @@ make task-check TASK=TASK-0025
 |---:|---|---|---|---|
 | 1 | 2026-07-20 | QA Agent | TASK-first初版。分類・product保全・safety Done・TASK-0024・candidate/merge treeの独立caseとnegative fixtureを固定。 | `pending` |
 | 2 | 2026-07-20 | QA Agent / Main Agent | PLAN突合blockerを解消し、既存6証跡内のfield配置を固定。期待結果と試験範囲は不変更。 | `approved` |
+| 3 | 2026-07-20 | Main Agent | Review FAILを受け、rename/copy、検査集合/digest、reviewer束縛、分類mirror/理由/時系列のnegative境界を具体化。TASKの期待結果は不変更。 | `approved` |
