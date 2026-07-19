@@ -2,7 +2,7 @@
 task_id: "TASK-0027"
 status: pass
 qa_agent: "qa-agent-terra-medium"
-tested_commit: "ca2b505747553b0b719ae251532f74a014f831c9"
+tested_commit: "cb31790b7eebdff70038daa9e087a2a8eb80c9e1"
 candidate_commit: "ca2b505747553b0b719ae251532f74a014f831c9"
 candidate_tree: "dd75cbfbfd803e8d40b858f31d8a45f6b0a6c867"
 merge_tree: "dd75cbfbfd803e8d40b858f31d8a45f6b0a6c867"

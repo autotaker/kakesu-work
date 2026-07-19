@@ -471,7 +471,7 @@ tasks:
     title: Control永続ストア基盤と原子的Task作成を実装する
     type: feature
     epic: EPIC-002
-    status: qa
+    status: done
     priority: P1
     estimate_points: 2
     task_dir: tasks/TASK-0027-control-durable-foundation

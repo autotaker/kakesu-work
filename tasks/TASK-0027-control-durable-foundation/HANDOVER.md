@@ -1,6 +1,6 @@
 ---
 task_id: "TASK-0027"
-status: completed
+status: complete
 completed_at: "2026-07-20"
 safety_checks:
   process_tests: pending
