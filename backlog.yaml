@@ -488,21 +488,31 @@ tasks:
     title: Control owner排他とTaskライフサイクルを実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 2
     task_dir: tasks/TASK-0028-control-ownership-lifecycle
     depends_on:
       - TASK-0027
-    assignees: {}
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0029
     title: Control versioned状態とクラッシュ復旧を実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
-    estimate_points: 1
+    estimate_points: 2
     task_dir: tasks/TASK-0029-control-versioned-recovery
     depends_on:
       - TASK-0028
-    assignees: {}
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
