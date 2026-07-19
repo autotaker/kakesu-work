@@ -517,6 +517,4 @@ tasks:
       dev: dev-agent-sol-high
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
-    branch: task/TASK-0029-control-versioned-recovery
-    worktree: worktrees/TASK-0029-control-versioned-recovery
     merged_commit: a908567d08f5f1db0c3c1258c9560af45953d9cc
