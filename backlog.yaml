@@ -488,7 +488,7 @@ tasks:
     title: Control owner排他とTaskライフサイクルを実装する
     type: feature
     epic: EPIC-002
-    status: qa
+    status: done
     priority: P1
     estimate_points: 2
     task_dir: tasks/TASK-0028-control-ownership-lifecycle
