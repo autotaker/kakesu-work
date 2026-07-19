@@ -483,8 +483,6 @@ tasks:
       dev: dev-agent-sol-high
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
-    branch: task/TASK-0027-control-durable-foundation
-    worktree: worktrees/TASK-0027-control-durable-foundation
     merged_commit: cb31790b7eebdff70038daa9e087a2a8eb80c9e1
   - id: TASK-0028
     title: Control owner排他とTaskライフサイクルを実装する
