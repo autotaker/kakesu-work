@@ -6,7 +6,7 @@
 
 ### 製品変更
 
-製品コード、テスト、ランタイム/build設定、Schema、宣言済み製品依存の追加・削除・バージョン・設定、生成される製品入力または成果物、外部観測可能な挙動のいずれかを変更する場合は、Taskを起票し、完全な`PLAN → QA_PLAN → DEV → 独立REVIEW → マージ後QA`の証跡を保持する。
+製品コード、テスト、ランタイム/build設定、Schema、宣言済み製品依存の追加・削除・バージョン・設定、生成される製品入力または成果物、外部観測可能な挙動のいずれかを変更する場合は、Taskを起票し、承認済み`PLAN`とTASK-firstの独立`QA_PLAN`、DEV、同一候補に対する独立REVIEWとリスク別QA、Main所有Gitの証跡を保持する。QAはcaseごとに`evidence-review | focused-rerun | live-e2e`を事前指定し、マージ後はtree同一性と環境依存caseを確認する。
 
 ### 安全契約変更
 
@@ -21,7 +21,15 @@
 - Main Agentが目的、出典、対象パス、算術または対応関係、除外、影響する検査、訂正またはロールバック方法のchecklistを、関連TaskのHANDOVERまたはcommit証跡へ残す。
 - 独立レビュアー1名が出典、算術、状態遷移、ファイル間メタデータ、Schema/parser、差分スコープ、秘密情報不在を確認する。
 
-公開済み証跡を書き換えず、既存の訂正方式で履歴を保存する。影響しない製品テスト群は繰り返さず、可能なら関連製品Taskのマージ後処理へ含める。分類に迷う場合、またはレビュアーが根拠の矛盾、受け入れ条件の意味変更、安全上の含意を発見した場合は軽い経路を停止し、安全契約変更へ再分類する。
+公開済み証跡を書き換えず、既存の訂正方式で履歴を保存する。影響しない製品テスト群は繰り返さず、可能なら関連製品Taskの完了処理へ含める。分類に迷う場合、またはレビュアーが根拠の矛盾、受け入れ条件の意味変更、安全上の含意を発見した場合は軽い経路を停止し、安全契約変更へ再分類する。
+
+## 製品QAの証跡規則
+
+- DEV Agentはcase ID、`candidate_commit`、`candidate_tree`、command/test、環境またはfixture、cache条件、exit status、artifact digest、未実施理由を`HANDOVER.md`へ残す。QA AgentはDEVの自己判定を採用せず、対応範囲、testの弱体化、negative case、証跡完全性を独立監査する。
+- `evidence-review`は候補に結び付いた自動test証跡の監査、`focused-rerun`はhermetic、deterministic、bounded fixtureで受け入れ真実を完全再現できる高リスク境界の限定再実行、`live-e2e`は実OS権限/auth stack、sudo/PAM、実配備、外部作用、実restart/rollback/cleanup、環境固有integrationの実環境確認とする。分類不能、環境不足、または安全なcleanupが不明なcaseは`live-e2e`のblockedとし、PASSさせない。
+- Reviewer AgentとQA Agentは同一`candidate_commit`/`candidate_tree`を、互いのPASSを開始条件にせず並行評価する。Main Agentだけが両結果とtree同一性を照合する。
+- REVIEW修正で候補が変わった場合、Main Agentは必要な再実行を選ぶ。非挙動差分で影響caseを限定できる場合だけ、旧新commit/tree、diff、影響case、再実行証拠、理由を`qa_carry_forward`として記録できる。QA FAIL対象、受け入れ条件/QA_PLAN、認証認可、秘密、sudo/PAM、IPC/Schema/設定/依存、並行性/lifecycle/persistence/error/fail-closed、test削除/弱体化、または影響不明の差分には使用しない。
+- マージ後、Main Agentは`merge_tree == approved candidate_tree`を確認する。同一かつ環境依存caseがなければ全面QAを繰り返さなくてよい。環境依存caseはcase単位で確認し、tree不一致は影響を再評価する。
 
 ## 書き込み規則
 
@@ -39,7 +47,7 @@
 - `PLAN.md`: Planner Agent、承認欄はmain Agent
 - `REVIEW_RESULT.md`: Reviewer Agent
 - `QA_PLAN.md`: QA Agent、期待結果と範囲の変更承認はmain Agent
-- `QA_RESULT.md`: QA Agent、差し戻し判断はmain Agent
+- `QA_RESULT.md`: QA Agent。`qa_carry_forward`、差し戻し、merge tree、マージ後確認の判断欄はmain Agent
 - `HANDOVER.md`: DEV Agent、QA Agent、main Agent
 - `backlog.yaml`: main Agent
 - 軽量checklist: main Agent（関連Taskの`HANDOVER.md`またはcommit証跡）
