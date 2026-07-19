@@ -471,7 +471,7 @@ tasks:
     title: Control永続ストア基盤と原子的Task作成を実装する
     type: feature
     epic: EPIC-002
-    status: plan
+    status: dev
     priority: P1
     estimate_points: 1
     task_dir: tasks/TASK-0027-control-durable-foundation
@@ -483,6 +483,8 @@ tasks:
       dev: dev-agent-sol-high
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
+    branch: task/TASK-0027-control-durable-foundation
+    worktree: worktrees/TASK-0027-control-durable-foundation
   - id: TASK-0028
     title: Control owner排他とTaskライフサイクルを実装する
     type: feature
