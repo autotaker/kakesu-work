@@ -82,6 +82,14 @@
       ]
     },
     {
+      "path": "wiki/semantic/schemas/control-durable-store.md",
+      "kind": "schema",
+      "title": "Control Durable Store",
+      "links": [
+        "../../../tasks/TASK-0027-control-durable-foundation/HANDOVER.md"
+      ]
+    },
+    {
       "path": "wiki/semantic/schemas/mvp-wire-contracts.md",
       "kind": "schema",
       "title": "MVP Wire Contracts",
