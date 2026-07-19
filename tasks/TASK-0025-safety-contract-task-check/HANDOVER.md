@@ -14,15 +14,15 @@ completed_at: ""
 ## candidate-bound DEV証跡
 
 - worktree: `/home/ubuntu/git/agent-harness-work/worktrees/TASK-0025-safety-contract-task-check`
-- `candidate_commit`: `d3b52d8dfff90a614022ad1fa2b8b4267bd1e133`
-- `candidate_tree`: `48ff3037f359d3adaead7b4bde73d3a0bde4557b`
+- `candidate_commit`: `bd8186eead0681fc3e963de715ba5d266b4a0379`
+- `candidate_tree`: `4d4309217a5d4d1dcc1150fc1cf5009813b91cc6`
 
 | ケース ID | コマンド/テスト | 環境/フィクスチャ | cache条件 | exit | 成果物 ダイジェスト | 未実施理由 |
 |---|---|---|---:|---:|---|---|
-| QA-001〜QA-005 | `node --test scripts/task/development-process.test.mjs` | Node 22.23.1、一時Git fixture、39 test | local dependency/cache、外部networkなし | 0 | `52e4a04e7b103116ddfbb10ca55be967166dc6cfada427b7f9d2ed160901310b` | なし |
+| QA-001〜QA-005 | `node --test scripts/task/development-process.test.mjs` | Node 22.23.1、一時Git fixture、49 test | local dependency/cache、外部networkなし | 0 | `e1522f15638375fc4df8d07849d676573c90c5e5b56490fa1732ddbeaa861c84` | なし |
 | QA-006 | `make check` | TASK-0025 product worktree | warm local build/cache、外部networkなし | 0 | candidate差分digestを参照 | なし |
 
-- QAへ渡すネガティブ検出証拠、テスト弱体化の有無を判定できる差分ダイジェスト: `d43eb0856ad5bbe17c95c47be9320fb664eed28a8ca49890362a35140719d8dd`
+- QAへ渡すネガティブ検出証拠、テスト弱体化の有無を判定できる差分ダイジェスト: `21d6dd7889eb3cef751f04307e946be3b3186b63e3c7a25aa2a7d04557032857`
 
 ## 主要な変更
 
@@ -31,7 +31,7 @@ completed_at: ""
 
 ## 検証結果
 
-- Focused test: 39/39 PASS。
+- Focused test: 49/49 PASS。
 - `make check`: process 50/50を含む全検査PASS。
 - `git diff --check`、用語集同期、文書lint: PASS。
 
