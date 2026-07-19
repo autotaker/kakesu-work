@@ -9,31 +9,42 @@ created_at: "2026-07-20"
 
 ## 目的
 
-<!-- 達成したい結果を記載する。 -->
+`task-check`が製品変更と安全契約変更を明示的に分類し、安全契約変更では製品`REVIEW_RESULT.md`/`QA_RESULT.md` PASS、完全HANDOVER、Wiki receiptを捏造せずにDone判定できるようにする。製品変更の既存ゲートは緩めない。
 
 ## 背景
 
-<!-- なぜ今必要か、現在の問題、関連する制約を記載する。 -->
+TASK-0024で安全契約変更の軽量経路を規範化し、製品変更と検証を完了した。しかし現行`task-check`は全Taskへ製品QA経路を一律適用するため、安全契約Taskを正直な証跡のままDoneにできなかった。TASK-0024は架空PASSを作らずblockedとしており、本Task完了後に再検査して閉じる。
 
 ## スコープ
 
 ### 対象
 
-- TODO
+- Taskの変更分類を機械判定できる正本fieldと互換性規則。
+- `scripts/task/check-task.mjs`とprocess testの分類別Done gate。
+- 安全契約変更に必要なPLAN、TASK-first QA_PLAN、独立計画レビュー、Main承認、統制文書検査、merge tree証拠の検証。
+- TASK-0024をfixtureとして使う回帰testと閉鎖手順。
 
 ### 対象外
 
-- TODO
+- 製品Taskの既存REVIEW/QA/HANDOVER/Wiki要件の削除または緩和。
+- 純粋証跡保守を架空Taskとして必須化すること。
+- QA mode、carry-forward、役割分離、Main所有Gitの変更。
 
 ## 受け入れ条件
 
-- [ ] TODO
+- [ ] 変更分類は未指定・未知・矛盾時にfail-closedし、既存Taskの移行規則が明記される。
+- [ ] 製品変更のDone gateは現行のREVIEW PASS、QA PASSまたはaccepted-with-bugs、HANDOVER、Wiki receipt、commit/tree検査を維持する。
+- [ ] 安全契約変更のDone gateは承認済みPLAN/QA_PLAN、独立計画レビュー、Main承認、対象検査、merged commit/treeを要求し、製品REVIEW/QA/HANDOVER/Wikiの架空PASSを要求しない。
+- [ ] 分類を偽って製品変更を安全契約経路で閉じるnegative testと、TASK-0024を正しく閉じる回帰testがPASSする。
+- [ ] 既存Task証跡を遡及破壊せず、移行前Taskの解釈が決定的である。
 - [ ] 各QA ケースに`qa_execution_mode`（`evidence-review | focused-rerun | live-e2e`）と選択理由、fail-closed条件がある。
 - [ ] DEV 案、独立REVIEW/QA、修正後のcarry-forwardまたはrerun、`merge_tree`確認を証跡化できる。
 
 ## 検討すべき設計観点
 
-- TODO
+- 分類fieldの所有者、承認時点、途中変更時の再承認を閉じた契約にする。
+- ファイル拡張子やSLOCだけで安全契約と判定せず、Task契約と実差分の両方を照合する。
+- 軽量経路の導入を製品ゲート回避に使えないnegative fixtureを先に固定する。
 
 ## 完成の定義
 
