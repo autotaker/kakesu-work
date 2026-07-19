@@ -440,7 +440,7 @@ tasks:
     title: task-checkを安全契約変更の軽量経路へ対応させる
     type: chore
     epic: EPIC-001
-    status: qa
+    status: done
     priority: P1
     estimate_points: 1
     task_dir: tasks/TASK-0025-safety-contract-task-check
