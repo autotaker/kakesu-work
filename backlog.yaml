@@ -450,7 +450,8 @@ tasks:
     title: ReviewerとQAの軽微修正コミットを許可する
     type: chore
     epic: EPIC-001
-    status: dev
+    status: blocked
+    resume_status: dev
     priority: P1
     estimate_points: 1
     task_dir: tasks/TASK-0026-trusted-nit-fix-commits
@@ -463,3 +464,4 @@ tasks:
       qa: qa-agent-terra-medium
     branch: task/TASK-0026-trusted-nit-fix-commits
     worktree: worktrees/TASK-0026-trusted-nit-fix-commits
+    merged_commit: c541dde2d6fb2c4c2c6abacb18a46daf65c55527
