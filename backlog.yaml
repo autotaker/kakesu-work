@@ -111,7 +111,7 @@ tasks:
     title: Control Planeの永続Taskストアとライフサイクルを実装する
     type: feature
     epic: EPIC-002
-    status: plan
+    status: cancelled
     priority: P1
     estimate_points: 8
     task_dir: tasks/TASK-0007-control-durable-task-store
@@ -133,7 +133,7 @@ tasks:
     task_dir: tasks/TASK-0008-cross-plane-transport
     depends_on:
       - TASK-0006
-      - TASK-0007
+      - TASK-0029
     assignees:
       main: main-agent-sol-high
       planner: planner-agent-terra-medium
@@ -165,7 +165,7 @@ tasks:
     estimate_points: 5
     task_dir: tasks/TASK-0010-root-task-cli
     depends_on:
-      - TASK-0007
+      - TASK-0029
       - TASK-0009
       - TASK-0022
     assignees:
@@ -183,7 +183,7 @@ tasks:
     estimate_points: 8
     task_dir: tasks/TASK-0011-work-agent-runtime
     depends_on:
-      - TASK-0007
+      - TASK-0029
       - TASK-0008
       - TASK-0010
     assignees:
@@ -218,7 +218,7 @@ tasks:
     estimate_points: 8
     task_dir: tasks/TASK-0013-mailbox-task-resume
     depends_on:
-      - TASK-0007
+      - TASK-0029
       - TASK-0011
       - TASK-0012
     assignees:
@@ -236,7 +236,7 @@ tasks:
     estimate_points: 8
     task_dir: tasks/TASK-0014-child-task-delegation
     depends_on:
-      - TASK-0007
+      - TASK-0029
       - TASK-0010
       - TASK-0011
       - TASK-0013
@@ -255,7 +255,7 @@ tasks:
     estimate_points: 8
     task_dir: tasks/TASK-0015-completion-review
     depends_on:
-      - TASK-0007
+      - TASK-0029
       - TASK-0011
       - TASK-0013
       - TASK-0014
@@ -471,12 +471,18 @@ tasks:
     title: Control永続ストア基盤と原子的Task作成を実装する
     type: feature
     epic: EPIC-002
-    status: backlog
+    status: plan
     priority: P1
     estimate_points: 1
     task_dir: tasks/TASK-0027-control-durable-foundation
-    depends_on: []
-    assignees: {}
+    depends_on:
+      - TASK-0006
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
   - id: TASK-0028
     title: Control owner排他とTaskライフサイクルを実装する
     type: feature
@@ -485,7 +491,8 @@ tasks:
     priority: P1
     estimate_points: 1
     task_dir: tasks/TASK-0028-control-ownership-lifecycle
-    depends_on: []
+    depends_on:
+      - TASK-0027
     assignees: {}
   - id: TASK-0029
     title: Control versioned状態とクラッシュ復旧を実装する
@@ -495,5 +502,6 @@ tasks:
     priority: P1
     estimate_points: 1
     task_dir: tasks/TASK-0029-control-versioned-recovery
-    depends_on: []
+    depends_on:
+      - TASK-0028
     assignees: {}

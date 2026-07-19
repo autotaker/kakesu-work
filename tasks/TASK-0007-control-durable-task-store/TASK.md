@@ -1,11 +1,13 @@
 ---
 task_id: "TASK-0007"
 title: "Control Planeの永続Taskストアとライフサイクルを実装する"
-status: ready
+status: cancelled
 created_at: "2026-07-15"
 ---
 
 # TASK-0007 Control Planeの永続Taskストアとライフサイクルを実装する
+
+> 1〜2 LapのTask境界へ合わせるため、TASK-0027、TASK-0028、TASK-0029へ受け入れ条件を分割して置き換えた。後続Taskの依存先は最終sliceのTASK-0029とする。
 
 ## 目的
 
