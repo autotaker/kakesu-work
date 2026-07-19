@@ -12,8 +12,8 @@ planning_reviewed_by: ""
 planning_review_decision: "pending"
 planning_reviewed_at: ""
 planned_implementation_files: 4
-planned_implementation_lines: 400
-estimate_points: 2
+planned_implementation_lines: 425
+estimate_points: 3
 ---
 
 # TASK-0029 PLAN — Versioned state and recovery
@@ -77,7 +77,7 @@ DB close/reopen後、persisted current tablesを起点にTask current state、ac
 | core/internal/control/recovery.go | implementation | 100 | close/reopen full read model load、ordering/integrity checks、typed corruption error |
 | core/internal/control/lifecycle.go | implementation | 2 | v3 TaskEvent schema referenceを既存lifecycle read modelでも復元する互換読取 |
 
-Initial estimate was 3 files / 340 lines. Recoveryの明示integrity error経路が100→127行、merged v2 lifecycle read modelのschema-ref互換が2行必要と判明したため、Mainがdraft実測4 files / 372 readable linesへ補正した。Candidate直前に正本`docs/02-task-lifecycle.md`の`ProgressRefreshed`が`progress_version`とTask/Agent Run両watermarkを要求することを検出し、受入条件の曖昧化やコード圧縮を避けるためMain裁量で400行へ一度だけ補正した。Required tests live in core/internal/control/versioned_test.go and core/internal/control/recovery_test.go and are excluded from production SLOC. file_score=ceil(4/3)=2、line_score=ceil(400/200)=2、therefore estimate remains 2 points. Readable working range is 320–400 lines; above 400 stops for revision or split. Candidate後の全体product Go SLOC見込みは約1,251行で1,500目標/1,800 hard limit内。Do not fit by semicolon packing, generic untyped maps, combined contract/progress errors, deleted integrity checks, or cryptic names.
+Initial estimate was 3 files / 340 lines. Recoveryの明示integrity error経路が100→127行、merged v2 lifecycle read modelのschema-ref互換が2行必要と判明したため、Mainがdraft実測4 files / 372 readable linesへ補正した。Candidate直前に正本`docs/02-task-lifecycle.md`の`ProgressRefreshed`が`progress_version`とTask/Agent Run両watermarkを要求することを検出し、受入条件の曖昧化やコード圧縮を避けるためMain裁量で400行へ一度だけ補正した。最初のcandidateでREVIEW/QAがwatermark後退と未来Task sequence受理を1件の具体的findingとして検出し、Lap 2をその修正だけに限定して425行へ補正した。Required tests live in core/internal/control/versioned_test.go and core/internal/control/recovery_test.go and are excluded from production SLOC. file_score=ceil(4/3)=2、line_score=ceil(425/200)=3、therefore final measurement is 3 points. Readable working range is 320–425 lines; above 425 stops for revision or split. Corrected candidate後の全体product Go physical SLOCは1,297行で1,500目標/1,800 hard limit内。Do not fit by semicolon packing, generic untyped maps, combined contract/progress errors, deleted integrity checks, or cryptic names.
 
 ## 1–2 Lap execution
 
@@ -109,7 +109,7 @@ Temporary SQLite with deterministic barriers, close/reopen, and injected transac
 
 ## Stop conditions and exclusions
 
-Stop if TASK-0028 is unmerged, its API/schema/event sequence differs from this assumption, migration v3 cannot preserve existing 0027/0028 data, concurrent CAS/rollback cannot be deterministic, current/history integrity requires runtime Schema validation/new dependency, readable production exceeds the remeasured 390-line stop, or recovery requires backup/replication/event replay framework. Exclude owner/lifecycle semantic changes, generic Task updates, schema changes/validator, transport/CLI, Inbox/Outbox, Plane-crossing atomicity, backup/PITR/replication, and all behavior beyond contract/progress versioned state.
+Stop if TASK-0028 is unmerged, its API/schema/event sequence differs from this assumption, migration v3 cannot preserve existing 0027/0028 data, concurrent CAS/rollback cannot be deterministic, current/history integrity requires runtime Schema validation/new dependency, readable production exceeds the remeasured 425-line stop, or recovery requires backup/replication/event replay framework. Exclude owner/lifecycle semantic changes, generic Task updates, schema changes/validator, transport/CLI, Inbox/Outbox, Plane-crossing atomicity, backup/PITR/replication, and all behavior beyond contract/progress versioned state.
 
 Changes after QA touch persistence/concurrency/schema-reference/recovery/fail-closed behavior and therefore are ineligible for qa_carry_forward. Main selects affected focused reruns or full rerun. Reviewer/QA minor fixes follow repository rules, but only Main integrates to main.
 
@@ -118,7 +118,7 @@ Changes after QA touch persistence/concurrency/schema-reference/recovery/fail-cl
 - [x] TASK-0007 0007-C is fully represented without TASK-0027/0028 scope regression.
 - [x] TASK-0028 merge/API/tree precondition is explicit and verified before DEV.（merge `63ffb0e`、tree `c7050bd`。schema v2、`Store`/`ConflictError`、payload付きevent sequence APIを再照合済み）
 - [x] Contract/progress CAS, immutable history/current, recovery, and corruption fail-fast are testable.
-- [x] Remeasured 4 implementation files / up to 400 lines / 2 points and 400-line stop are approved. Initial 340/360 underestimated recovery error paths; the final 390→400 adjustment preserves the canonical `ProgressRefreshed` payload without acceptance/scope change.
+- [x] Remeasured 4 implementation files / 418 lines / 3 points and 425-line stop are approved. The bounded Lap 2 adjustment validates canonical progress watermarks; no scope expansion.
 - [x] sol-high DEV profile is approved for persistence/concurrency/recovery risk.
 - [x] Independent TASK-first QA_PLAN is approved before DEV.
 - [x] DEV start is approved.（TASK-0028依存merge/tree一致と実API再照合後）

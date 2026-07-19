@@ -22,24 +22,24 @@ safety_merge_tree: ""
 
 ## candidate-bound DEV証跡
 
-- `candidate_commit`: `af0d8d5ff785fb098b539f97595dc2abb6898d7e`
-- `candidate_tree`: `4f7b761966cc2148906eaa1d3a8d76318c552703`
+- `candidate_commit`: `864f455b563a6fffb043ed297d5cb10e3849b988`
+- `candidate_tree`: `5ff201700eb58aedd8635a5456e5a741ae4f5b22`
 
 | ケース ID | コマンド/テスト | 環境/フィクスチャ | cache条件 | exit | 成果物 ダイジェスト | 未実施理由 |
 |---|---|---|---:|---:|---|---|
 | Q29-01/02/05 | `go test -count=1 ./internal/control` | temporary file-backed SQLite、contract/progress history/event/schema refs | isolated `/tmp` Go cache | 0 | changed-file SHA-256 below | なし |
-| Q29-03/04/06 | `go test -count=20 ./internal/control` / `go test -race -count=1 ./internal/control` | deterministic conflict barrier、fault injection、post-failure readback | isolated `/tmp` Go cache | 0 | candidate tree `4f7b761...` | なし |
-| Q29-07/08 | recovery/migration integration tests in `./internal/control` | close/reopen same DB path、corruption、v2→v3 rollback/cascade | temporary dirs | 0 | candidate tree `4f7b761...` | なし |
-| Q29-09 | `make check`; `git diff --check` | repository candidate worktree | existing dependency caches | 0 | diff SHA-256 `32918a9959c63aa71020ef18a6080e3494141e04cd79707f4a29b09d1983d511` | なし |
+| Q29-03/04/06 | `go test -count=20 ./internal/control` / `go test -race -count=1 ./internal/control` | deterministic conflict barrier、fault injection、post-failure readback | isolated `/tmp` Go cache | 0 | candidate tree `5ff2017...` | なし |
+| Q29-07/08 | recovery/migration integration tests in `./internal/control` | close/reopen same DB path、corruption、v2→v3 rollback/cascade | temporary dirs | 0 | candidate tree `5ff2017...` | なし |
+| Q29-09 | `make check`; `git diff --check` | repository candidate worktree | existing dependency caches | 0 | diff SHA-256 `39f2ccfe174e6b0ebfcccc930b6f90ef1d13655731702aba1aa1fb4e01da6d74` | なし |
 
-- QAへ渡すネガティブ検出証拠はversion/schema/payload/watermark拒否、全transaction stageのSQL failure、並行conflict、current/history/event corruption、migration rollbackを含む。テスト削除なし。差分SHA-256: `32918a9959c63aa71020ef18a6080e3494141e04cd79707f4a29b09d1983d511`
+- QAへ渡すネガティブ検出証拠はversion/schema/payload拒否、Task/Agent watermark後退と未来Task sequence拒否、全transaction stageのSQL failure、並行conflict、current/history/event corruption、migration rollbackを含む。テスト削除なし。差分SHA-256: `39f2ccfe174e6b0ebfcccc930b6f90ef1d13655731702aba1aa1fb4e01da6d74`
 
 ## 主要な変更
 
 - `core/internal/control/store.go`: migration v3とv2 data保存/table rebuild。
 - `core/internal/control/versioned.go`: contract/progress CAS、atomic history/current/event。
 - `core/internal/control/recovery.go`: durable full read modelとtyped corruption fail-fast。
-- production 396追加行、test 418追加行。承認済み400行stop内。
+- production 418追加行、test 455追加行。承認済み425行stop内。
 
 ## 検証結果
 

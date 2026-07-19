@@ -507,7 +507,7 @@ tasks:
     epic: EPIC-002
     status: dev
     priority: P1
-    estimate_points: 2
+    estimate_points: 3
     task_dir: tasks/TASK-0029-control-versioned-recovery
     depends_on:
       - TASK-0028
