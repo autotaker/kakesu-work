@@ -421,7 +421,7 @@ tasks:
     title: QAを証跡監査とリスク別再実行へ変更する
     type: chore
     epic: EPIC-001
-    status: plan
+    status: dev
     priority: P1
     estimate_points: 1
     task_dir: tasks/TASK-0024-risk-based-qa-evidence
@@ -432,3 +432,5 @@ tasks:
       dev: dev-agent-sol-high
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
+    branch: task/TASK-0024-risk-based-qa-evidence
+    worktree: worktrees/TASK-0024-risk-based-qa-evidence
