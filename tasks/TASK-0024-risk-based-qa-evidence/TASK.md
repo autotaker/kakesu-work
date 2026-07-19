@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0024"
 title: "QAを証跡監査とリスク別再実行へ変更する"
-status: plan
+status: blocked
 created_at: "2026-07-20"
 ---
 
@@ -35,12 +35,12 @@ Lap30実績ではQA/QA_PLANのFAIL 10件中8件が実装前のplanning defect、
 
 ## 受け入れ条件
 
-- [ ] QA_PLANはTASKだけから独立作成し、各ケースへ3つの実施modeのいずれかを理由付きで指定する。曖昧または高リスクなケースは`live-e2e`または`focused-rerun`へfail-closedする。
-- [ ] DEV証跡はcase ID、candidate commit/tree、command/test、環境/fixture、cache条件、exit、artifact digest、未実施理由を持ち、QAはtestの弱体化、negative case、commit binding、証跡完全性を独立監査する。
-- [ ] REVIEWとQAは同じcandidate commitから互いのPASSを前提にせず並行でき、各結果が対象commitを明記する。
-- [ ] REVIEW修正後のQA省略は非挙動または明示した低リスク条件をすべて満たす場合だけMainが`qa_carry_forward`として旧新commit、差分、影響case、再実行証拠、理由を記録する。QA FAIL対象、受け入れ/QA_PLAN変更、認証認可、秘密、sudo/PAM、IPC/Schema/設定/依存、並行性/lifecycle/persistence/error/fail-closed、test削除/弱体化、影響不明では省略できない。
-- [ ] merge treeが承認candidate treeと同一で環境依存caseがない場合はマージ後全面QAを省略できる。環境依存、install/deploy/config生成、実権限、外部作用、rollbackはマージ後確認を維持する。
-- [ ] templateとスキルが同じmode、証跡項目、carry-forward条件、FAIL分類を使用し、既存Taskの証跡形式を破壊しない。
+- [x] QA_PLANはTASKだけから独立作成し、各ケースへ3つの実施modeのいずれかを理由付きで指定する。曖昧または高リスクなケースは`live-e2e`または`focused-rerun`へfail-closedする。
+- [x] DEV証跡はcase ID、candidate commit/tree、command/test、環境/fixture、cache条件、exit、artifact digest、未実施理由を持ち、QAはtestの弱体化、negative case、commit binding、証跡完全性を独立監査する。
+- [x] REVIEWとQAは同じcandidate commitから互いのPASSを前提にせず並行でき、各結果が対象commitを明記する。
+- [x] REVIEW修正後のQA省略は非挙動または明示した低リスク条件をすべて満たす場合だけMainが`qa_carry_forward`として旧新commit、差分、影響case、再実行証拠、理由を記録する。QA FAIL対象、受け入れ/QA_PLAN変更、認証認可、秘密、sudo/PAM、IPC/Schema/設定/依存、並行性/lifecycle/persistence/error/fail-closed、test削除/弱体化、影響不明では省略できない。
+- [x] merge treeが承認candidate treeと同一で環境依存caseがない場合はマージ後全面QAを省略できる。環境依存、install/deploy/config生成、実権限、外部作用、rollbackはマージ後確認を維持する。
+- [x] templateとスキルが同じmode、証跡項目、carry-forward条件、FAIL分類を使用し、既存Taskの証跡形式を破壊しない。
 
 ## 検討すべき設計観点
 
@@ -50,13 +50,18 @@ Lap30実績ではQA/QA_PLANのFAIL 10件中8件が実装前のplanning defect、
 
 ## 完成の定義
 
-- [ ] 受け入れ条件を満たしている。
-- [ ] PLANとTASK-first QA_PLANを独立作成し、Mainが承認している。
-- [ ] 独立した計画レビューが全受け入れ条件と回帰条件をPASSしている。
-- [ ] 影響する文書、template、スキル検証、`make check`、`make work-check`がPASSしている。
-- [ ] 製品DEV、製品REVIEW、製品QAのPASSを作っていない。
+- [x] 受け入れ条件を満たしている。
+- [x] PLANとTASK-first QA_PLANを独立作成し、Mainが承認している。
+- [x] 独立した計画レビューが全受け入れ条件と回帰条件をPASSしている。
+- [x] 影響する文書、template、スキル検証、`make check`、`make work-check`がPASSしている。
+- [x] 製品DEV、製品REVIEW、製品QAのPASSを作っていない。
 
 ## 関連コンテキスト
+
+## 運用上のブロッカー
+
+- 製品変更と受け入れ検証は完了し、merge commit `9b7e8beb68c91204f5529fa297fb3385d5f05350`のtreeは承認候補treeと一致した。
+- 既存`task-check`が安全契約変更にも製品`REVIEW_RESULT.md`/`QA_RESULT.md` PASS、完全HANDOVER、Wiki receiptを一律要求し、新しい軽量経路でDoneにできない。架空のPASSを作らず、検査器の経路分類対応を後続Taskへ分離する。
 
 ### 意味 Wiki
 
