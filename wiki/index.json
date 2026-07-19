@@ -86,7 +86,8 @@
       "kind": "schema",
       "title": "Control Durable Store",
       "links": [
-        "../../../tasks/TASK-0027-control-durable-foundation/HANDOVER.md"
+        "../../../tasks/TASK-0027-control-durable-foundation/HANDOVER.md",
+        "../../../tasks/TASK-0028-control-ownership-lifecycle/HANDOVER.md"
       ]
     },
     {

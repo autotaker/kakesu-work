@@ -7,9 +7,9 @@ title: Control Durable Store
 
 ## 責務と境界
 
-Control-owned Storeは`control.db`の唯一のwriterであり、root Taskのcurrent record、owner、workspace参照、contract snapshot、progress、作成eventを永続化する。接続時にはWAL、foreign keys、busy timeoutを設定する。
+Control-owned Storeは`control.db`の唯一のwriterであり、root Taskのcurrent record、active owner assignment、workspace参照、contract snapshot、progress、eventを永続化する。接続時にはWAL、foreign keys、busy timeoutを設定する。
 
-この境界はroot Taskの作成とその再open可能なread modelを扱う。ownerの単一割当・解放、lifecycle遷移、contract/progressの更新履歴、Schemaの意味検証、transport、Plane間原子性は別の責務である。
+この境界はroot Taskの作成、lifecycle遷移、ownerの単一割当・解放、および再open可能なread modelを扱う。contract/progressのversioned更新履歴、Schemaの意味検証、transport、Plane間原子性は別の責務である。
 
 ## Schema versionの受理条件
 
@@ -23,10 +23,27 @@ version tableは、認識済みのcurrent versionが**ちょうど一行**ある
 
 commit後に同じcancel可能contextでDB readをすると、commit済みなのに呼出元へerrorを返す場合がある。そのため、成功時のread modelはtransaction内で組み立て、commit成功後にそれを返す。commit後のreadを成功条件にしない。
 
+## Active ownerとlifecycle
+
+Agentごとに非終端Taskは一件だけとする。この排他はprocess-local mutexではなく、active assignmentだけを対象にするSQLite partial unique indexを正本として保証する。並行する二Store/二接続の割当では、DB制約によって一方だけ成功し、敗者はTask、owner、eventのpartial writeを残さない。
+
+状態遷移はexpected current stateを条件にしたcompare-and-set transactionで受理する。許可辺は`ready → running`、`running → waiting | suspended | reviewing_completion`、`waiting | suspended → running`、`reviewing_completion → running | completed`、および任意の非終端状態からの`cancelled`だけである。許可されない辺、終端状態からの再遷移、expected state不一致はcurrent state、owner、event sequenceを変えずに拒否する。
+
+`waiting`、`suspended`、`reviewing_completion`ではownerを保持する。`completed`または`cancelled`への確定は、current state更新、terminal event、`released_at`によるowner解放を同じtransactionでcommitする。そのため、terminal transactionの成功後だけ同じAgentを別の非終端Taskへ再割当できる。event payloadは検証して保存し、state、event、releaseを別transactionへ分けない。
+
+## Migration failureの扱い
+
+v1からv2へのmigrationで、既存の重複active ownerのためpartial unique indexを作れない場合は、DDLとschema version更新をまとめてrollbackする。不整合な既存データを推測して修復したり、unique制約を省略して続行したりしない。
+
+## 検証上の注意
+
+SQLiteは単一writerなので、内部insert後のbarrierで競合を作ると相互待ちになる。競合割当は二Storeを同時開始して検証し、unique indexを唯一のarbitratorとする。busy/lockedやconstraint conflictを自動retryで隠さずtyped conflictとして返し、再試行の判断は上位に残す。
+
 ## 適用限界
 
-この設計は単一SQLite Store内の原子性だけを保証する。外部サービス、他Plane、配備手順、または後続のversioned recoveryを含む操作のatomicityを意味しない。
+この設計は単一SQLite Store内の原子性だけを保証する。owner移管、複数owner、Agent Run同時実行制御、Task tree cancellation cascade、外部サービス、他Plane、配備手順、または後続のversioned recoveryを含む操作のatomicityを意味しない。
 
 ## 関連
 
 - [TASK-0027 handover](../../../tasks/TASK-0027-control-durable-foundation/HANDOVER.md)
+- [TASK-0028 handover](../../../tasks/TASK-0028-control-ownership-lifecycle/HANDOVER.md)
