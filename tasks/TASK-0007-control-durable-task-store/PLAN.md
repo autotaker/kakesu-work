@@ -5,6 +5,8 @@ planner_agent: "planner-agent-terra-medium"
 approved_by: ""
 approved_at: ""
 approved_dev_profile: "sol-high"
+approved_dev_profile_reason: "SQLite transaction、永続化、競合制約、Schema snapshotをまたぐ高リスクのため"
+approved_dev_profile_risk_signals: ["persistence", "concurrency", "schema", "cross_cutting"]
 planned_implementation_files: 20
 planned_implementation_lines: 1380
 estimate_points: 8
@@ -12,108 +14,79 @@ estimate_points: 8
 
 # TASK-0007 PLAN
 
-## 受け入れ条件の具体化
+## 結論とDEVゲート
 
-| 条件 | 観測方法 | 根拠 |
-|---|---|---|
-| 原子的Task作成 | SQLite integration testでTask、contract、event、progress、owner参照が全て存在するか全てrollbackする | `docs/01`、`docs/11` |
-| owner排他 | 同一Agentへの並行割当で1件だけ成功する | `docs/03` |
-| lifecycle | table-driven testが許可遷移だけを受理し、違法遷移で不変である | `docs/02` |
-| 復旧 | DB close/reopen後にcontract version、current progress、履歴、状態を再構成できる | `docs/05` §検証と失敗 |
+TASK-0007全体は、現行Coreが`control`のIdleServiceだけであること、SQLite導入、永続モデル、競合、状態機械、クラッシュ復旧、Schema snapshotを同時に導入することから、1〜2 Lapで完了できる境界を超える。既存draftの20実装ファイル・約1,380行・8ptもこの判断を裏付ける。
 
-## 関連Wikiと判断
+受け入れ条件を落とすことはしない。このPLANは、main Agentが下記の3 Taskへ契約を分割するまでTASK-0007のDEV開始を承認しない。分割後の各Taskは元の受け入れ条件を一意に引き継ぎ、TASK-0007は全3 Taskの完了後にのみ完了とする。最初のsliceだけをTASK-0007として実装して完了扱いにしてはならない。front matterの20ファイル・1,380行・8ptは元TASK全体の見積であり、承認対象ではない。
 
-- `docs/01-domain-model.md` §§1–4、`docs/02-task-lifecycle.md`、`docs/03-agent-lifecycle.md`。
-- `docs/11-data-model.md`、`docs/13-technology-stack.md` §6、Task-0006のwire契約。
-- `schemas/draft-v0/control-plane/{task-contract,task-event,task-command}.schema.json`。
+`sol-high`を指定する。SQLite transaction、永続化、競合制約、将来consumerの境界はいずれも高リスク信号であり、Lunaの局所・明確・低リスク条件を満たさない。
 
-## 設計
+## 受け入れ条件の具体化と分割提案
 
-### 選択案
+| 元の条件 | 観測可能な結果 | 提案Task | 依存 |
+|---|---|---|---|
+| Taskの原子的作成 | Task、owner Agent割当、workspace参照、contract v1 snapshot、progress v0、`TaskCreated`/`OwnerAssigned` eventが単一transactionで全件commitまたは全件rollbackする | **0007-A Durable foundation** | TASK-0006 |
+| owner単一同時Task | 同じAgentへ競合して2 Taskを割り当てても一方だけ成功し、失敗側は部分永続化しない | **0007-B Ownership and lifecycle** | 0007-A |
+| 許可遷移のみ | `docs/02-task-lifecycle.md`の明示辺だけを受理し、拒否時はTask状態、progress、event sequenceが不変 | **0007-B Ownership and lifecycle** | 0007-A |
+| versioned contract | 更新は期待versionと単調増加を検査し、旧contract snapshotと`ContractChanged` eventを保持する | **0007-C Versioned state and recovery** | 0007-A, 0007-B |
+| progressのcurrent/historyと復旧 | 楽観version付きcurrentとappend-only履歴を別保存し、DB close/reopen後も同じread modelを返す | **0007-C Versioned state and recovery** | 0007-A, 0007-B |
+| migration/reopen/競合/違法遷移の自動試験 | 各sliceのhermeticなtemporary SQLite integration testで全4種を覆い、0007-C終了時に元条件を満たす | 0007-A〜C | 上記 |
 
-`control.db`にversioned migrationを導入する。Control repositoryがSQLiteへの唯一の書込み口となり、Task生成、contract更新、progress更新、status遷移をtransaction化する。`tasks`はcurrent状態、`task_contracts`/`task_events`/`task_progress_history`はappend-only、`task_progress_current`は再開read modelとする。Agentの`current_task_id`はpartial unique indexまたは同等のtransactional constraintで非終端Task一件を強制する。
+### 0007-A: DEV可能な第一slice（1 Lap）
 
-### 代替案と不採用理由
+**契約:** `control.db`を開くための最小SQLite migrationと、root Task作成を原子的に永続化するControl-owned storeを実装する。transport/CLI、Task更新、owner解放、lifecycleの更新、contract/progress更新、Inbox/Outbox、Agent Runは対象外とする。
 
-- Event sourcingのみ: current read modelを毎回再生するとMVP再開経路を複雑化するため不採用。
-- mutable contract一行: 旧契約と監査を失うため不採用。
-- in-memory mutexだけのowner排他: restart/process競合を守れないため不採用。
+**完了条件:** 新規DBへのmigration、既存の同一schema version DBの再open、正常作成、故意のSQL失敗によるrollbackをtemporary SQLiteで自動試験する。作成read modelにはTask、owner Agent、workspace reference、contract v1 JSON snapshot（schema ID/revision/digestを含む）、progress v0、sequence 1/2の作成・owner eventを含める。Schemaの意味検証やSchema変更は行わず、既存draft-v0 schemaを不変な参照として保存する。
 
-### 責務と境界
+**実装境界（見積対象）:**
 
-- migration/DB opener、repository、lifecycle policy、ID/clock、Control application serviceを分離する。
-- schema snapshot validatorは境界でcontract/eventを検証し、SQLはFK/unique/checkで集合不変条件を守る。
-- CLI/transportはrepository直書きをせずapplication serviceを呼ぶ。
-
-### 不変条件
-
-- Taskは単一owner・単一workspaceを持つ。Agentの非終端ownerは最大1件。
-- contract versionとprogress versionは単調増加、event sequenceはTask内で単調増加。
-- 状態変更、current state、対応event、必要なprogress/historyは同じtransactionでコミットする。
-- terminal Taskは非terminalへ戻さず、違法操作はDBを変更しない。
-
-### 失敗時・移行・互換性
-
-- migrationはtransaction適用・schema version記録・途中失敗rollbackを行う。DB corruption/open failureは起動をfail-fastにする。
-- optimistic version競合はretry可能なconflictとして返し、勝手に上書きしない。
-- draft-v0 contract revisionはsnapshotに保存する。旧DBの移行はMVP初回migrationのみで、後方互換APIは提供しない。
-
-## 変更予定
-
-見積もり対象は実装コード、Schema、設定ファイルだけとする。
-
-| ファイル | 種別 | 概算変更行数 | 変更内容 |
+| ファイル | 種別 | 概算行数 | 内容 |
 |---|---|---:|---|
-| `core/internal/control/db/open.go` | implementation | 80 | SQLite open/pragmas/migration runner |
-| `core/internal/control/db/migrations/001_initial.sql` | schema | 180 | Agent/Task/contract/progress/event tables/indexes |
-| `core/internal/control/db/migrations_test.go` | implementation | 90 | fresh/upgrade rollback tests |
-| `core/internal/control/model.go` | implementation | 120 | domain records/status/errors |
-| `core/internal/control/lifecycle.go` | implementation | 95 | explicit transition table |
-| `core/internal/control/lifecycle_test.go` | implementation | 110 | allowed/denied transition cases |
-| `core/internal/control/repository.go` | implementation | 160 | transaction port/read APIs |
-| `core/internal/control/sqlite_repository.go` | implementation | 190 | SQLite implementation |
-| `core/internal/control/sqlite_repository_test.go` | implementation | 160 | persistence/constraint tests |
-| `core/internal/control/service.go` | implementation | 100 | application service replacement |
-| `core/internal/control/service_test.go` | implementation | 120 | create/update orchestration |
-| `core/internal/control/progress.go` | implementation | 70 | current/history versioning |
-| `core/internal/control/progress_test.go` | implementation | 75 | reopen/history tests |
-| `core/internal/control/contract.go` | implementation | 80 | snapshot/version validation |
-| `core/internal/control/contract_test.go` | implementation | 75 | version/conflict tests |
-| `core/internal/control/ids.go` | implementation | 45 | clock/ID injection |
-| `core/internal/control/testdata/*.json` | fixture | 80 | contract/event fixtures |
-| `core/internal/app/app.go` | implementation | 50 | DB-backed control construction |
-| `core/go.mod` | config | 10 | SQLite driver |
-| `core/README.md` | implementation | 40 | control.db operational boundary |
+| `core/go.mod` | config | 5 | pure-Go SQLite driverを明示依存として追加する（CGO必須driverは採用しない） |
+| `core/internal/control/store.go` | implementation | 185 | migration version確認、DB pragma、create input/read model、単一transactionのinsert/rollback、typed conflict/storage error |
 
-## 見積もり
+テスト（見積対象外）は`core/internal/control/store_test.go`へ置く。migration SQLはGoの埋め込み定数として第一sliceに閉じ、0007-B以降で複数migrationになった時だけ専用migration directoryへ抽出する。第一sliceの実装は上記2ファイル・190行、`file_score=ceil(2/3)=1`、`line_score=ceil(190/200)=1`、従って**1 point**である。
 
-```text
-file_score = ceil(planned_implementation_files / 3)
-line_score = ceil(planned_implementation_lines / 200)
-estimate_points = 1, 2, 3, 5, 8, 13のうちmax(1, file_score, line_score)以上の最小値
-```
+### 0007-B: Ownership and lifecycle（最大2 Lap、別Task）
 
-## 実装手順
+0007-Aのtransaction portを拡張し、Agentの非終端owner一件をDB制約とcompare-and-setで守る。`ready → running`、`running → waiting|suspended|reviewing_completion`、`waiting|suspended → running`、`reviewing_completion → running|completed`、各非終端状態から`cancelled`だけを遷移表として実装する。終端時はowner解放とeventを同一transactionで確定する。並行割当と全許可/拒否辺をSQL integration testで検証する。
 
-1. Task-0006のwire/schema fixtureを取り込み、domain modelとmigrationを確定する。
-2. DB opener/migrationとSQL制約を実装し、fresh/reopen/rollbackを試験する。
-3. repositoryと明示lifecycle tableを実装し、contract/progress/eventをatomicにする。
-4. application serviceへ接続し、並行owner競合とcrash recovery試験を追加する。
+### 0007-C: Versioned state and recovery（最大2 Lap、別Task）
 
-## 検証計画
+expected contract/progress versionを持つ更新port、immutable contract snapshots、append-only progress history、current progress read model、contract/progress/event schema referenceの永続化を追加する。close/reopen、競合更新、更新失敗時の原子性、旧snapshot/event保存をintegration testで検証する。Schemaの実行時検証が必要になった場合は、採用ライブラリと既存schema resolution方式をPLANレビューへ戻し、依存追加を無承認で行わない。
 
-- `go test ./...`に加え、temp SQLiteでmigration/reopen/parallel contentionを実行する。
-- schema fixture検証、`make check`、`git diff --check`。
-- Task-0008には実DB-backed message Storeを渡せること、Task-0010にはatomic create portを渡せることをconsumer testで確認する。
+## 設計根拠と不変条件
 
-## 未解決事項
+- `control.db`はGo Coreのみが書く。ほかのPlaneはDBを直接開かず、Plane間の原子性を求めない（`docs/13-technology-stack.md` §§5–6）。
+- `tasks`はcurrent state、contract/event/progress historyはappend-only、progress currentは復旧用read modelとする（`docs/01-domain-model.md`、`docs/11-data-model.md`）。
+- ownerの排他はin-memory mutexで代替せずSQLiteの同一transactionと制約で保証する。`waiting`/`suspended`は非終端なのでownerを解放しない（`docs/03-agent-lifecycle.md` §§4, 9, 12）。
+- 状態遷移ではcurrent Task、対応TaskEvent、必要なowner/progress更新を同一transactionで確定する。拒否操作はいかなるpartial writeも残さない（`docs/02-task-lifecycle.md` §§1, 11）。
+- 全SQLite接続はWAL、foreign keys、busy timeoutを設定する。DB open/migration不能はfail-fastにし、競合を自動retryまたはsilent overwriteしない（`docs/13-technology-stack.md` §6）。
 
-- TaskStatusの全列挙と初期/終端辺は実装前に`docs/02`の正確な表をrepository testへ転記して確認する。新状態の追加は本Taskの対象外。
+## 代替案と不採用
+
+- 一括実装: 8pt/約1,380行の未検証変更となり、1〜2 Lap境界および独立QAの原因分離を損なうため不採用。
+- in-memory store/mutex: 再openとprocess競合を満たさないため不採用。
+- event sourcingのみ: MVPの復旧read modelを再生に依存させ、current/history分離の条件を満たしにくいため不採用。
+- mutable contract一行: 過去contractとeventの監査性を失うため不採用。
+- CGO依存SQLite driver: CI/実行環境のC toolchainへ可用性を結び付けるため、pure-Go driverが利用可能であることを0007-Aの依存確認で確定する。
+
+## 検証と引継ぎ条件
+
+各分割Taskは独立QA_PLANを先に作り、caseごとに`focused-rerun`（temporary SQLite、hermetic・deterministic・bounded）または候補証跡の`evidence-review`を理由付きで指定する。実OS権限、実配置、外部サービス、外部副作用は対象外なので`live-e2e`で代替PASSを作らない。
+
+DEVは各sliceで`gofmt`、`cd core && go test ./...`、`cd core && go vet ./...`、`make check`、`git diff --check`を実行し、candidate commit/tree、fixture、cache条件、exit、artifact digestをHANDOVERへ結び付ける。ReviewerとQAは同一candidateから独立並行に開始する。後続sliceへ進む前に、前sliceの承認candidate treeとmerge treeの同一性をmain Agentが確認する。
+
+## 未解決・main Agent判断待ち
+
+1. TASK-0007を上記0007-A〜Cへ新規Taskとして分割し、それぞれのTASK.mdと依存をmain Agentが作成・承認すること。これはPlannerの権限外であり、本TASK.mdは変更しない。
+2. 0007-Aで使うpure-Go SQLite driverの取得可能性、ライセンス、Go 1.23互換性をDEV開始前に確認すること。利用不可なら環境/依存のFAILとしてPLANへ戻し、CGO driverへ自動置換しない。
+3. `task-contract.schema.json`と`task-event.schema.json`の実行時validatorの選択は、0007-Cの設計判断とする。第一sliceはschema ID/revision/digestつきbytesの不変保存までに限定する。
 
 ## main Agentレビュー
 
-- [ ] 受け入れ条件が検証可能である。
-- [ ] 設計観点と代替案を検討している。
-- [ ] QA計画を作成できる。
-- [ ] 見積もりが規則どおりである。
-- [ ] DEV開始を承認した。
+- [ ] TASK-0007を0007-A〜Cへ分割することを承認し、各Taskの受け入れ条件と依存を作成した。
+- [ ] 0007-Aの範囲が元TASKの完了ではなく、最初の独立Taskであることを確認した。
+- [ ] `sol-high`と1 point見積を承認した。
+- [ ] 独立QA_PLANが承認されるまでDEVを開始しない。
