@@ -436,3 +436,13 @@ tasks:
     branch: task/TASK-0024-risk-based-qa-evidence
     worktree: worktrees/TASK-0024-risk-based-qa-evidence
     merged_commit: 9b7e8beb68c91204f5529fa297fb3385d5f05350
+  - id: TASK-0025
+    title: task-checkを安全契約変更の軽量経路へ対応させる
+    type: chore
+    epic: EPIC-001
+    status: backlog
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0025-safety-contract-task-check
+    depends_on: []
+    assignees: {}
