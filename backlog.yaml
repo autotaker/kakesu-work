@@ -421,8 +421,8 @@ tasks:
     title: QAを証跡監査とリスク別再実行へ変更する
     type: chore
     epic: EPIC-001
-    status: blocked
-    resume_status: dev
+    status: done
+    change_class: safety_contract
     priority: P1
     estimate_points: 1
     task_dir: tasks/TASK-0024-risk-based-qa-evidence
@@ -458,8 +458,8 @@ tasks:
     title: ReviewerとQAの軽微修正コミットを許可する
     type: chore
     epic: EPIC-001
-    status: blocked
-    resume_status: dev
+    status: done
+    change_class: safety_contract
     priority: P1
     estimate_points: 1
     task_dir: tasks/TASK-0026-trusted-nit-fix-commits

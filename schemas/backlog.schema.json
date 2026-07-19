@@ -40,6 +40,7 @@
         "type": { "enum": ["feature", "bug", "chore", "research"] },
         "epic": { "type": "string", "pattern": "^EPIC-[0-9]{3}$" },
         "status": { "enum": ["backlog", "plan", "dev", "qa", "blocked", "done", "cancelled"] },
+        "change_class": { "enum": ["product", "safety_contract"] },
         "resume_status": { "enum": ["plan", "dev", "qa"] },
         "priority": { "enum": ["P0", "P1", "P2", "P3"] },
         "estimate_points": { "enum": [1, 2, 3, 5, 8, 13] },

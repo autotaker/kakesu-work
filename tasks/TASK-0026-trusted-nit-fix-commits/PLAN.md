@@ -1,5 +1,6 @@
 ---
 task_id: "TASK-0026"
+change_class: safety_contract
 status: approved
 planner_agent: "planner-agent-terra-medium"
 approved_dev_profile: "sol-high"
@@ -7,6 +8,12 @@ approved_dev_profile_reason: "AgentのGit権限境界を変更する安全契約
 approved_dev_profile_risk_signals: ["contract", "authority"]
 approved_by: "main-agent-sol-high"
 approved_at: "2026-07-20"
+planning_reviewed_by: "reviewer-agent-terra-medium"
+planning_review_decision: pass
+planning_reviewed_at: "2026-07-20"
+classification_approved_by: "main-agent-sol-high"
+classification_approved_at: "2026-07-20"
+classification_approval_reason: "製品成果物を変更せず、ReviewerとQAの軽微修正に関する必須開発統制だけを変更したため"
 planned_implementation_files: 0
 planned_implementation_lines: 0
 estimate_points: 1

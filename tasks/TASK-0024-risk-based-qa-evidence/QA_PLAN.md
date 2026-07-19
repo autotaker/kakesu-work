@@ -1,5 +1,6 @@
 ---
 task_id: "TASK-0024"
+change_class: safety_contract
 status: approved
 qa_agent: "qa-agent-terra-medium"
 approved_by: "main-agent-sol-high"

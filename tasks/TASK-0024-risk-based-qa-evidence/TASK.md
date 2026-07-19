@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0024"
 title: "QAを証跡監査とリスク別再実行へ変更する"
-status: blocked
+status: done
 created_at: "2026-07-20"
 ---
 

@@ -1,6 +1,15 @@
 ---
 task_id: "TASK-0026"
-status: draft
+safety_checks:
+  process_tests: pass
+  contract_scope: pass
+  docs_lint: pass
+  make_check: pass
+safety_checked_at: "2026-07-20"
+safety_check_digest: "d31c7f9f73856abd69bd3e0673365aca4c8d3f3bcd6ff1eddb92e172d5b1dd9f"
+safety_candidate_tree: "31211f5bf6a29f0e6691c18b172a834afae1a1f6"
+safety_merge_tree: "31211f5bf6a29f0e6691c18b172a834afae1a1f6"
+status: safety_contract_complete
 completed_at: ""
 ---
 
