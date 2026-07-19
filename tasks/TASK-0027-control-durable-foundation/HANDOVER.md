@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0027"
-status: draft
-completed_at: ""
+status: completed
+completed_at: "2026-07-20"
 safety_checks:
   process_tests: pending
   contract_scope: pending
@@ -53,11 +53,11 @@ safety_merge_tree: ""
 ## 判断
 
 - 選択: pure-Go SQLiteと単一transactionを採用し、CGO、in-memory代替、owner lifecycle/versioned recoveryの先取りはしない。
-- 選択: `not-applicable | qa_carry_forward | focused-rerun | full-rerun`
-- Main判断の旧新コミット/tree、全差分とダイジェスト、影響ケース集合、レビュアー/`make check`証拠、理由: TODO
-- carry-forward時の`QA_RESULT.md` `CF-1`から`CF-7`: `not-applicable | complete | incomplete`
-- 影響QAケース集合が空でない場合の再実行証拠: TODO
-- `merge_tree`と案 treeの比較: `pending`
+- 選択: `not-applicable`
+- Main判断の旧新コミット/tree、全差分とダイジェスト、影響ケース集合、レビュアー/`make check`証拠、理由: candidateは修正なし。REVIEW/QAは`ca2b505` / `dd75cbf`をPASSし、merge commit `cb31790`のtreeも`dd75cbf`と一致した。
+- carry-forward時の`QA_RESULT.md` `CF-1`から`CF-7`: `not-applicable`
+- 影響QAケース集合が空でない場合の再実行証拠: 空。全caseはmerge前に同一treeのtemporary SQLiteで完了し、環境依存caseなし。
+- `merge_tree`と案 treeの比較: `equal`（`dd75cbfbfd803e8d40b858f31d8a45f6b0a6c867`）
 
 ## 既知の制約と未解決事項
 

@@ -5,7 +5,7 @@ qa_agent: "qa-agent-terra-medium"
 tested_commit: "ca2b505747553b0b719ae251532f74a014f831c9"
 candidate_commit: "ca2b505747553b0b719ae251532f74a014f831c9"
 candidate_tree: "dd75cbfbfd803e8d40b858f31d8a45f6b0a6c867"
-merge_tree: ""
+merge_tree: "dd75cbfbfd803e8d40b858f31d8a45f6b0a6c867"
 decision: pass
 tested_at: "2026-07-20"
 ---
@@ -15,8 +15,8 @@ tested_at: "2026-07-20"
 ## 対象
 
 - 案 コミット/tree: `ca2b505747553b0b719ae251532f74a014f831c9` / `dd75cbfbfd803e8d40b858f31d8a45f6b0a6c867`
-- `main` / merge tree:
-- `merge_tree`はマージ後にMainが記録し、案 QAでは未設定とする:
+- `main` / merge tree: `cb31790b7eebdff70038daa9e087a2a8eb80c9e1` / `dd75cbfbfd803e8d40b858f31d8a45f6b0a6c867`
+- `merge_tree`はマージ後にMainが記録し、案 QAでは未設定とする: 記録済み、candidate treeと一致。
 - QA PLAN 改訂: revision 2。`go.sum`を承認済み生成checksum lockとしてQA-005へ明記したqa_plan_defect補正。製品期待値不変。
 - 環境: Go 1.23.12、file-backed temporary SQLite、cache無効focused test。
 
