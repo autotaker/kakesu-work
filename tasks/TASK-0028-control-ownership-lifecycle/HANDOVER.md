@@ -22,25 +22,26 @@ safety_merge_tree: ""
 
 ## candidate-bound DEV証跡
 
-- `candidate_commit`: `4e89916d3e63139c2163dd2d39ae912c2b6a6394`
-- `candidate_tree`: `69339f5614629e33a0ecd67e731537970db41816`
+- `candidate_commit`: `69a7e17df493aa27228001944c6595b7b7c8077e`
+- `candidate_tree`: `c7050bdc444c360b1327ffd2e5ef7b7ea6650074`
 
 | ケース ID | コマンド/テスト | 環境/フィクスチャ | cache条件 | exit | 成果物 ダイジェスト | 未実施理由 |
 |---|---|---|---:|---:|---|---|
 | QA-001〜008 | `go test -count=1 ./internal/control`; `go test -count=20 ./internal/control`; `go test -race ./internal/control`; `make check` | case別temporary file SQLite、2 Store/2 sql.DB | focusedはcache無効、反復20回 | 0 | 4-file SHA-256は主要変更に記載 | なし |
 
-- QAへ渡すネガティブ検出証拠、テスト弱体化の有無を判定できる差分ダイジェスト: candidate binary diff SHA-256 `785087e0f91e6b2e87ed18b02e0566f1cdf478f5912700fe97432b531e1776cf`。既存test削除なし。
+- QAへ渡すネガティブ検出証拠、テスト弱体化の有無を判定できる差分ダイジェスト: mainからのcandidate binary diff SHA-256 `07463f6c750c8ae2357e51a43a5c342568b4236db08d5a04144286cdfcbe7473`。既存test削除なし。
 
 ## 主要な変更
 
-- `store.go`: schema v2 migration、active owner partial unique index、busy/locked typed conflict。SHA-256 `e6c292079d1ca9db1678797a803a9507b061e568457c95c820f3ea046e4d8ae4`。
-- `lifecycle.go`: 7 state/13 edge、expected-state CAS、atomic event/release。SHA-256 `f7b4548ca2bdf2e1ce817678e3c4757199cef210324c2c1eae3dc98e695f0141`。
-- tests: 全49 pair、owner保持/再利用、全terminal failure stage、v1 dirty migration、二接続競合。`store_test.go` `3c626f...be6`、`lifecycle_test.go` `5183ee...3b12`（DEV完了時digest、candidate差分を正本とする）。
+- `store.go`: schema v2 migration、active owner partial unique index、event payload column、busy/locked typed conflict。SHA-256 `9b236c6c4b78b49bc9a5b8a7bf88f2fcfa6c858349c1c87d5d8a3e1ca1b1ecbe`。
+- `lifecycle.go`: 7 state/13 edge、expected-state CAS、JSON event payload validation/persistence、atomic event/release。SHA-256 `ab096da62345de2c6dd7d47f66226c328e4b098fd6e00836a4a24c99f7b4980e`。
+- tests: 全49 pair、owner保持/再利用、全terminal failure stage、v1 dirty migration、二接続競合、mismatch precedence、不正/代表payloadとreopen。`store_test.go` `2d8f80fa1c1766997647abe3904028494dc860441925995f372be9e7eb7bac6b`、`lifecycle_test.go` `ccbbee54e490c49fb00aa89148cad9d1d0a3542d82f69fb918e1473a23d64f3d`。
 
 ## 検証結果
 
 - focused PASS、20回反復PASS（28.412秒）、race PASS（5.514秒）、Main `make check` PASS、`git diff --check` PASS。
-- production追加187 physical lines（store net +23、lifecycle 164）で承認上限240以内。
+- REVIEW P1×2（CAS mismatch error precedence、event payload欠落）をLap2で修正。affected focused/control regression/`make check` PASS。
+- production追加225 physical lines（store 27、lifecycle 198）で承認範囲210–240以内。
 
 安全契約変更では`safety_checks`を`process_tests`、`contract_scope`、`docs_lint`、`make_check`の4項目だけとし、すべて`pass`を記録する。`safety_check_digest`は案 tree、merge tree、上記順の検査名と結果を`key=value`の改行区切りで正規化し、末尾改行を含めたSHA-256とする。第2親の案 treeとmerge treeもフロントマターへ記録する。製品用のREVIEW/QA PASS、製品用の完了HANDOVER、Wiki取込記録を代用証跡として作成しない。
 
