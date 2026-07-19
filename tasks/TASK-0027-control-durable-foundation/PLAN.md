@@ -12,8 +12,8 @@ planning_reviewed_by: ""
 planning_review_decision: "pending"
 planning_reviewed_at: ""
 planned_implementation_files: 2
-planned_implementation_lines: 190
-estimate_points: 1
+planned_implementation_lines: 252
+estimate_points: 2
 ---
 
 # TASK-0027 PLAN — Control durable foundation
@@ -54,11 +54,11 @@ TASK-0028 owns owner exclusivity, lifecycle transitions, Task updates, and owner
 
 | File | Type | Lines | Change |
 | --- | --- | ---: | --- |
-| core/go.mod | config | 5 | Add `modernc.org/sqlite v1.38.2`; pure-Go、Go 1.23互換、BSD-3-Clause。 |
+| core/go.mod | config | 18 | Add `modernc.org/sqlite v1.38.2`と間接依存; pure-Go、Go 1.23互換、BSD-3-Clause。 |
 | core/go.sum | generated dependency lock | 0 | Go module checksum。見積対象外。 |
-| core/internal/control/store.go | implementation | 185 | Open/migration, pragmas, models, atomic create/read, rollback, typed errors. |
+| core/internal/control/store.go | implementation | 234 | Open/migration、pragmas、models、atomic create/read、rollback、typed errors、故障注入seam。 |
 
-core/internal/control/store_test.go is required test evidence but excluded from production SLOC. file_score=ceil(2/3)=1; line_score=ceil(190/200)=1; therefore estimate is 1 point.
+core/internal/control/store_test.go is required test evidence but excluded from production SLOC. 初期見積190行/1 pointはmigration SQL、typed model/error、故障注入seamを過小評価していた。candidate実測は2 files / 252 physical linesで、file_score=ceil(2/3)=1、line_score=ceil(252/200)=2、therefore estimate is 2 points. 製品Goコード全体はcandidate時点で約693行で、1,500行目標/1,800行hard limit内に十分収まる。可読性やfail-closed検査を削らず実測へ補正する。
 
 ## Execution
 
@@ -78,12 +78,12 @@ core/internal/control/store_test.go is required test evidence but excluded from 
 
 ## Risks and stops
 
-Stop and return to PLAN if the driver cannot be obtained/licensed for Go 1.23, migration requires an unplanned dependency/SQL directory, readable implementation exceeds 190 lines, contract JSON validation becomes necessary, or TASK-0028/0029 behavior is required. Do not compress errors, skip rollback proof, or pull later scope into this slice.
+Stop and return to PLAN if the driver cannot be obtained/licensed for Go 1.23, migration requires an unplanned dependency/SQL directory, candidate exceeds the remeasured 252 physical implementation lines without a concrete acceptance need, contract JSON validation becomes necessary, or TASK-0028/0029 behavior is required. Do not compress errors, skip rollback proof, or pull later scope into this slice.
 
 ## Main Agent review
 
 - [x] TASK-0007 0007-A is isolated from TASK-0028 and TASK-0029.
-- [x] Two implementation paths, 190 lines, and one-point estimate are valid. `go.sum`は生成lockとして見積対象外。
+- [x] Two implementation paths, remeasured 252 physical lines, and two-point estimate are valid. `go.sum`は生成lockとして見積対象外。初期190行/1 pointはrequirement_gapとしてMainが補正した。
 - [x] Acceptance is testable with temporary SQLite.
 - [x] Independent QA_PLAN is approved before DEV.
 - [x] DEV is approved.

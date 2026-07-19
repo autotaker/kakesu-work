@@ -473,7 +473,7 @@ tasks:
     epic: EPIC-002
     status: dev
     priority: P1
-    estimate_points: 1
+    estimate_points: 2
     task_dir: tasks/TASK-0027-control-durable-foundation
     depends_on:
       - TASK-0006
