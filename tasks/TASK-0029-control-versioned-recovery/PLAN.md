@@ -115,9 +115,9 @@ Changes after QA touch persistence/concurrency/schema-reference/recovery/fail-cl
 ## Main Agent review
 
 - [x] TASK-0007 0007-C is fully represented without TASK-0027/0028 scope regression.
-- [ ] TASK-0028 merge/API/tree precondition is explicit and verified before DEV.（依存merge後に確認）
+- [x] TASK-0028 merge/API/tree precondition is explicit and verified before DEV.（merge `63ffb0e`、tree `c7050bd`。schema v2、`Store`/`ConflictError`、payload付きevent sequence APIを再照合済み）
 - [x] Contract/progress CAS, immutable history/current, recovery, and corruption fail-fast are testable.
 - [x] 3 implementation files / 340 lines / 2 points and 360-line stop are approved.
 - [x] sol-high DEV profile is approved for persistence/concurrency/recovery risk.
 - [x] Independent TASK-first QA_PLAN is approved before DEV.
-- [ ] DEV start is approved.（TASK-0028依存merge後）
+- [x] DEV start is approved.（TASK-0028依存merge/tree一致と実API再照合後）
