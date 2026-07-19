@@ -446,3 +446,13 @@ tasks:
     task_dir: tasks/TASK-0025-safety-contract-task-check
     depends_on: []
     assignees: {}
+  - id: TASK-0026
+    title: ReviewerとQAの軽微修正コミットを許可する
+    type: chore
+    epic: EPIC-001
+    status: backlog
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0026-trusted-nit-fix-commits
+    depends_on: []
+    assignees: {}
