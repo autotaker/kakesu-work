@@ -5,6 +5,9 @@ status: approved
 planner_agent: "planner-agent-terra-medium"
 approved_by: "main-agent-sol-high"
 approved_at: "2026-07-20"
+approved_dev_profile: "sol-high"
+approved_dev_profile_reason: "SQLite migration、永続transaction、rollback、Schema snapshotを同時に扱う高リスク実装のため"
+approved_dev_profile_risk_signals: ["persistence", "concurrency", "schema"]
 planning_reviewed_by: ""
 planning_review_decision: "pending"
 planning_reviewed_at: ""
