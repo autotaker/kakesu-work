@@ -1,9 +1,9 @@
 ---
 task_id: "TASK-0026"
-status: draft
-qa_agent: ""
-approved_by: ""
-approved_at: ""
+status: approved
+qa_agent: "qa-agent-terra-medium"
+approved_by: "main-agent-sol-high"
+approved_at: "2026-07-20"
 revision: 1
 implementation_reviewed_at: ""
 expectation_changed: false
@@ -14,44 +14,43 @@ expectation_change_approved_by: ""
 
 ## 方針
 
-この計画はTASKだけからDEV開始前に作成し、各ケースへ`qa_execution_mode`を一つだけ理由付きで割り当てる。`evidence-review`はcandidate-bound証跡の独立監査、`focused-rerun`はhermetic・deterministic・上限付き フィクスチャで完全再現できる高リスクケース、`live-e2e`は実OS権限/auth（sudo/PAMを含む）、実配置、外部作用、実restart/ロールバック/クリーンアップ、環境固有integrationを必要とするケースに使う。条件が不明な場合は強いモードまたはblockedへfail-closedし、PASSで代替しない。
+これは製品実装ではなく必須開発統制を変更する安全契約の計画である。TASK本文だけを根拠に、完成差分を独立に静的照合する。製品`candidate_commit`/`candidate_tree`、製品テスト、`QA_RESULT.md`のPASSは対象外とする。
 
 ## 前提と環境
 
-- TODO
+- 対象は製品リポジトリ内の規範文書、Task template、関連skillだけであり、製品成果物・宣言済み製品依存は変更しない。
+- 照合対象はTASKが列挙するAGENTS、Agent責務、review/QA文書、Task template、関連skillと、それらに残る子AgentのGit操作に関する全面禁止である。
+- 本計画の結果は安全契約の計画レビュー証跡であり、製品QAのPASSではない。
 
 ## 受け入れ条件との対応
 
 | ケースID | 受け入れ条件 | `qa_execution_mode` / 理由 | 操作 | 期待結果 | 必要証跡 |
 |---|---|---|---|---|---|
-| QA-001 | TODO | `evidence-review` / TODO | TODO | TODO | ケース、案 コミット/tree、コマンド/テスト、環境/フィクスチャ、cache、exit、成果物 ダイジェスト、未実施理由、ネガティブ検出能力、テスト弱体化の有無 |
+| SC-001 | Reviewer/QAが自ら軽微と判断した指摘をTask worktreeで修正・stage・commitでき、Task branch取り込み確認でPASSにできる。DEV差戻し、再REVIEW、再QA、`qa_carry_forward`を要求しない。 | `evidence-review` / 規範文書の静的変更だけで受け入れ真実を確認できる。 | 対象差分とTASKを突合し、Reviewer/QAに限定した軽微修正・Task branch取り込み後のPASSを明記し、上記の追加ゲートを必須とする記述がないことを検索する。 | 裁量は閉じた許可リスト・SLOC上限・追加チェックリストへ置換されず、軽微修正の解消経路が一貫する。 | 対象パス、検索語、検索結果、差分、実行環境、exit、差分ダイジェスト。欠落または矛盾はPASSにしない。 |
+| SC-002 | 挙動、要件、安全境界を変えると担当Agentが判断したとき通常差戻しへ戻す。 | `evidence-review` / 判断分岐は文書の静的整合で確認できる。 | 正常経路と通常差戻しの境界を差分横断で照合する。 | 軽微修正の例外が挙動・要件・安全境界の変更へ拡張されない。 | 対象パス、該当文言、差分、検索結果、exit、差分ダイジェスト。影響不明はPASSにしない。 |
+| SC-003 | Mainだけがmainへのmergeを所有し、子Agentはmainへ直接merge/pushしない。 | `evidence-review` / 権限境界は規範文書の静的照合で確認できる。 | Mainのmain統合所有と子Agentのmain直接操作禁止を全対象規範で照合する。 | Reviewer/QAのTask branch commit許可はmain統合・push権限を与えない。 | 対象パス、検索語、検索結果、差分、exit、差分ダイジェスト。権限境界の曖昧さはPASSにしない。 |
+| SC-004 | 既存の全面的な子Agentのstage/commit/merge/`.git`書込み禁止との矛盾が全規範から消える。 | `evidence-review` / 受け入れ真実は全規範の静的探索である。 | `rg`で製品リポジトリの規範（AGENTS、`docs/development/`、`templates/task/`、`.agents/skills/`、`.codex/`）を検索し、子Agent一般を対象にstage/commit/merge/`.git`書込みを全面禁止する残存文言を確認する。必要なら同義語でも再検索する。 | Reviewer/QAの軽微修正に矛盾する全面禁止は残らず、DEV等へ不要にGit権限を拡張しない。 | 検索対象・語句・一致箇所の判定、差分、exit、差分ダイジェスト。未探索範囲、残存矛盾、対象外への権限拡張はPASSにしない。 |
 
 ## 境界・異常・回帰
 
-- 高リスク、証跡欠落、ダイジェスト/コミット/tree不一致、テスト削除/弱体化、影響不明は`evidence-review` PASSにしない。
-- `qa_carry_forward`は`QA_RESULT.md`の`CF-1`から`CF-7`を全て証明できる場合だけ許可する。影響QAケース集合が空でなければ該当ケースを再実行し、影響を限定できなければ全面再実行とする。QA FAIL、受け入れ条件/QA_PLAN変更、認証認可、秘密、sudo/PAM、IPC/Schema/設定/依存、並行性/ライフサイクル/persistence/エラー/fail-closed、テスト削除/弱体化、影響不明、証跡と評価対象の案/tree不一致では禁止する。
-- `live-e2e`の環境または安全なクリーンアップが用意できない場合はblockedとして残す。
+- 全面禁止を消す変更が、Reviewer/QAの軽微修正以外の子Agentへstage/commit権限を与える場合、またはmainへの直接merge/pushを許す場合は`requirement_gap`としてPLANへ戻す。
+- 「軽微」の閉じた列挙、SLOC上限、追加承認チェックリストを導入した場合はTASKの対象外としてFAIL候補にする。
+- 製品コード、テスト、runtime/build設定、Schema、依存、生成物が差分に含まれる場合は安全契約経路を停止し、製品変更へ再分類する。
 
 ## 実施不能時の扱い
 
-- 未実施コマンド、環境、原因、残余リスクを記録し、別モードの結果でPASSにしない。FAIL候補の分類と復帰先はMainが判断する。
-
-## 案とマージ後確認
-
-- DEVは`candidate_commit`、`candidate_tree`、ケース ID、コマンド/テスト、環境/フィクスチャ、cache条件、exit、成果物 ダイジェスト、未実施理由をHANDOVERへ記録する。
-- REVIEWとQAは同一案から相互のPASSを前提にせず独立に開始する。
-- 修正後の`qa_carry_forward`はMainだけが`QA_RESULT.md`の`CF-1`から`CF-7`を全て記録して選択する。
-- `merge_tree == candidate_tree`かつ環境依存ケースなしなら全面確認を省略できるが、環境依存ケースはマージ後もケース単位で確認する。
+- 規範の探索範囲、検索結果、または変更意図を確定できない場合はblockedとし、製品QA PASSや別モードのPASSで代替しない。
+- FAIL候補はimplementation_defect、qa_plan_defect、requirement_gap、environment_issue、regressionを根拠付きで分類し、最終判断はMainが記録する。DEV責任とは推定しない。
 
 ## 実装後の再確認
 
-- [ ] 実装差分とレビュー結果を確認した。
-- [ ] 操作手順を現行実装に合わせた。
-- [ ] 期待結果または試験範囲の変更有無を確認した。
-- [ ] 期待結果または範囲を変更した場合、main Agentの承認を得た。
+- [ ] TASK本文と完成差分を独立に突合した。
+- [ ] SC-001からSC-004の静的証跡を記録した。
+- [ ] 製品成果物・依存の変更がないことを確認した。
+- [ ] `QA_RESULT.md`に製品PASSを作成しないことを確認した。
 
 ## 改訂履歴
 
 | 改訂 | 日付 | 変更者 | 変更内容 | main承認 |
 |---:|---|---|---|---|
-| 1 | 2026-07-20 | | 初版 | `pending` |
+| 1 | 2026-07-20 | QA Agent | TASK-first 初版 | `main-agent approved` |

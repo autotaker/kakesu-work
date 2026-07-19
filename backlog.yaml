@@ -450,9 +450,14 @@ tasks:
     title: ReviewerとQAの軽微修正コミットを許可する
     type: chore
     epic: EPIC-001
-    status: backlog
+    status: plan
     priority: P1
     estimate_points: 1
     task_dir: tasks/TASK-0026-trusted-nit-fix-commits
     depends_on: []
-    assignees: {}
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
