@@ -466,6 +466,4 @@ tasks:
       dev: dev-agent-sol-high
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
-    branch: task/TASK-0026-trusted-nit-fix-commits
-    worktree: worktrees/TASK-0026-trusted-nit-fix-commits
     merged_commit: c541dde2d6fb2c4c2c6abacb18a46daf65c55527
