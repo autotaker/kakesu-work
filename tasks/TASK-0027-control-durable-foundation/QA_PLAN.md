@@ -5,7 +5,7 @@ status: approved
 qa_agent: "qa-agent-terra-medium"
 approved_by: "main-agent-sol-high"
 approved_at: "2026-07-20"
-revision: 1
+revision: 2
 implementation_reviewed_at: "2026-07-20"
 expectation_changed: false
 expectation_change_approved_by: ""
@@ -44,7 +44,7 @@ expectation_change_approved_by: ""
 | QA-002 | root Task作成の単一transaction正常系 | `focused-rerun` / 複数tableの原子性・順序・参照整合は高リスクだがtemporary DBで完全観測できる | migration済み空DBへ一つの入力を作成し、Task、owner Agent割当、workspace reference、contract snapshot、progress、eventをtransaction経由で作成する。全tableを直接queryし、公開read modelとも突合する | 一回の成功でTask 1、owner割当 1、workspace参照 1、contract v1 snapshot 1、progress v0 1、event 2がcommitされる。全ID/FKが同じTaskへjoinし、eventはsequence 1=`TaskCreated`、2=`OwnerAssigned`、重複又は欠落なし。read modelは入力と永続行に一致する | 入力fixture、table別件数・主なID/FK、event sequence/type、read model projection、transaction成功、command/exit/digest。tableごとの個別commit、event順序違反、孤立参照、追加rowがあればFAIL |
 | QA-003 | contract v1 JSON snapshotとprogress v0の不変保存 | `focused-rerun` / snapshot metadataとJSON payloadの永続化はpersistence境界であり実DBqueryが必要 | 識別可能なcontract v1 JSONとschema ID/revision/digestを含む入力を作成し、DB rowとread modelから再取得する。別Taskのpayloadと混線しないnegative fixtureも用いる | schema ID、revision、digest、contract v1 payloadが同じsnapshotとして保存され、入力bytes又は明示された受理時canonical representationと一致する。progressは初期version/state `v0`で一件だけ作成され、contract/progress更新履歴は生成しない | 入力payload digest、保存payload digest、schema metadata、progress row、Task join、read model比較、command/exit/digest。metadata/payload不一致、暗黙のSchema意味変更、複数progress、TASK-0029の履歴先取りならFAIL |
 | QA-004 | transaction途中の故意SQL failureで全table rollback | `focused-rerun` / error injection、rollback、再試行はfail-closedの高リスク境界だがtemporary DBでboundedに再現できる | 作成transactionの中間（少なくともTask作成後かつcommit前）へ故意のSQL failureを注入する。failure前後に全対象tableの件数と対象IDをqueryし、error後に同じ入力をfailureなしで再試行する | 初回はtyped errorで終了し、Task、owner、workspace、contract、progress、eventの全tableに対象rowを一件も残さない。transaction/connectionは安全に終了し、同じ入力の再試行が一回だけ正常commitしてQA-002の完全な状態になる | injection位置と実SQL error、rollback後の全table count/対象ID不存在、WALを含む再open後も不存在、再試行結果、command/exit/digest。部分row、sequence消費の残骸、lock残留、再試行失敗/重複ならFAIL |
-| QA-005 | Core単独writer、依存・scope・後続Task境界 | `evidence-review` / ownershipとdependencyはcandidate差分で静的に完全監査でき、挙動caseはQA-001〜004で再実行する | candidate差分、`core/go.mod`、store API、package import、既存draft-v0 Schemaを監査し、pure-Go/CGO不要、Go 1.23互換、ライセンス証跡、Control package内のwriter限定を確認する。TASK-0028/0029と対象外機能の追加を検索する | 変更はTASKが固定した`core/go.mod`、`core/internal/control/store.go`、`core/internal/control/store_test.go`だけに限定される。module checksum等の追加pathが必要なら実装前にTASK/PLANを再承認する。外部Plane用write API、transport/CLI/Inbox/Outbox/Agent Run、owner lifecycle、contract/progress更新履歴、Schema変更を追加しない | changed-path一覧、dependency metadata/license出典digest、import/API検索、Schema差分0、candidate/tree、command/exit/digest。CGO必須、Go非互換、不明license、外部writer、未承認path、scope外変更又は影響不明ならPASS不可 |
+| QA-005 | Core単独writer、依存・scope・後続Task境界 | `evidence-review` / ownershipとdependencyはcandidate差分で静的に完全監査でき、挙動caseはQA-001〜004で再実行する | candidate差分、`core/go.mod`、`core/go.sum`、store API、package import、既存draft-v0 Schemaを監査し、pure-Go/CGO不要、Go 1.23互換、ライセンス証跡、Control package内のwriter限定を確認する。TASK-0028/0029と対象外機能の追加を検索する | 変更はTASK/PLANが固定した`core/go.mod`、生成checksum lockの`core/go.sum`、`core/internal/control/store.go`、`core/internal/control/store_test.go`だけに限定される。外部Plane用write API、transport/CLI/Inbox/Outbox/Agent Run、owner lifecycle、contract/progress更新履歴、Schema変更を追加しない | changed-path一覧、dependency metadata/license出典digest、import/API検索、Schema差分0、candidate/tree、command/exit/digest。CGO必須、Go非互換、不明license、外部writer、未承認path、scope外変更又は影響不明ならPASS不可 |
 | QA-006 | candidate-bound統合証跡と回帰 | `evidence-review` / focused rerun結果、差分、広域checkを同一candidateへ束縛して監査できる | QA-001〜004のfresh結果をcandidate-bound DEV証跡と突合し、`go test -count=1 ./internal/control/...`、`make check`、`git diff --check`、変更scopeを監査する。test差分から各negative mutationの失敗検出能力を確認する | 全caseが同一candidate commit/treeを対象にし、cache無効化、fixture、exit、artifact digestが揃う。focused testsと広域checkがPASSし、test削除/弱体化や既存wire/schema契約の変更がない | candidate commit/tree、全command/exit/time/digest、差分digest、未実施理由、negative assertion対応表。証跡欠落、不一致、testがmockだけ、scope逸脱、期待値不明ならPASS不可 |
 
 ## forward / negative scenarios
@@ -92,4 +92,5 @@ QA-001〜004を一括testで実行する場合も、migration/reopen/unknown ver
 
 | 改訂 | 日付 | 変更者 | 変更内容 | main承認 |
 |---:|---|---|---|---|
-| 1 | 2026-07-20 | QA Agent | TASK-first初版。temporary SQLiteのmigration/reopen、atomic create、snapshot、SQL failure rollback/retry、scope/evidence caseを固定。 | `pending` |
+| 1 | 2026-07-20 | QA Agent | TASK-first初版。temporary SQLiteのmigration/reopen、atomic create、snapshot、SQL failure rollback/retry、scope/evidence caseを固定。 | `approved by main-agent-sol-high` |
+| 2 | 2026-07-20 | Main Agent | `go.sum`を未承認追加pathと誤記したqa_plan_defectを修正。承認済みPLANどおり生成checksum lockとしてQA-005の監査対象へ明記。製品期待値・candidateは不変。 | `approved by main-agent-sol-high` |
