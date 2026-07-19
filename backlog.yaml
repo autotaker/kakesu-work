@@ -500,8 +500,6 @@ tasks:
       dev: dev-agent-sol-high
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
-    branch: task/TASK-0028-control-ownership-lifecycle
-    worktree: worktrees/TASK-0028-control-ownership-lifecycle
     merged_commit: 63ffb0e48e89342e7dca931890f806218ac9cd8b
   - id: TASK-0029
     title: Control versioned状態とクラッシュ復旧を実装する
