@@ -449,8 +449,6 @@ tasks:
       dev: dev-agent-sol-high
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
-    branch: task/TASK-0025-safety-contract-task-check
-    worktree: worktrees/TASK-0025-safety-contract-task-check
     merged_commit: 53542a8d30b08cb9609dc9d93a4d6553aba9d00a
   - id: TASK-0026
     title: ReviewerとQAの軽微修正コミットを許可する
