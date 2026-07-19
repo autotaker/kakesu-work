@@ -5,7 +5,7 @@ qa_agent: "qa-agent-terra-medium"
 tested_commit: "864f455b563a6fffb043ed297d5cb10e3849b988"
 candidate_commit: "864f455b563a6fffb043ed297d5cb10e3849b988"
 candidate_tree: "5ff201700eb58aedd8635a5456e5a741ae4f5b22"
-merge_tree: ""
+merge_tree: "5ff201700eb58aedd8635a5456e5a741ae4f5b22"
 decision: pass
 tested_at: "2026-07-20"
 ---

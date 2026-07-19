@@ -505,7 +505,7 @@ tasks:
     title: Control versioned状態とクラッシュ復旧を実装する
     type: feature
     epic: EPIC-002
-    status: dev
+    status: qa
     priority: P1
     estimate_points: 3
     task_dir: tasks/TASK-0029-control-versioned-recovery
@@ -519,3 +519,4 @@ tasks:
       qa: qa-agent-terra-medium
     branch: task/TASK-0029-control-versioned-recovery
     worktree: worktrees/TASK-0029-control-versioned-recovery
+    merged_commit: a908567d08f5f1db0c3c1258c9560af45953d9cc

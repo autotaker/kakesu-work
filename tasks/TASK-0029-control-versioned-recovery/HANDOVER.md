@@ -1,16 +1,16 @@
 ---
 task_id: "TASK-0029"
-status: review
-completed_at: ""
+status: complete
+completed_at: "2026-07-20"
 safety_checks:
-  process_tests: pending
-  contract_scope: pending
-  docs_lint: pending
-  make_check: pending
-safety_checked_at: ""
-safety_check_digest: ""
-safety_candidate_tree: ""
-safety_merge_tree: ""
+  process_tests: pass
+  contract_scope: pass
+  docs_lint: pass
+  make_check: pass
+safety_checked_at: "2026-07-20"
+safety_check_digest: "not-applicable-product-task"
+safety_candidate_tree: "5ff201700eb58aedd8635a5456e5a741ae4f5b22"
+safety_merge_tree: "5ff201700eb58aedd8635a5456e5a741ae4f5b22"
 ---
 
 # TASK-0029 HANDOVER
@@ -54,11 +54,12 @@ safety_merge_tree: ""
 - Main判断の旧新コミット/tree、全差分とダイジェスト、影響ケース集合、レビュアー/`make check`証拠、理由: TODO
 - carry-forward時の`QA_RESULT.md` `CF-1`から`CF-7`: `not-applicable | complete | incomplete`
 - 影響QAケース集合が空でない場合の再実行証拠: TODO
-- `merge_tree`と案 treeの比較: `pending`
+- `merge_commit`: `a908567d08f5f1db0c3c1258c9560af45953d9cc`
+- `merge_tree`とcandidate treeの比較: `5ff201700eb58aedd8635a5456e5a741ae4f5b22` で一致。環境依存caseなしのため重複full post-merge QAは省略。
 
 ## 既知の制約と未解決事項
 
-- なし
+- `SQLITE_BUSY`専用fixtureはない。typed分類のcode reviewと反復2-writer raceで代替した。
 
 環境依存ケースがある場合、install/deploy/config生成、実権限、外部作用、実restart/ロールバック/クリーンアップのマージ後確認を省略しない。実環境または安全なクリーンアップが不明なケースはblockedとして残す。
 
@@ -74,7 +75,7 @@ safety_merge_tree: ""
 
 ### 反例・失敗・注意点
 
-- Control durable store schemaとrecovery契約の追記。
+- `wiki/semantic/schemas/control-durable-store.md`へschema v3、versioned CAS、watermark、recovery integrity契約を追記する。
 
 ### 更新候補ページ
 
