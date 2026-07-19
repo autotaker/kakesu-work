@@ -1,6 +1,6 @@
 ---
 task_id: "TASK-0029"
-status: draft
+status: review
 completed_at: ""
 safety_checks:
   process_tests: pending
@@ -17,32 +17,39 @@ safety_merge_tree: ""
 
 ## 成果
 
-- TODO
+- SQLite migration v3、expected-version contract/progress CAS、immutable history、schema参照付きevent、close/reopen recoveryを実装した。
+- 同expected versionの並行更新は一方だけ成功し、故意SQL失敗とmigration失敗は部分状態やversion gapを残さない。
 
 ## candidate-bound DEV証跡
 
-- `candidate_commit`:
-- `candidate_tree`:
+- `candidate_commit`: `af0d8d5ff785fb098b539f97595dc2abb6898d7e`
+- `candidate_tree`: `4f7b761966cc2148906eaa1d3a8d76318c552703`
 
 | ケース ID | コマンド/テスト | 環境/フィクスチャ | cache条件 | exit | 成果物 ダイジェスト | 未実施理由 |
 |---|---|---|---:|---:|---|---|
-| QA-001 | TODO | TODO | TODO | TODO | TODO | なし |
+| Q29-01/02/05 | `go test -count=1 ./internal/control` | temporary file-backed SQLite、contract/progress history/event/schema refs | isolated `/tmp` Go cache | 0 | changed-file SHA-256 below | なし |
+| Q29-03/04/06 | `go test -count=20 ./internal/control` / `go test -race -count=1 ./internal/control` | deterministic conflict barrier、fault injection、post-failure readback | isolated `/tmp` Go cache | 0 | candidate tree `4f7b761...` | なし |
+| Q29-07/08 | recovery/migration integration tests in `./internal/control` | close/reopen same DB path、corruption、v2→v3 rollback/cascade | temporary dirs | 0 | candidate tree `4f7b761...` | なし |
+| Q29-09 | `make check`; `git diff --check` | repository candidate worktree | existing dependency caches | 0 | diff SHA-256 `32918a9959c63aa71020ef18a6080e3494141e04cd79707f4a29b09d1983d511` | なし |
 
-- QAへ渡すネガティブ検出証拠、テスト弱体化の有無を判定できる差分ダイジェスト: TODO
+- QAへ渡すネガティブ検出証拠はversion/schema/payload/watermark拒否、全transaction stageのSQL failure、並行conflict、current/history/event corruption、migration rollbackを含む。テスト削除なし。差分SHA-256: `32918a9959c63aa71020ef18a6080e3494141e04cd79707f4a29b09d1983d511`
 
 ## 主要な変更
 
-- TODO
+- `core/internal/control/store.go`: migration v3とv2 data保存/table rebuild。
+- `core/internal/control/versioned.go`: contract/progress CAS、atomic history/current/event。
+- `core/internal/control/recovery.go`: durable full read modelとtyped corruption fail-fast。
+- production 396追加行、test 418追加行。承認済み400行stop内。
 
 ## 検証結果
 
-- TODO
+- focused PASS、`-count=20` PASS、race PASS、`make check` PASS、`git diff --check` PASS。
 
 安全契約変更では`safety_checks`を`process_tests`、`contract_scope`、`docs_lint`、`make_check`の4項目だけとし、すべて`pass`を記録する。`safety_check_digest`は案 tree、merge tree、上記順の検査名と結果を`key=value`の改行区切りで正規化し、末尾改行を含めたSHA-256とする。第2親の案 treeとmerge treeもフロントマターへ記録する。製品用のREVIEW/QA PASS、製品用の完了HANDOVER、Wiki取込記録を代用証跡として作成しない。
 
 ## 判断
 
-- TODO
+- ReviewerとQAが同一candidate commit/treeを独立評価する。
 - 選択: `not-applicable | qa_carry_forward | focused-rerun | full-rerun`
 - Main判断の旧新コミット/tree、全差分とダイジェスト、影響ケース集合、レビュアー/`make check`証拠、理由: TODO
 - carry-forward時の`QA_RESULT.md` `CF-1`から`CF-7`: `not-applicable | complete | incomplete`
@@ -63,11 +70,11 @@ safety_merge_tree: ""
 
 ### 再利用可能な知識
 
-- TODO
+- versioned current/history/eventの不整合は部分read modelを返さずtyped corruption errorにする。
 
 ### 反例・失敗・注意点
 
-- TODO
+- Control durable store schemaとrecovery契約の追記。
 
 ### 更新候補ページ
 
