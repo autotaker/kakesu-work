@@ -467,3 +467,13 @@ tasks:
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
     merged_commit: c541dde2d6fb2c4c2c6abacb18a46daf65c55527
+  - id: TASK-0027
+    title: Control永続ストア基盤と原子的Task作成を実装する
+    type: feature
+    epic: EPIC-002
+    status: backlog
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0027-control-durable-foundation
+    depends_on: []
+    assignees: {}
