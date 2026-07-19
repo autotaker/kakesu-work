@@ -2,6 +2,9 @@
 task_id: "TASK-0024"
 status: approved
 planner_agent: "planner-agent-terra-medium"
+approved_dev_profile: "sol-high"
+approved_dev_profile_reason: "必須開発統制を横断変更する安全契約であり、複数の規範文書・template・skillの一貫性を保つ必要があるため"
+approved_dev_profile_risk_signals: ["contract", "cross_cutting"]
 approved_by: "main-agent-sol-high"
 approved_at: "2026-07-20"
 planned_implementation_files: 0
