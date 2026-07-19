@@ -1,89 +1,123 @@
 ---
 task_id: "TASK-0029"
-change_class: ""
-status: draft
-planner_agent: ""
-approved_by: ""
-approved_at: ""
+change_class: "product"
+status: approved
+planner_agent: "planner-agent-terra-medium"
+approved_by: "main-agent-sol-high"
+approved_at: "2026-07-20"
+approved_dev_profile: "sol-high"
+approved_dev_profile_reason: "SQLite migration、expected-version CAS、immutable history、並行更新、rollback、close/reopen recoveryを扱う高リスク実装のため"
+approved_dev_profile_risk_signals: ["persistence", "concurrency", "schema-reference", "recovery", "fail-closed"]
 planning_reviewed_by: ""
 planning_review_decision: "pending"
 planning_reviewed_at: ""
-classification_approved_by: ""
-classification_approved_at: ""
-classification_approval_reason: ""
-planned_implementation_files: 0
-planned_implementation_lines: 0
-estimate_points: 1
+planned_implementation_files: 3
+planned_implementation_lines: 340
+estimate_points: 2
 ---
 
-# TASK-0029 PLAN
+# TASK-0029 PLAN — Versioned state and recovery
 
-## 受け入れ条件の具体化
+## Decision and DEV gate
 
-| 条件 | 観測方法 | 根拠 |
+TASK-0007 PLAN 0007-Cだけを、TASK-0027/0028後の最終1〜2 Lap product sliceとして実装する。本PLANは設計証跡でありDEV承認ではない。DEVはsol-high、Planner/Reviewer/QAは別Terra/medium roleとする。Mainが本PLANと独立TASK-first QA_PLANを承認し、依存preflightを完了するまでDEVを開始しない。
+
+TASK-0028は本PLAN作成時点で未mergeである。DEV開始条件は、TASK-0027とTASK-0028が独立REVIEW/QA PASS後にMainへmerge済み、各candidate_treeとmerge_treeが一致し、実際にmergeされたStore/lifecycle API、migration version、typed conflict、event sequence契約を再確認できること。想定と差があればコードで吸収せず、本PLANとQA_PLANを改訂・再承認する。
+
+DEVがcandidate_commit/candidate_treeを固定した後、ReviewerとQAはその同一candidateから独立かつ並行に開始する。Mainだけがmainへのmerge/push、修正後rerun判断、merge_tree照合を所有する。
+
+## Acceptance mapping
+
+| Condition | Observable temporary-SQLite evidence | Failure invariant |
 |---|---|---|
-| TODO | TODO | TODO |
+| Contract CAS | expected current vからv+1へ更新 | stale/future/skipped/same-version replacementはcurrent/history/event不変 |
+| Progress CAS | expected current vからv+1へ更新 | conflictはcurrent/history/event不変 |
+| Immutable history | v1/v2/v3 snapshot/historyとschema refsを列挙 | 旧rowのUPDATE/DELETEなし |
+| Atomicity | history append後またはcurrent/event更新前に故意SQL失敗 | transaction全rollback、version gapなし |
+| Concurrent update | 2 connection/barrierで同じexpected versionを更新 | 一方だけcommit、敗者typed conflict |
+| Recovery | close/reopen前後のfull read modelを比較 | current Task/owner、contract/progress、history、event sequenceが一致 |
 
-## 関連Wikiと判断
+## Versioned update contract
 
-- TODO
+### Contract update
 
-## 設計
+Inputはtask ID、expected contract version、new version、immutable contract JSON bytes、schema ID/revision/digestを含む。new versionはexpected+1のみ受理する。一transactionでcurrent contract pointer/versionをCAS更新し、新snapshotをappendし、対応するContractChanged eventを次sequenceでappendする。旧snapshotは更新・削除しない。JSON Schemaの意味検証は行わず、bytesとschema referenceの整合に必要な非空/形式境界だけを保存portで検査する。
 
-### 選択案
+### Progress update
 
-TODO
+Inputはtask ID、expected progress version、new version、progress payload、through-task-event sequence等の既存read-model metadata、schema ID/revision/digestを含む。new versionはexpected+1のみ受理する。一transactionでappend-only progress historyを追加し、current progressをCAS置換し、対応するProgressRefreshed eventを次sequenceでappendする。旧historyは更新・削除しない。
 
-### 代替案と不採用理由
+### Recovery read model
 
-- TODO
+DB close/reopen後、persisted current tablesを起点にTask current state、active owner、workspace参照、current contract/progressを取得し、immutable contract snapshots、progress history、Task eventsをversion/sequence順で付加する。event replayだけでcurrentを再生成しない。currentとhistoryのversion/digest/schema referenceが矛盾、欠落、重複、非単調ならtyped storage/corruption errorでfail-fastし、部分read modelを返さない。
 
-### 責務と境界
+## Invariants
 
-- TODO
+- Contract/progress更新はそれぞれexpected current version一致かつ単調+1だけを受理する。
+- history append、current update、event appendは同じtransactionで全件commit/rollbackする。
+- 競合、busy、stale versionを自動retryまたはsilent overwriteしない。
+- event sequenceは成功transactionごとに一つ増え、失敗時にgapを作らない。
+- schema ID/revision/digestはsnapshot/history/eventへ不変に結び付ける。
+- Recoveryはowner/lifecycleのTASK-0028不変条件を変更せず、current/history矛盾を隠さない。
 
-### 不変条件
+## Alternatives rejected
 
-- TODO
+- Mutable contract/progress one-row only: 旧versionと監査履歴を失う。
+- Event replay only: current read model復旧を全履歴再生へ依存させる。
+- Last-write-wins/autoretry: stale writerを成功に見せlost updateを起こす。
+- One generic patch API: contract/progress固有のversionとhistory境界を曖昧にする。
+- Runtime Schema validator addition: library/resolution設計が未承認でsliceを超える。
 
-### 失敗時・移行・互換性
+## Planned implementation boundary
 
-- TODO
-
-## 変更予定
-
-見積もり対象は実装コード、Schema、設定ファイルだけとする。
-
-| ファイル | 種別 | 概算変更行数 | 変更内容 |
+| File | Type | Estimated lines | Change |
 |---|---|---:|---|
-| TODO | implementation | 0 | TODO |
+| core/internal/control/store.go | implementation | 50 | migration v3、contract/progress current+history tables/constraints、schema refs |
+| core/internal/control/versioned.go | implementation | 190 | typed inputs/models、contract/progress expected-version CAS、atomic history/current/event updates |
+| core/internal/control/recovery.go | implementation | 100 | close/reopen full read model load、ordering/integrity checks、typed corruption error |
 
-## 見積もり
+Production estimate is 3 files / 340 lines. Required tests live in core/internal/control/versioned_test.go and core/internal/control/recovery_test.go and are excluded from production SLOC. file_score=ceil(3/3)=1、line_score=ceil(340/200)=2、therefore estimate is 2 points. Readable working range is 320–360 lines; above 360 is a pre-implementation/implementation stop requiring PLAN revision or split. Do not fit by semicolon packing, generic untyped maps, combined contract/progress errors, deleted integrity checks, or cryptic names.
 
-```text
-file_score = ceil(planned_implementation_files / 3)
-line_score = ceil(planned_implementation_lines / 200)
-estimate_points = 1, 2, 3, 5, 8, 13のうちmax(1, file_score, line_score)以上の最小値
-```
+## 1–2 Lap execution
 
-## 実装手順
+### Lap 1 — complete candidate
 
-1. TODO
+1. Preflight confirms TASK-0027/0028 merge and tree equality, then maps this PLAN to the actual Store API, migration version, transaction helper, error taxonomy, and event sequence port. Any mismatch stops before DEV.
+2. DEV adds migration v3 and separately readable contract/progress CAS ports, then recovery loader/integrity checks.
+3. DEV adds table-driven normal/stale/future/skipped/forced-failure cases, deterministic two-connection concurrency, multi-version old-history assertions, and close/reopen byte-equivalent read-model comparison.
+4. DEV records candidate commit/tree, commands, temporary fixture/cache conditions, exit, artifact digests, negative-detection evidence, SLOC, retries, and classification. Lap 1 ends only with a complete reviewable candidate.
 
-## 検証計画
+### Lap 2 — bounded finding correction only
 
-- TODO
+Lap 2 is exceptional and allowed only for one or two concrete REVIEW/QA findings against the complete Lap-1 candidate, no API redesign/new dependency/schema-validator/new fixture/scope change, and a bounded correction demonstrably complete within its first 20 minutes. Otherwise split/replan. No Lap 3.
 
-## 未解決事項
+## Verification plan
 
-- なし
+DEV runs focused checks first. Reviewer and QA independently execute approved QA modes against the same candidate:
 
-## main Agentレビュー
+- cd core && go test -count=1 ./internal/control
+- cd core && go test -count=20 ./internal/control
+- cd core && go test -race ./internal/control
+- cd core && go test ./...
+- cd core && go vet ./...
+- make check
+- make task-check TASK=TASK-0029
+- git diff --check
 
-- [ ] 受け入れ条件が検証可能である。
-- [ ] 設計観点と代替案を検討している。
-- [ ] QA計画を作成できる。
-- [ ] 見積もりが規則どおりである。
-- [ ] DEV開始を承認した。
+Temporary SQLite with deterministic barriers, close/reopen, and injected transaction failures is hermetic, deterministic, and bounded, so focused-rerun may establish acceptance truth when the QA_PLAN explicitly assigns it. If actual close/reopen, concurrent conflict, or forced rollback cannot be deterministically reproduced, that case is blocked; evidence-review cannot substitute. No privilege, external service, deployment, or live-e2e environment is expected.
 
-安全契約変更では、独立計画レビューのPASSとMainの分類承認をフロントマターへ記録する。分類変更時はTask、PLAN、QA_PLANを再承認し、承認者と時刻を更新する。
+## Stop conditions and exclusions
+
+Stop if TASK-0028 is unmerged, its API/schema/event sequence differs from this assumption, migration v3 cannot preserve existing 0027/0028 data, concurrent CAS/rollback cannot be deterministic, current/history integrity requires runtime Schema validation/new dependency, readable production exceeds 360 lines, or recovery requires backup/replication/event replay framework. Exclude owner/lifecycle changes, generic Task updates, schema changes/validator, transport/CLI, Inbox/Outbox, Plane-crossing atomicity, backup/PITR/replication, and all behavior beyond contract/progress versioned state.
+
+Changes after QA touch persistence/concurrency/schema-reference/recovery/fail-closed behavior and therefore are ineligible for qa_carry_forward. Main selects affected focused reruns or full rerun. Reviewer/QA minor fixes follow repository rules, but only Main integrates to main.
+
+## Main Agent review
+
+- [x] TASK-0007 0007-C is fully represented without TASK-0027/0028 scope regression.
+- [ ] TASK-0028 merge/API/tree precondition is explicit and verified before DEV.（依存merge後に確認）
+- [x] Contract/progress CAS, immutable history/current, recovery, and corruption fail-fast are testable.
+- [x] 3 implementation files / 340 lines / 2 points and 360-line stop are approved.
+- [x] sol-high DEV profile is approved for persistence/concurrency/recovery risk.
+- [x] Independent TASK-first QA_PLAN is approved before DEV.
+- [ ] DEV start is approved.（TASK-0028依存merge後）
