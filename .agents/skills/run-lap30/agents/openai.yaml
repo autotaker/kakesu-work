@@ -1,4 +1,4 @@
 interface:
   display_name: "Lap30"
-  short_description: "1 Task最大2周で安全なパイプライン開発と実績記録"
-  default_prompt: "Use $run-lap30 to deliver tasks in at most two counted 30-minute laps, pipeline safe downstream planning, and record structured evidence."
+  short_description: "製品Taskは原則1周、純粋証跡更新は軽量に処理"
+  default_prompt: "Use $run-lap30 to classify work, deliver each product task in one counted lap by default, and keep pure evidence maintenance outside counted laps."
