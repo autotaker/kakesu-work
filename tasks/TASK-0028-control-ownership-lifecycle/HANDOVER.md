@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0028"
-status: draft
-completed_at: ""
+status: complete
+completed_at: "2026-07-20"
 safety_checks:
   process_tests: pending
   contract_scope: pending
@@ -48,11 +48,11 @@ safety_merge_tree: ""
 ## 判断
 
 - DB制約を排他の正本とし、process mutex、自動retry、TASK-0029 versioned mutationは追加しない。
-- 選択: `not-applicable | qa_carry_forward | focused-rerun | full-rerun`
-- Main判断の旧新コミット/tree、全差分とダイジェスト、影響ケース集合、レビュアー/`make check`証拠、理由: TODO
-- carry-forward時の`QA_RESULT.md` `CF-1`から`CF-7`: `not-applicable | complete | incomplete`
-- 影響QAケース集合が空でない場合の再実行証拠: TODO
-- `merge_tree`と案 treeの比較: `pending`
+- 選択: `focused-rerun`
+- Main判断の旧新コミット/tree、全差分とダイジェスト、影響ケース集合、レビュアー/`make check`証拠、理由: 旧`4e89916`/`69339f5`から新`69a7e17`/`c7050bd`へCAS precedenceとpayloadを修正。影響QAを新candidateでrerun PASS、Reviewer make check PASS。
+- carry-forward時の`QA_RESULT.md` `CF-1`から`CF-7`: `not-applicable`
+- 影響QAケース集合が空でない場合の再実行証拠: QA_RESULTのcorrected candidate focused rerun digest `35e5f280...ec1c`。
+- `merge_tree`と案 treeの比較: `equal`（`c7050bdc444c360b1327ffd2e5ef7b7ea6650074`）
 
 ## 既知の制約と未解決事項
 

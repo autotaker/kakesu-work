@@ -2,10 +2,10 @@
 task_id: "TASK-0028"
 status: pass
 qa_agent: "qa-agent-terra-medium"
-tested_commit: "69a7e17df493aa27228001944c6595b7b7c8077e"
+tested_commit: "63ffb0e48e89342e7dca931890f806218ac9cd8b"
 candidate_commit: "69a7e17df493aa27228001944c6595b7b7c8077e"
 candidate_tree: "c7050bdc444c360b1327ffd2e5ef7b7ea6650074"
-merge_tree: ""
+merge_tree: "c7050bdc444c360b1327ffd2e5ef7b7ea6650074"
 decision: pass
 tested_at: "2026-07-20"
 ---
@@ -15,8 +15,8 @@ tested_at: "2026-07-20"
 ## 対象
 
 - 案 コミット/tree: `69a7e17df493aa27228001944c6595b7b7c8077e` / `c7050bdc444c360b1327ffd2e5ef7b7ea6650074`
-- `main` / merge tree:
-- `merge_tree`はマージ後にMainが記録し、案 QAでは未設定とする:
+- `main` / merge tree: `63ffb0e48e89342e7dca931890f806218ac9cd8b` / `c7050bdc444c360b1327ffd2e5ef7b7ea6650074`
+- `merge_tree`はマージ後にMainが記録し、案 QAでは未設定とする: candidate treeと一致、環境依存caseなし。
 - QA PLAN 改訂: revision 1、期待値変更なし。
 - 環境: temporary file SQLite、2 Store/2 sql.DB、Go 1.23.12。
 

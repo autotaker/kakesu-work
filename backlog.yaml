@@ -488,7 +488,7 @@ tasks:
     title: Control owner排他とTaskライフサイクルを実装する
     type: feature
     epic: EPIC-002
-    status: dev
+    status: qa
     priority: P1
     estimate_points: 2
     task_dir: tasks/TASK-0028-control-ownership-lifecycle
@@ -502,6 +502,7 @@ tasks:
       qa: qa-agent-terra-medium
     branch: task/TASK-0028-control-ownership-lifecycle
     worktree: worktrees/TASK-0028-control-ownership-lifecycle
+    merged_commit: 63ffb0e48e89342e7dca931890f806218ac9cd8b
   - id: TASK-0029
     title: Control versioned状態とクラッシュ復旧を実装する
     type: feature
