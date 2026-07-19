@@ -28,7 +28,7 @@
 - DEV Agentはcase ID、`candidate_commit`、`candidate_tree`、command/test、環境またはfixture、cache条件、exit status、artifact digest、未実施理由を`HANDOVER.md`へ残す。QA AgentはDEVの自己判定を採用せず、対応範囲、testの弱体化、negative case、証跡完全性を独立監査する。
 - `evidence-review`は候補に結び付いた自動test証跡の監査、`focused-rerun`はhermetic、deterministic、bounded fixtureで受け入れ真実を完全再現できる高リスク境界の限定再実行、`live-e2e`は実OS権限/auth stack、sudo/PAM、実配備、外部作用、実restart/rollback/cleanup、環境固有integrationの実環境確認とする。分類不能、環境不足、または安全なcleanupが不明なcaseは`live-e2e`のblockedとし、PASSさせない。
 - Reviewer AgentとQA Agentは同一`candidate_commit`/`candidate_tree`を、互いのPASSを開始条件にせず並行評価する。Main Agentだけが両結果とtree同一性を照合する。
-- REVIEW修正で候補が変わった場合、Main Agentは必要な再実行を選ぶ。非挙動差分で影響caseを限定できる場合だけ、旧新commit/tree、diff、影響case、再実行証拠、理由を`qa_carry_forward`として記録できる。QA FAIL対象、受け入れ条件/QA_PLAN、認証認可、秘密、sudo/PAM、IPC/Schema/設定/依存、並行性/lifecycle/persistence/error/fail-closed、test削除/弱体化、または影響不明の差分には使用しない。
+- REVIEW修正で候補が変わった場合、Main Agentは必要な再実行を選ぶ。`qa_carry_forward`は製品[QAガイドライン](../agent-harness/docs/development/qa.md)の閉じた`CF-1`〜`CF-7`を全て満たす場合だけ許可する。旧QA PASSの旧候補への束縛、全差分/digest、非実行の誤字・空白・コメント・リンク・証跡メタデータだけへの限定、空の影響QA case集合、独立Reviewer確認、新候補の`make check`、全禁止条件が偽であること、Mainの完全な記録を必須とする。影響caseがあれば該当caseを再実行し、限定できなければ全面再実行する。
 - マージ後、Main Agentは`merge_tree == approved candidate_tree`を確認する。同一かつ環境依存caseがなければ全面QAを繰り返さなくてよい。環境依存caseはcase単位で確認し、tree不一致は影響を再評価する。
 
 ## 書き込み規則

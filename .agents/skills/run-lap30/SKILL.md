@@ -111,7 +111,7 @@ QAはTASK-first QA_PLANに従って次を行う。
 - `focused-rerun`: hermetic、deterministic、bounded fixtureで受け入れ真実を完全再現できる高リスク境界だけを独立再実行する。名称だけで許可せず、再現条件を証跡化する。
 - `live-e2e`: 実OS権限/auth stack、sudo/PAM、install/deploy/generated config実配置、外部作用、実restart/rollback/cleanup、環境固有integrationを実環境で確認する。環境または安全なcleanupが不明ならblockedとし、別modeでPASSを代替しない。
 
-REVIEW PASSとQA PASSの両方が揃うまでマージしない。REVIEW修正で候補が変わった場合、Mainは必要な再実行を選ぶ。非挙動差分で影響caseを限定できる場合だけ、旧新commit/tree、diff、影響case、再実行証拠、理由を`qa_carry_forward`として記録できる。QA FAIL対象、受け入れ条件/QA_PLAN、認証認可、秘密、sudo/PAM、IPC/Schema/設定/依存、並行性/lifecycle/persistence/error/fail-closed、test削除/弱体化、または影響不明の差分には使用しない。FAILを消さず、`classification`で原因を分類する。
+REVIEW PASSとQA PASSの両方が揃うまでマージしない。REVIEW修正で候補が変わった場合、Mainは必要な再実行を選ぶ。`qa_carry_forward`は製品QAガイドラインの閉じた`CF-1`〜`CF-7`を全て満たす場合だけ許可する。旧QA PASSの旧候補への束縛、全差分/digest、非実行の誤字・空白・コメント・リンク・証跡metadataだけへの限定、空の影響QA case集合、独立Reviewer確認、新候補の`make check`、全禁止条件が偽であること、Mainの完全な記録を必須とする。影響caseがあれば該当caseを再実行し、限定できなければ全面再実行する。QA FAIL対象、受け入れ条件/QA_PLAN、認証認可、秘密、sudo/PAM、IPC/Schema/設定/依存、並行性/lifecycle/persistence/error/fail-closed、test削除/弱体化、影響不明、証跡と候補treeの不一致には使用しない。FAILを消さず、`classification`で原因を分類する。
 
 マージ後、Mainは`merge_tree == approved candidate_tree`を確認する。同一かつ環境依存caseがなければ全面QAを繰り返さない。環境依存caseはcase単位で確認し、tree不一致は影響を再評価する。Schema v1へ専用fieldを追加せず、mode、candidate/tree、carry-forward、マージ後caseの要約は既存stage証拠と`annotations`へ機密を除いて記録する。
 
