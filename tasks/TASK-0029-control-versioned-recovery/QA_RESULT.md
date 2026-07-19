@@ -1,61 +1,46 @@
 ---
 task_id: "TASK-0029"
-status: pending
-qa_agent: ""
-tested_commit: ""
-candidate_commit: ""
-candidate_tree: ""
+status: passed
+qa_agent: "qa-agent-terra-medium"
+tested_commit: "864f455b563a6fffb043ed297d5cb10e3849b988"
+candidate_commit: "864f455b563a6fffb043ed297d5cb10e3849b988"
+candidate_tree: "5ff201700eb58aedd8635a5456e5a741ae4f5b22"
 merge_tree: ""
-decision: pending
-tested_at: ""
+decision: pass
+tested_at: "2026-07-20"
 ---
 
 # TASK-0029 QA RESULT
 
 ## 対象
 
-- 案 コミット/tree:
-- `main` / merge tree:
-- `merge_tree`はマージ後にMainが記録し、案 QAでは未設定とする:
-- QA PLAN 改訂:
-- 環境:
+- corrected candidate/tree: `864f455b563a6fffb043ed297d5cb10e3849b988` / `5ff201700eb58aedd8635a5456e5a741ae4f5b22`
+- file-backed temporary SQLite、isolated Go cache、clean worktreeで実行した。
+- Reviewerの結果を開始条件にせず独立に開始した。
 
 ## 結果
 
-| ケースID | モード | 対象案 コミット/tree | 結果 | 証跡（コマンド/テスト、環境/フィクスチャ、cache、exit、成果物 ダイジェスト、ネガティブ検出能力、テスト弱体化の有無） | 未実施/blocked理由 |
-|---|---|---|---|---|---|
-| QA-001 | `evidence-review` | TODO | `pending` | TODO | なし |
+| ケース | モード | 結果 | 証跡 |
+|---|---|---|---|
+| Q29-01/02/03/05/06/07 | focused-rerun | PASS | targeted suite `-count=20`, exit 0, 6.08s。CAS、watermark negative、rollback、reopen/corruption。 |
+| Q29-04 | focused-rerun | PASS | conflict race suite `-race -count=20`, exit 0, 7.85s。 |
+| Q29-08 | evidence-review | PASS | scope-limited diff、dependency/Schema/API追加なし。 |
+| Q29-09 | focused-rerun | PASS | `make check` exit 0 (19.46s)、`make task-check TASK=TASK-0029` exit 0、`git diff --check` exit 0。 |
 
-## 発見事項
+- correction diff SHA-256: `1948925dea200b08fd8f705d70a54a5f67c4830d96633e206e1e5c8aea35e220`
+- full candidate diff SHA-256: `39f2ccfe174e6b0ebfcccc930b6f90ef1d13655731702aba1aa1fb4e01da6d74`
+- テスト削除/弱体化なし。最終worktree clean、HEAD/tree一致。
 
-軽微指摘をQA Agentが直接修正した場合は、修正コミットとTask ブランチへの取り込みを記録する。取り込み後は解消済みとしてPASSにでき、再QAまたは`qa_carry_forward`を要求しない。
+## FAIL履歴とMain判断
 
-| ID | FAIL分類 | 影響 | 差し戻し候補 | 内容 |
-|---|---|---|---|---|
-| - | - | - | - | なし |
+- 初回candidate `af0d8d5` / `4f7b761` はQ29-02/03/05/08/09 FAIL。分類: `implementation_defect`。watermark後退と未来Task sequenceを受理した。
+- corrected candidateは影響caseとcandidate-wide checksを再実行した。`qa_carry_forward` は使用していない。
+- Main結論: **PASS**。差し戻しなし。
 
-## main Agent判断
+## 残存リスク
 
-- 結論: `pending`
-- 差し戻し先:
-- revert / バグ化:
-- 判断理由:
-
-## 未実施項目
-
-- なし
-
-## Main-owned `qa_carry_forward` / 再実行判断
-
-- 選択: `not-applicable | qa_carry_forward | focused-rerun | full-rerun`
-- `CF-1` 旧QA PASSと旧`candidate_commit`/`candidate_tree`の束縛: `pending` / 証拠: TODO
-- `CF-2` 旧新案の全差分と差分ダイジェスト: `pending` / 証拠: TODO
-- `CF-3` 変更は実行されない誤字、空白、コメント、リンク、証跡メタデータだけで、製品挙動、ランタイム、テスト、Schema、設定、依存、生成物、外部公開契約または安全契約、受け入れ条件、QA_PLANの意味変更がない: `pending` / 証拠: TODO
-- `CF-4` 影響QAケース集合: `[]`。空でなければcarry-forwardせず該当ケースを再実行する。
-- `CF-5` 独立レビュアーによる挙動、テスト、安全性、契約への影響なしの確認と、新案の`make check` PASS: `pending` / レビュアー証拠、コマンド、結果: TODO
-- `CF-6` QA FAIL、受け入れ条件/QA_PLAN変更、認証認可、秘密、sudo/PAM、IPC/Schema/設定/依存、並行性/ライフサイクル/persistence/エラー/fail-closed、テスト削除/弱体化、影響不明、証跡と評価対象の案/tree不一致が全て偽: `pending`
-- `CF-7` Main記録（旧新コミット/tree、全差分とダイジェスト、空の影響ケース集合、レビュアー/`make check`証拠、理由）: TODO
+- `SQLITE_BUSY` だけの専用deterministic testはない。busy/lockedのtyped conflict分類をcode reviewし、反復2-writer raceで一方のみ成功・partial writeなしを確認した。
 
 ## 結論
 
-`pending`
+**PASS**
