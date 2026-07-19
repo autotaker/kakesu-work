@@ -1,30 +1,30 @@
 ---
 task_id: "TASK-0028"
-status: pending
-qa_agent: ""
-tested_commit: ""
-candidate_commit: ""
-candidate_tree: ""
+status: pass
+qa_agent: "qa-agent-terra-medium"
+tested_commit: "69a7e17df493aa27228001944c6595b7b7c8077e"
+candidate_commit: "69a7e17df493aa27228001944c6595b7b7c8077e"
+candidate_tree: "c7050bdc444c360b1327ffd2e5ef7b7ea6650074"
 merge_tree: ""
-decision: pending
-tested_at: ""
+decision: pass
+tested_at: "2026-07-20"
 ---
 
 # TASK-0028 QA RESULT
 
 ## 対象
 
-- 案 コミット/tree:
+- 案 コミット/tree: `69a7e17df493aa27228001944c6595b7b7c8077e` / `c7050bdc444c360b1327ffd2e5ef7b7ea6650074`
 - `main` / merge tree:
 - `merge_tree`はマージ後にMainが記録し、案 QAでは未設定とする:
-- QA PLAN 改訂:
-- 環境:
+- QA PLAN 改訂: revision 1、期待値変更なし。
+- 環境: temporary file SQLite、2 Store/2 sql.DB、Go 1.23.12。
 
 ## 結果
 
 | ケースID | モード | 対象案 コミット/tree | 結果 | 証跡（コマンド/テスト、環境/フィクスチャ、cache、exit、成果物 ダイジェスト、ネガティブ検出能力、テスト弱体化の有無） | 未実施/blocked理由 |
 |---|---|---|---|---|---|
-| QA-001 | `evidence-review` | TODO | `pending` | TODO | なし |
+| QA-001〜008 | `focused-rerun` | `69a7e17` / `c7050bd` | `pass` | 旧QA carry-forwardなし。影響suite PASS digest `35e5f280...ec1c`; CAS precedence、13/36、payload/reopen、不正payload不変、v1 migration、terminal rollback/no-gap。task-check/diff PASS。Main/DEV make check証跡をcandidate digestで照合。 | なし |
 
 ## 発見事項
 
@@ -36,10 +36,10 @@ tested_at: ""
 
 ## main Agent判断
 
-- 結論: `pending`
-- 差し戻し先:
-- revert / バグ化:
-- 判断理由:
+- 結論: `PASS`
+- 差し戻し先: なし
+- revert / バグ化: 不要
+- 判断理由: corrected candidateで影響persistence/lifecycle caseを独立再実行し全PASS。
 
 ## 未実施項目
 
@@ -58,4 +58,4 @@ tested_at: ""
 
 ## 結論
 
-`pending`
+`PASS`
