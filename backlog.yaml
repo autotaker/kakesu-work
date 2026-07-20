@@ -522,7 +522,8 @@ tasks:
     title: PLAN入力契約とLap計測を軽量化する
     type: chore
     epic: EPIC-001
-    status: dev
+    status: blocked
+    resume_status: plan
     change_class: safety_contract
     priority: P1
     estimate_points: 1
@@ -536,3 +537,19 @@ tasks:
       qa: qa-agent-terra-medium
     branch: task/TASK-0030-lean-planning-contract
     worktree: worktrees/TASK-0030-lean-planning-contract
+  - id: TASK-0031
+    title: 安全契約の完了経路をDEV前検査可能にする
+    type: chore
+    epic: EPIC-001
+    status: plan
+    change_class: product
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0031-safety-completion-preflight
+    depends_on: []
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-luna-xhigh
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
