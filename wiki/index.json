@@ -101,6 +101,14 @@
       ]
     },
     {
+      "path": "wiki/semantic/schemas/safety-contract-completion-preflight.md",
+      "kind": "schema",
+      "title": "Safety Contract Completion Preflight",
+      "links": [
+        "../../../tasks/TASK-0031-safety-completion-preflight/HANDOVER.md"
+      ]
+    },
+    {
       "path": "wiki/semantic/schemas/work-repository-boundary.md",
       "kind": "schema",
       "title": "Work Repository Boundary",
