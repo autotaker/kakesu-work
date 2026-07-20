@@ -518,3 +518,19 @@ tasks:
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
     merged_commit: a908567d08f5f1db0c3c1258c9560af45953d9cc
+  - id: TASK-0030
+    title: PLAN入力契約とLap計測を軽量化する
+    type: chore
+    epic: EPIC-001
+    status: plan
+    change_class: safety_contract
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0030-lean-planning-contract
+    depends_on: []
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
