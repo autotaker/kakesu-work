@@ -541,7 +541,7 @@ tasks:
     title: 安全契約の完了経路をDEV前検査可能にする
     type: chore
     epic: EPIC-001
-    status: qa
+    status: done
     change_class: product
     priority: P1
     estimate_points: 1
