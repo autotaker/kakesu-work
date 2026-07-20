@@ -534,8 +534,6 @@ tasks:
       dev: dev-agent-sol-high
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
-    branch: task/TASK-0030-lean-planning-contract
-    worktree: worktrees/TASK-0030-lean-planning-contract
     merged_commit: b9cb877fda35cbf428f04e09c2175f34387298a4
   - id: TASK-0031
     title: 安全契約の完了経路をDEV前検査可能にする
