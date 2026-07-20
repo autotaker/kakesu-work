@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0031"
-status: draft
-completed_at: ""
+status: complete
+completed_at: "2026-07-20T10:18:00+09:00"
 ---
 
 # TASK-0031 HANDOVER
@@ -24,3 +24,15 @@ completed_at: ""
 - 初回`make check`は用語生成物のscope欠落でFAIL。`requirement_gap`としてMainが2 pathをreconciliationし、決定的生成後にPASSした。
 - test弱体化・skip/only: なし。
 - 未実施: なし。
+
+## マージ確認
+
+- `merged_commit`: `b60e691182127de73fff36660f7d3cfe26bc01e9`
+- `merge_tree`: `a7b672cadb41c95a9a156d8e11e86503699f69db`
+- `merge_tree == candidate_tree`: yes
+- 環境依存case: なし。全面QA再実行は不要。
+
+## 引き渡し
+
+- 安全契約v2は明示opt-inで、DEV前に予定path/生成pathを検査し、Done時に候補実差分へ束縛する。
+- 既存のversionなし安全契約は従来検査を維持する。

@@ -2,7 +2,7 @@
 task_id: "TASK-0031"
 decision: pass
 qa_agent: "qa-agent-terra-medium"
-tested_commit: "1c07d4b65d5a293d5bbce4aba5e7d0ab207b8dd7"
+tested_commit: "b60e691182127de73fff36660f7d3cfe26bc01e9"
 tested_tree: "a7b672cadb41c95a9a156d8e11e86503699f69db"
 tested_at: "2026-07-20T10:14:30+09:00"
 ---
@@ -12,6 +12,8 @@ tested_at: "2026-07-20T10:14:30+09:00"
 ## 判定
 
 PC-001〜PC-005 PASS。期待結果・範囲の変更なし、未実施なし、FAIL分類なし。
+
+Mainが`merge_tree == candidate_tree`（`a7b672cadb41c95a9a156d8e11e86503699f69db`）を確認した。環境依存caseなしのため結果を同一treeのmerge commitへ束縛し、全面再実行は省略した。
 
 ## 独立実行
 
