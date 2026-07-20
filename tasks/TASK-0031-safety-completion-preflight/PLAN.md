@@ -9,6 +9,9 @@ approved_dev_profile_risk_signals:
   - cross_cutting
 approved_by: "main-agent-sol-high"
 approved_at: "2026-07-20T09:55:45+09:00"
+scope_reconciled_by: "main-agent-sol-high"
+scope_reconciled_at: "2026-07-20T10:04:00+09:00"
+scope_reconciliation_reason: "既存用語検査が文書・template差分から決定的に生成する用語集と索引を候補へ含めるため。AC・設計・QA期待値は不変更"
 planned_implementation_files: 2
 planned_implementation_lines: 130
 estimate_points: 1
@@ -44,6 +47,8 @@ estimate_points: 1
 | `templates/task/PLAN.md` | template | 8 | v2 fieldと記入説明。 |
 | `docs/development/development-process.md` | documentation | 14 | preflight、実差分照合、legacy動作。 |
 | `docs/development/task-management.md` | documentation | 12 | version、生成path、運用境界。 |
+| `docs/glossary.yml` | generated documentation | 0 | 用語検査の決定的な生成結果。 |
+| `docs/99-glossary-index.md` | generated documentation | 0 | 用語検査の決定的な生成索引。 |
 
 見積もり対象は実装2ファイル、130行である。
 

@@ -42,6 +42,8 @@ created_at: "2026-07-20"
 - `Makefile`
 - `templates/task/PLAN.md`
 - `docs/development/{development-process.md,task-management.md}`
+- `docs/glossary.yml`
+- `docs/99-glossary-index.md`
 
 ### 完了経路preflight
 
@@ -51,6 +53,10 @@ created_at: "2026-07-20"
 ### 未決事項
 
 - 新契約の識別field名とCLI引数はPLANで決める。
+
+### Scope reconciliation
+
+- 2026-07-20T10:04:00+09:00 Main承認: `make check`が既存の決定的生成commandで示した`docs/glossary.yml`と`docs/99-glossary-index.md`を追加する。AC・設計・QA期待値は変更せず、生成結果以外へscopeを広げない。
 
 ## 背景
 
