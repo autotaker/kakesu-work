@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0032"
 title: "Agent設定をデフォルト値へ戻す"
-status: qa
+status: done
 created_at: "2026-07-22"
 ---
 
@@ -109,7 +109,7 @@ created_at: "2026-07-22"
 
 - [x] 受け入れ条件を満たしている。
 - [x] 選択した`change_class`の完了経路と`make check`を満たしている。
-- [ ] 製品変更の場合: 実装、テスト、文書、同一案の独立REVIEW/QA、`merge_tree`確認、環境依存ケース、Wiki取り込みが完了している。
+- [x] 製品変更の場合: 実装、テスト、文書、同一案の独立REVIEW/QA、`merge_tree`確認、環境依存ケース、Wiki取り込みが完了している。
 - [ ] 安全契約変更の場合: 独立計画レビュー、契約検査、`no-ff merge`、案/merge tree一致が完了し、製品REVIEW/QA PASSやWiki receiptを代用証跡として作成していない。
 
 ## 関連コンテキスト
