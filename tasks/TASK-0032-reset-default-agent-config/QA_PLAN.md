@@ -60,11 +60,11 @@ expectation_change_approved_by: "main-agent-sol-high"
 
 ## 実装後の再確認
 
-- [ ] 実装差分とレビュー結果を確認した。
-- [ ] 操作手順を現行実装に合わせた。
-- [ ] 期待結果または試験範囲の変更有無を確認した。
-- [ ] 期待結果または範囲を変更した場合、main Agentの承認を得た。
-- [ ] QA-006をmerge後の承認済み環境で実施した、又はblocked理由・環境/cleanup不足・残余リスクを記録した。
+- [x] candidate実装差分を確認した。REVIEW_RESULTは独立性を保つため開始条件・入力にせず、ReviewerのPASSを待たずに実施した。
+- [x] 操作手順をcandidate実装に合わせ、QA-001〜QA-005を同一commit/treeで再実行した。
+- [x] 期待結果または試験範囲の変更有無を確認した。revision 2からの追加変更はない。
+- [x] ユーザーclarificationによるrevision 2の期待変更は、DEV再開前にmain Agentの再承認済みである。
+- [ ] QA-006をmerge後の承認済み環境で実施した、又はblocked理由・環境/cleanup不足・残余リスクを記録した（merge前のため`pending`、blockedではない）。
 
 ## 改訂履歴
 
