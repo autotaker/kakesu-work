@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0032"
 change_class: product
-status: draft
+status: approved
 planner_agent: "planner-agent-terra-medium"
 approved_dev_profile: "sol-high"
 approved_dev_profile_reason: "project-scoped設定の削除がcanonical parser、fallback delegation制限、決定的adapter、drift検査、role契約文書を横断し、既定値への移行後もfail-closed境界を保つ必要があるため"
@@ -9,8 +9,8 @@ approved_dev_profile_risk_signals:
   - configuration_contract
   - cross_cutting
   - fallback_routing
-approved_by: ""
-approved_at: ""
+approved_by: "main-agent-sol-high"
+approved_at: "2026-07-22T08:09:25+10:00"
 planning_reviewed_by: ""
 planning_review_decision: "pending"
 planning_reviewed_at: ""
@@ -108,9 +108,9 @@ estimate_points = 1
 
 ## main Agentレビュー
 
-- [ ] TASKの全AC-IDへ設計判断、パス、順序、失敗時の扱いを対応させ、条件本文を複製していない。
-- [ ] project overrideをコード/adapterへ隠さず、Codex既定値とrole-local不変条件を区別している。
-- [ ] `sol-high` profile、risk signals、1 point見積もりが規則どおりである。
-- [ ] QA_PLANがTASK-firstで独立作成され、同一candidateからのQA/REVIEWとmerge後環境確認を実施できる。
-- [ ] dependency-ready reconciliationと完了経路preflightが完了している。
-- [ ] DEV開始を承認した。
+- [x] TASKの全AC-IDへ設計判断、パス、順序、失敗時の扱いを対応させ、条件本文を複製していない。
+- [x] project overrideをコード/adapterへ隠さず、Codex既定値とrole-local不変条件を区別している。
+- [x] `sol-high` profile、risk signals、1 point見積もりが規則どおりである。
+- [x] QA_PLANがTASK-firstで独立作成され、同一candidateからのQA/REVIEWとmerge後環境確認を実施できる。
+- [x] dependency-ready reconciliationと完了経路preflightが完了している。
+- [x] DEV開始を承認した。
