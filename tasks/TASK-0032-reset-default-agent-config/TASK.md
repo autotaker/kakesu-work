@@ -72,7 +72,7 @@ created_at: "2026-07-22"
 | 依存状態と参照 | ready | 依存Taskなし。REF-1〜REF-4を固定済み |
 | 生成物の有無と更新方法 | ready | 運用側`.codex/config.toml`は製品merge後にMainが`make work-config-sync`で生成・commitする |
 | 割当ワークツリー | ready | branch/worktree未存在を確認済み。PLAN/QA_PLAN承認後に`make worktree-create TASK=TASK-0032`を実行する |
-| Lapログの書込・Schema・`repository annotation` | ready before Lap | `lap30/events.jsonl`はappend-only、Schemaは`.agents/skills/run-lap30/references/lap30-event.schema.json`、repository annotationは`project.yaml: repository_path=../agent-harness`を使う。PLAN/QA_PLAN承認前は`lap_started`を書かない |
+| Lapログの書込・Schema・`repository annotation` | `not_started`（計測対象外） | ユーザーはLap30を要求しておらず、本Taskでは計測Lapを開始しない。現行Schemaによる既存全行検査は6件の既存driftを検出したため、未コミットの開始行は採用せず、製品ACと分離した既存証跡問題として扱う |
 
 ### 未決事項
 
@@ -83,6 +83,10 @@ created_at: "2026-07-22"
 <!-- 依存ready時にMainがready参照、planning参照との差分、AC/設計/scope/QAへの影響、再承認結果を追記する。依存なし又は未readyならN/Aとする。 -->
 
 - N/A
+
+### Preflight correction
+
+- 2026-07-22 Main: Lap30は本依頼の要求ではないため計測を開始しない。既存`lap30/events.jsonl`の現行Schema不一致6件はTASK-0032の製品AC、設計、scope、QA期待値を変更せず、既存証跡問題として分離する。PLAN/QA_PLANの再承認は不要。
 
 ## 背景
 
