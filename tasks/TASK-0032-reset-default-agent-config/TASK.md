@@ -13,18 +13,20 @@ created_at: "2026-07-22"
 
 ### 目的
 
-製品・運用リポジトリのproject-scoped `config.toml`から、旧MultiAgentV2の明示設定とproject-level `[agents]` overrideを削除し、現行Codexの組み込み既定値へ委ねる。
+製品・運用リポジトリのproject-scoped `config.toml`から、旧MultiAgentV2の明示設定とglobal Agent上限overrideだけを削除して現行Codexの組み込み既定値へ委ねつつ、既存のsubagent定義を維持する。
 
 ### 対象と対象外
 
 #### 対象
 
-- 製品側`.codex/config.toml`の`[features.multi_agent_v2]`とproject-level `[agents]` table全体の削除。
-- 製品設定から生成される運用側`.codex/config.toml`でも同じ設定を出力しないようにするadapter生成・drift検査・テストの更新。
-- project-level override削除後も`.codex/agents/*.toml`を正本とするcustom role契約と、fallback launcherのmodel/effort固定を維持するために必要な最小限の文書整合。
+- 製品側`.codex/config.toml`の`[features.multi_agent_v2]`一式と、`[agents]`直下の`max_threads`/`max_depth`明示overrideの削除。
+- 製品側`.codex/config.toml`の`[agents.main]`、`[agents.planner]`、`[agents.qa]`、`[agents.reviewer]`、`[agents.dev-luna]`、`[agents.dev-sol]`、`[agents.explorer]`定義の維持。
+- 製品設定から生成される運用側`.codex/config.toml`でもglobal上限overrideを出力せず、全subagent定義を維持するadapter生成・drift検査・テストの更新。
+- `.codex/agents/*.toml`を正本とするcustom role契約と、fallback launcherのmodel/effort固定を維持するために必要な最小限の文書整合。
 
 #### 対象外
 
+- `.codex/config.toml`と運用側生成adapterにある`[agents.<role>]` subagent定義の削除・改名・config_file変更。
 - `.codex/agents/*.toml`の削除、role名・model・effort・sandbox設定の変更。
 - top-level `model`、`model_reasoning_effort`、`sandbox_mode`の変更。
 - user-level `~/.codex/config.toml`、system/managed config、Codex runtime本体の変更。
@@ -33,9 +35,9 @@ created_at: "2026-07-22"
 ### 受け入れ条件
 
 - [ ] AC-1: 製品側`.codex/config.toml`に`[features.multi_agent_v2]`、`hide_spawn_agent_metadata`、`tool_namespace`が存在しない。
-- [ ] AC-2: 製品側`.codex/config.toml`にproject-level `[agents]` tableとその子tableが存在せず、未指定時の`agents.max_threads=6`、`agents.max_depth=1`というCodex既定値へ委ねる。
-- [ ] AC-3: 運用側`.codex/config.toml`の決定的生成結果にもMultiAgentV2設定と`[agents]` tableが存在せず、`make work-config-sync CHECK=1`がdriftを検出できる。
-- [ ] AC-4: standalone `.codex/agents/*.toml`、固定roleのmodel/effort検査、fallback launcherは維持され、project-level `[agents]` registryへ依存せず検査できる。
+- [ ] AC-2: 製品側`.codex/config.toml`に`agents.max_threads`/`agents.max_depth`の明示値がなく、未指定時のCodex既定値6/1へ委ねる一方、7件の`[agents.<role>]` subagent定義が変更なく残る。
+- [ ] AC-3: 運用側`.codex/config.toml`の決定的生成結果にもMultiAgentV2設定とglobal上限overrideが存在せず、全subagent定義を維持し、`make work-config-sync CHECK=1`がdriftを検出できる。
+- [ ] AC-4: standalone `.codex/agents/*.toml`、project/workのsubagent registry、固定roleのmodel/effort検査、fallback launcherが維持される。
 - [ ] AC-5: 設定生成・routingテストと`make check`がPASSし、削除した設定を再導入する回帰を検出する。
 
 ### 安定した参照
@@ -88,14 +90,18 @@ created_at: "2026-07-22"
 
 - 2026-07-22 Main: Lap30は本依頼の要求ではないため計測を開始しない。既存`lap30/events.jsonl`の現行Schema不一致6件はTASK-0032の製品AC、設計、scope、QA期待値を変更せず、既存証跡問題として分離する。PLAN/QA_PLANの再承認は不要。
 
+### Requirement clarification
+
+- 2026-07-22 Main: ユーザー確認により、subagent定義は削除対象外と確定した。削除対象は旧MultiAgentV2設定とglobal `max_threads`/`max_depth` overrideだけである。AC-2〜AC-4、PLAN、QA_PLANをDEV再開前に改訂・再承認する。
+
 ## 背景
 
-現行設定は旧`[features.multi_agent_v2]`でtool namespaceとmetadata公開を明示し、project-level `[agents]`でthread/depth上限とrole registryを定義している。現行Codexはsubagent workflowを既定で有効化し、custom agentを`.codex/agents/*.toml`から読み込み、未指定時の`agents.max_threads`を6、`agents.max_depth`を1とする。ユーザー要望に従い、旧実験設定とproject overrideを除去して現行既定へ戻す。
+現行設定は旧`[features.multi_agent_v2]`でtool namespaceとmetadata公開を明示し、project-level `[agents]`でthread/depth上限とsubagent registryを定義している。現行Codexはsubagent workflowを既定で有効化し、未指定時の`agents.max_threads`を6、`agents.max_depth`を1とする。ユーザー要望に従い、旧実験設定とglobal上限overrideだけを除去し、subagent registryは維持する。
 
 ## 検討すべき設計観点
 
-- adapter生成が削除済みtableを再生成しないこと。
-- standalone role TOMLをfallback routingの正本として維持し、project-level registry削除とrole契約削除を混同しないこと。
+- adapter生成が削除済みglobal overrideを再生成せず、subagent registryを欠落させないこと。
+- standalone role TOMLをfallback routingの正本として維持し、global設定削除とsubagent定義削除を混同しないこと。
 - 運用側生成物の更新を製品merge後の専用`work-config-sync`へ限定すること。
 - 設定削除による再起動後の有効化タイミングを環境依存確認として扱うこと。
 
