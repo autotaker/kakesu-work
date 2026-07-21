@@ -568,6 +568,4 @@ tasks:
       dev: dev-agent-sol-high
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
-    branch: task/TASK-0032-reset-default-agent-config
-    worktree: worktrees/TASK-0032-reset-default-agent-config
     merged_commit: e3f6da75b597372db484ff722c2ccb414bf802fa
