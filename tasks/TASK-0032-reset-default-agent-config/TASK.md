@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0032"
 title: "Agent設定をデフォルト値へ戻す"
-status: draft
+status: plan
 created_at: "2026-07-22"
 ---
 
@@ -13,30 +13,39 @@ created_at: "2026-07-22"
 
 ### 目的
 
-<!-- 達成したい結果を記載する。 -->
+製品・運用リポジトリのproject-scoped `config.toml`から、旧MultiAgentV2の明示設定とproject-level `[agents]` overrideを削除し、現行Codexの組み込み既定値へ委ねる。
 
 ### 対象と対象外
 
 #### 対象
 
-- TODO
+- 製品側`.codex/config.toml`の`[features.multi_agent_v2]`とproject-level `[agents]` table全体の削除。
+- 製品設定から生成される運用側`.codex/config.toml`でも同じ設定を出力しないようにするadapter生成・drift検査・テストの更新。
+- project-level override削除後も`.codex/agents/*.toml`を正本とするcustom role契約と、fallback launcherのmodel/effort固定を維持するために必要な最小限の文書整合。
 
 #### 対象外
 
-- TODO
-<!-- safety_contractの場合: 製品コード、test、runtime/build設定、Schema、製品依存、生成製品入力/成果物、外部観測可能な挙動を変更しない。 -->
+- `.codex/agents/*.toml`の削除、role名・model・effort・sandbox設定の変更。
+- top-level `model`、`model_reasoning_effort`、`sandbox_mode`の変更。
+- user-level `~/.codex/config.toml`、system/managed config、Codex runtime本体の変更。
+- PLAN/DEV/REVIEW/QAの分離、Main所有Git、fallback launcherの削除または緩和。
 
 ### 受け入れ条件
 
-<!-- AC-IDはTask内で一意かつ安定させ、観測可能な結果をここに一度だけ記載する。 -->
-
-- [ ] AC-1: TODO
+- [ ] AC-1: 製品側`.codex/config.toml`に`[features.multi_agent_v2]`、`hide_spawn_agent_metadata`、`tool_namespace`が存在しない。
+- [ ] AC-2: 製品側`.codex/config.toml`にproject-level `[agents]` tableとその子tableが存在せず、未指定時の`agents.max_threads=6`、`agents.max_depth=1`というCodex既定値へ委ねる。
+- [ ] AC-3: 運用側`.codex/config.toml`の決定的生成結果にもMultiAgentV2設定と`[agents]` tableが存在せず、`make work-config-sync CHECK=1`がdriftを検出できる。
+- [ ] AC-4: standalone `.codex/agents/*.toml`、固定roleのmodel/effort検査、fallback launcherは維持され、project-level `[agents]` registryへ依存せず検査できる。
+- [ ] AC-5: 設定生成・routingテストと`make check`がPASSし、削除した設定を再導入する回帰を検出する。
 
 ### 安定した参照
 
 | 参照ID | 対象 | 固定改訂/ダイジェスト | 用途 |
 |---|---|---|---|
-| REF-1 | TODO | TODO | TODO |
+| REF-1 | product `main` | `b9cb877fda35cbf428f04e09c2175f34387298a4` | Task開始点と現行実装 |
+| REF-2 | `.codex/config.toml` | Git blob `ca1cb50ee6d8279a88de514f677b3d295e4903f6` | 削除対象の固定 |
+| REF-3 | Codex Manual / Subagents・Config basics | SHA-256 `d09c5e514a6f152be14ad82753de4a987065f78f9b6534f920027e04d133bfb0`、2026-07-22取得 | standalone custom agents、既定`max_threads=6`/`max_depth=1`、`multi_agent=true`既定の確認 |
+| REF-4 | DECISION-0004 | `wiki/decisions/DECISION-0004-multiagentv2-role-startup.md` | role分離とMain所有Gitの維持 |
 
 ### 依存状態
 
@@ -46,18 +55,24 @@ created_at: "2026-07-22"
 
 ### 許可パス
 
-- TODO
+- `.codex/config.toml`
+- `scripts/task/agent-routing.mjs`
+- `scripts/task/agent-routing.test.mjs`
+- `docs/development/agent-roles.md`
+- `docs/glossary.yml`
+- `docs/99-glossary-index.md`
+- 運用側生成物: `.codex/config.toml`（製品merge後に`make work-config-sync`だけで更新）
 
 ### 完了経路preflight
 
 | 確認対象 | 結果 | コマンドまたは根拠 |
 |---|---|---|
-| 完了checker | TODO | TODO |
-| 権限 | TODO | TODO |
-| 依存状態と参照 | TODO | TODO |
-| 生成物の有無と更新方法 | TODO | TODO |
-| 割当ワークツリー | TODO | TODO |
-| Lapログの書込・Schema・`repository annotation` | TODO | TODO |
+| 完了checker | ready | `make task-preflight TASK=TASK-0032`、`make task-check TASK=TASK-0032`、`make check` |
+| 権限 | ready with escalation | workspace編集は可能。両リポジトリの`.git`書込みはmanaged approvalが必要であることをTask起票時に実測済み |
+| 依存状態と参照 | ready | 依存Taskなし。REF-1〜REF-4を固定済み |
+| 生成物の有無と更新方法 | ready | 運用側`.codex/config.toml`は製品merge後にMainが`make work-config-sync`で生成・commitする |
+| 割当ワークツリー | ready | branch/worktree未存在を確認済み。PLAN/QA_PLAN承認後に`make worktree-create TASK=TASK-0032`を実行する |
+| Lapログの書込・Schema・`repository annotation` | ready before Lap | `lap30/events.jsonl`はappend-only、Schemaは`.agents/skills/run-lap30/references/lap30-event.schema.json`、repository annotationは`project.yaml: repository_path=../agent-harness`を使う。PLAN/QA_PLAN承認前は`lap_started`を書かない |
 
 ### 未決事項
 
@@ -71,11 +86,14 @@ created_at: "2026-07-22"
 
 ## 背景
 
-<!-- なぜ今必要か、現在の問題、関連する制約を記載する。 -->
+現行設定は旧`[features.multi_agent_v2]`でtool namespaceとmetadata公開を明示し、project-level `[agents]`でthread/depth上限とrole registryを定義している。現行Codexはsubagent workflowを既定で有効化し、custom agentを`.codex/agents/*.toml`から読み込み、未指定時の`agents.max_threads`を6、`agents.max_depth`を1とする。ユーザー要望に従い、旧実験設定とproject overrideを除去して現行既定へ戻す。
 
 ## 検討すべき設計観点
 
-- TODO
+- adapter生成が削除済みtableを再生成しないこと。
+- standalone role TOMLをfallback routingの正本として維持し、project-level registry削除とrole契約削除を混同しないこと。
+- 運用側生成物の更新を製品merge後の専用`work-config-sync`へ限定すること。
+- 設定削除による再起動後の有効化タイミングを環境依存確認として扱うこと。
 
 ## 完成の定義
 

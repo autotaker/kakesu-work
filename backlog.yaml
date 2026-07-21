@@ -556,9 +556,15 @@ tasks:
     title: Agent設定をデフォルト値へ戻す
     type: chore
     epic: EPIC-001
-    status: backlog
+    status: plan
+    change_class: product
     priority: P1
     estimate_points: 1
     task_dir: tasks/TASK-0032-reset-default-agent-config
     depends_on: []
-    assignees: {}
+    assignees:
+      main: main-agent-sol-high
+      planner: planner-agent-terra-medium
+      dev: dev-agent-sol-high
+      reviewer: reviewer-agent-terra-medium
+      qa: qa-agent-terra-medium
