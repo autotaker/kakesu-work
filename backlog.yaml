@@ -552,3 +552,13 @@ tasks:
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
     merged_commit: b60e691182127de73fff36660f7d3cfe26bc01e9
+  - id: TASK-0032
+    title: Agent設定をデフォルト値へ戻す
+    type: chore
+    epic: EPIC-001
+    status: backlog
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0032-reset-default-agent-config
+    depends_on: []
+    assignees: {}
