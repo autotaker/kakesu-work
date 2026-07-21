@@ -88,12 +88,13 @@ created_at: "2026-07-22"
 
 ### 意味 Wiki
 
-- 未調査
+- [Codex Agent Model Routing](../../wiki/semantic/schemas/codex-agent-model-routing.md): project-scoped TOMLをrole routingの正本とし、固定roleのmodel/profile/effort overrideは起動前に拒否する。work repositoryのadapterは正本から決定的に生成し、digest付き完全一致検査でdriftを拒否する。
+- [MultiAgentV2 Role Startup](../../wiki/decisions/DECISION-0004-multiagentv2-role-startup.md): `agent_type`でroleを選択し、異なるroleのchild起動では`fork_turns="none"`を明示する。設定上のsandbox宣言は実効権限の証明ではない。
 
 ### 判断
 
-- 未調査
+- 現行の判断はDECISION-0004であり、設定をデフォルトへ戻す変更は、role routing、cross-role起動、子AgentのGit禁止、親のlock/commit所有という既存の境界を維持しなければならない。
 
 ### 適用しなかった重要な判断
 
-- なし
+- [DECISION-0003 Codex Agent Model Routing](../../wiki/decisions/DECISION-0003-codex-agent-model-routing.md)はDECISION-0004によりsupersededであるため、現行判断の根拠としては採用しない。ただし不変の履歴として保持される。
