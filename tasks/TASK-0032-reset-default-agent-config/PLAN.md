@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0032"
 change_class: product
-status: draft
+status: approved
 planner_agent: "planner-agent-terra-medium"
 approved_dev_profile: "sol-high"
 approved_dev_profile_reason: "project-scoped設定の削除がcanonical parser、fallback delegation制限、決定的adapter、drift検査、role契約文書を横断し、既定値への移行後もfail-closed境界を保つ必要があるため"
@@ -9,8 +9,8 @@ approved_dev_profile_risk_signals:
   - configuration_contract
   - cross_cutting
   - fallback_routing
-approved_by: ""
-approved_at: ""
+approved_by: "main-agent-sol-high"
+approved_at: "2026-07-22T08:26:34+10:00"
 planning_reviewed_by: ""
 planning_review_decision: "pending"
 planning_reviewed_at: ""
@@ -117,4 +117,4 @@ estimate_points = 1
 - [x] `sol-high` profile、risk signals、1 point見積もりが規則どおりである。
 - [x] QA_PLANがTASK-firstで独立作成され、同一candidateからのQA/REVIEWとmerge後環境確認を実施できる。
 - [x] dependency-ready reconciliationと完了経路preflightが完了している。
-- [ ] DEV開始を承認した。Requirement clarificationにより再レビュー・再承認待ちである。
+- [x] DEV開始を承認した。Requirement clarificationを反映したrevisionを再レビュー済みである。
