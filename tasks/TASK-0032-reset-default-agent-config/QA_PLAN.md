@@ -64,7 +64,7 @@ expectation_change_approved_by: "main-agent-sol-high"
 - [x] 操作手順をcandidate実装に合わせ、QA-001〜QA-005を同一commit/treeで再実行した。
 - [x] 期待結果または試験範囲の変更有無を確認した。revision 2からの追加変更はない。
 - [x] ユーザーclarificationによるrevision 2の期待変更は、DEV再開前にmain Agentの再承認済みである。
-- [ ] QA-006をmerge後の承認済み環境で実施した、又はblocked理由・環境/cleanup不足・残余リスクを記録した（merge前のため`pending`、blockedではない）。
+- [x] QA-006をmerge後の承認済み環境で実施した。merge/candidate tree一致、Main所有work-config-sync/CHECK/work-check、product/work mapping、fresh Codex feature/config/routing観測を確認し、`pass`と判定した。
 
 ## 改訂履歴
 
