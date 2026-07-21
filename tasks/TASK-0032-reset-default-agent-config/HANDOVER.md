@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0032"
-status: draft
-completed_at: ""
+status: complete
+completed_at: "2026-07-22T08:51:04+10:00"
 safety_checks:
   process_tests: pending
   contract_scope: pending
@@ -60,16 +60,15 @@ safety_merge_tree: ""
 ## 判断
 
 - QA_PLAN revision 2のQA-001〜QA-005を同一candidateへ束縛した。ReviewerとQAは相互のPASSを開始条件にせず、このcommit/treeから独立評価する。
-- 選択: `not-applicable | qa_carry_forward | focused-rerun | full-rerun`
-- Main判断の旧新コミット/tree、全差分とダイジェスト、影響ケース集合、レビュアー/`make check`証拠、理由: candidate固定後のMain判断はpending。DEV時点ではcarry-forwardを選択しない。
-- carry-forward時の`QA_RESULT.md` `CF-1`から`CF-7`: `not-applicable | complete | incomplete`
-- 影響QAケース集合が空でない場合の再実行証拠: candidate変更時は設定変更であるためcarry-forward不可。MainがQA-001〜QA-005の影響case再実行を選ぶ。
-- `merge_tree`と案 treeの比較: `pending`
+- 選択: `focused-rerun`
+- Main判断の旧新コミット/tree、全差分とダイジェスト、影響ケース集合、レビュアー/`make check`証拠、理由: candidate `513b25001c595978234f9f502036b88f0be346b8` / tree `aff105a53fed0c1f71f709ef6fd54439f7340d1c`を直接評価し、独立ReviewerとQA-001〜QA-005が同じ案でPASSした。merge commit `e3f6da75b597372db484ff722c2ccb414bf802fa`のtreeも同一であり、carry-forwardは使っていない。
+- carry-forward時の`QA_RESULT.md` `CF-1`から`CF-7`: `not-applicable`
+- 影響QAケース集合が空でない場合の再実行証拠: QA-001〜QA-005をcandidate上でfocused-rerunし、QA-006をmerge後fresh runtimeで実施した。
+- `merge_tree`と案 treeの比較: `pass` — いずれも`aff105a53fed0c1f71f709ef6fd54439f7340d1c`
 
 ## 既知の制約と未解決事項
 
-- QA-006は製品merge後の運用adapter生成・commit、product/work 7 role mapping照合、Codex reload/restart、runtime default 6/1とrole起動、rollback/cleanupに依存するため未実施。
-- candidate-focused検査はruntimeが組み込み既定6/1を実際に採用したことを代替しない。承認済み実環境または安全なcleanupが用意できなければQA-006をblockedとして残す。
+- なし。QA-006は運用adapter commit `eb9a3ede41e4d1a18e57391c5d1d257be73d485a`、再CHECK、fresh Codex feature/config/role/depth観測によりPASSした。
 
 環境依存ケースがある場合、install/deploy/config生成、実権限、外部作用、実restart/ロールバック/クリーンアップのマージ後確認を省略しない。実環境または安全なクリーンアップが不明なケースはblockedとして残す。
 

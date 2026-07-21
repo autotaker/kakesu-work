@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0032"
 status: pass
-reviewer_agent: "reviewer / gpt-5.6-terra / medium"
+reviewer_agent: "reviewer-agent-terra-medium"
 reviewed_commit: "513b25001c595978234f9f502036b88f0be346b8"
 candidate_commit: "513b25001c595978234f9f502036b88f0be346b8"
 candidate_tree: "aff105a53fed0c1f71f709ef6fd54439f7340d1c"

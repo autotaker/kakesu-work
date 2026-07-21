@@ -556,7 +556,7 @@ tasks:
     title: Agent設定をデフォルト値へ戻す
     type: chore
     epic: EPIC-001
-    status: dev
+    status: qa
     change_class: product
     priority: P1
     estimate_points: 1
@@ -570,3 +570,4 @@ tasks:
       qa: qa-agent-terra-medium
     branch: task/TASK-0032-reset-default-agent-config
     worktree: worktrees/TASK-0032-reset-default-agent-config
+    merged_commit: e3f6da75b597372db484ff722c2ccb414bf802fa

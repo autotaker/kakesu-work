@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0032"
 title: "Agent設定をデフォルト値へ戻す"
-status: plan
+status: qa
 created_at: "2026-07-22"
 ---
 
@@ -34,11 +34,11 @@ created_at: "2026-07-22"
 
 ### 受け入れ条件
 
-- [ ] AC-1: 製品側`.codex/config.toml`に`[features.multi_agent_v2]`、`hide_spawn_agent_metadata`、`tool_namespace`が存在しない。
-- [ ] AC-2: 製品側`.codex/config.toml`に`agents.max_threads`/`agents.max_depth`の明示値がなく、未指定時のCodex既定値6/1へ委ねる一方、7件の`[agents.<role>]` subagent定義が変更なく残る。
-- [ ] AC-3: 運用側`.codex/config.toml`の決定的生成結果にもMultiAgentV2設定とglobal上限overrideが存在せず、全subagent定義を維持し、`make work-config-sync CHECK=1`がdriftを検出できる。
-- [ ] AC-4: standalone `.codex/agents/*.toml`、project/workのsubagent registry、固定roleのmodel/effort検査、fallback launcherが維持される。
-- [ ] AC-5: 設定生成・routingテストと`make check`がPASSし、削除した設定を再導入する回帰を検出する。
+- [x] AC-1: 製品側`.codex/config.toml`に`[features.multi_agent_v2]`、`hide_spawn_agent_metadata`、`tool_namespace`が存在しない。
+- [x] AC-2: 製品側`.codex/config.toml`に`agents.max_threads`/`agents.max_depth`の明示値がなく、未指定時のCodex既定値6/1へ委ねる一方、7件の`[agents.<role>]` subagent定義が変更なく残る。
+- [x] AC-3: 運用側`.codex/config.toml`の決定的生成結果にもMultiAgentV2設定とglobal上限overrideが存在せず、全subagent定義を維持し、`make work-config-sync CHECK=1`がdriftを検出できる。
+- [x] AC-4: standalone `.codex/agents/*.toml`、project/workのsubagent registry、固定roleのmodel/effort検査、fallback launcherが維持される。
+- [x] AC-5: 設定生成・routingテストと`make check`がPASSし、削除した設定を再導入する回帰を検出する。
 
 ### 安定した参照
 
@@ -107,8 +107,8 @@ created_at: "2026-07-22"
 
 ## 完成の定義
 
-- [ ] 受け入れ条件を満たしている。
-- [ ] 選択した`change_class`の完了経路と`make check`を満たしている。
+- [x] 受け入れ条件を満たしている。
+- [x] 選択した`change_class`の完了経路と`make check`を満たしている。
 - [ ] 製品変更の場合: 実装、テスト、文書、同一案の独立REVIEW/QA、`merge_tree`確認、環境依存ケース、Wiki取り込みが完了している。
 - [ ] 安全契約変更の場合: 独立計画レビュー、契約検査、`no-ff merge`、案/merge tree一致が完了し、製品REVIEW/QA PASSやWiki receiptを代用証跡として作成していない。
 
