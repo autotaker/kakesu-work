@@ -132,14 +132,21 @@ created_at: "2026-07-22"
 
 ## 関連コンテキスト
 
-### 意味 Wiki
+### Semantic Wiki
 
-- 未調査
+- [Development Task](../../wiki/semantic/concepts/development-task.md): Task証跡を製品リポジトリ外へ保持する現行モデルを、単一repository内のmain正本とsparseコードworktreeへ移行する対象として見直す。
+- [Work Repository Boundary](../../wiki/semantic/schemas/work-repository-boundary.md): 製品/運用の二重repository、`project.yaml`による相対参照、運用mainへのlock付き書込みという現行境界を置換する。
+- [Task Delivery](../../wiki/semantic/scripts/task-delivery.md): PLAN→DEV→REVIEW→QAの独立gateを維持しつつ、Task branch/worktree、main統合、Wiki ingestの実行経路を単一repository向けに更新する。
+- [Wiki Ingestion](../../wiki/semantic/scripts/wiki-ingestion.md): HANDOVER digestによる冪等取込、Decision不変性、Schema検査を維持し、local `make sync`での取込へ移す。
+- [Safety Contract Completion Preflight](../../wiki/semantic/schemas/safety-contract-completion-preflight.md): 安全契約変更を選ぶ場合のplanned/generated path宣言とfail-closedな完了検査に従う。
+- [QA FAIL Attribution](../../wiki/semantic/case-patterns/qa-fail-attribution.md): CI、認証、lockなどの環境依存失敗をDEV不具合と自動帰責せず、Mainが根拠に基づき差し戻し先を決める。
 
-### 判断
+### Decision
 
-- 未調査
+- [DECISION-0001 PLAN DEV QA Process](../../wiki/decisions/DECISION-0001-plan-dev-qa-process.md): 独立PLAN、REVIEW、QAとMainの統合判断を維持する。
+- [DECISION-0002 Work Repository and Wiki Ownership](../../wiki/decisions/DECISION-0002-work-repository-and-wiki-ownership.md): 本Taskが置換対象とする、`agent-harness-work`を独立正本とする現行判断。置換時もWiki/Schemaの所有分離、lock、digest付きingestという安全性を保持する。
+- [DECISION-0004 MultiAgentV2 Role Startup](../../wiki/decisions/DECISION-0004-multiagentv2-role-startup.md): `agent_type`によるrole選択、cross-roleの`fork_turns="none"`、親のlock/scope/hook/commit所有を維持する。
 
-### 適用しなかった重要な判断
+### 適用しなかった重要なDecision
 
-- なし
+- [DECISION-0003 Codex Agent Model Routing](../../wiki/decisions/DECISION-0003-codex-agent-model-routing.md) はDECISION-0004によりsupersededであり、二重root adapterの設計根拠としてのみ参照する。旧Decisionを復活させず、移行後は外部work repository adapterを廃止する。
