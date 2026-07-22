@@ -46,7 +46,7 @@ created_at: "2026-07-22"
 - [ ] AC-6: PR CIはmerge候補に対する`make check`、対象Task検査、scope検査をrequired checkとして実行し、全て成功するまでauto-mergeしない。
 - [ ] AC-7: `pull_request.closed`かつmergedの一回限りのpost-merge workflowだけが`merged_commit`と`merged`状態をmainへ記録し、記録済みTaskではno-opとなる。push CIは書き込まず、`workflow_run`連鎖を使わず、Task/PR単位concurrencyにより無限ループと重複commitを防ぐ。
 - [ ] AC-8: `make sync`はmainの安全な同期、remote prune、merge済み未取込TaskのローカルCodex Wiki取込、done化、cleanなworktree/branchの削除、証跡commit/pushを冪等に行い、dirty/conflict/赤CIでは停止する。`FAST=1`はWiki取込とdone化を保留して同期だけを行う。
-- [ ] AC-9: 既存32 Task、backlog、Wiki、判断、Lap30、viewerの最新スナップショットが欠落や意味変更なく移行され、新旧双方の検査結果と件数/digestが照合された後に`autotaker/kakesu-work`がarchiveされる。
+- [ ] AC-9: 既存32 Done Taskと進行中TASK-0033、backlog、Wiki、判断、Lap30、viewerの最新スナップショットが欠落や意味変更なく移行され、新旧双方の検査結果と件数/digestが照合された後に`autotaker/kakesu-work`がarchiveされる。
 
 ### 安定した参照
 
@@ -62,7 +62,7 @@ created_at: "2026-07-22"
 | 依存 | 状態 (`ready` / `pending`) | planning参照 | `ready`後に固定する値 |
 |---|---|---|---|
 | 既存Task | `ready` | TASK-0001〜TASK-0032はwork `d030db5`でdone | 移行時の件数・digest照合 |
-| GitHub PR/auto-merge権限 | `pending` | git pushは成功済み、`gh auth status`は無効tokenを報告 | DEV終了前に認証済みactor、auto-merge/ruleset設定、required check名を固定 |
+| GitHub PR/auto-merge権限 | `ready` | 昇格環境で`gh auth status`、repository GraphQL、`gh repo edit`を実測 | actor `autotaker`、merge commit可、auto-merge有効。required contextは`Full check`、`Task check`、`Scope check`に固定しworkflow導入時にrulesetへ設定 |
 
 ### 許可パス
 
@@ -92,22 +92,23 @@ created_at: "2026-07-22"
 | 確認対象 | 結果 | コマンドまたは根拠 |
 |---|---|---|
 | 完了checker | ready | `make task-preflight TASK=TASK-0033`を2026-07-22にexit 0で実測。現行`make task-check`、`make check`、`make work-check`と、統合後に追加する単一repo checkerをcandidate上で実行する |
-| 権限 | pending | product/workのcommit/push権限はTASK-0032で実測済み。GitHub PR作成・auto-merge権限は`gh auth status`が無効tokenのためDEV終了前のdependency-ready reconciliation必須 |
-| 依存状態と参照 | planning-ready | REF-1〜REF-4を固定。GitHub権限以外はreadyで、権限に依存しないPLAN/QA_PLANを先行できる |
+| 権限 | ready | 2026-07-23に昇格環境で`gh auth status`がactor `autotaker`と`repo`/`workflow` scopeを確認。GraphQLでmerge commit可、`gh repo edit --enable-auto-merge`後に`autoMergeAllowed:true`を確認 |
+| 依存状態と参照 | ready | REF-1〜REF-4、actor、merge方式、auto-merge、required context名を固定。rulesetの実設定とcheck runはQA-005〜QA-007のlive-e2eで確認する |
 | 生成物の有無と更新方法 | ready | backlog viewer、Wiki index/receipt、glossary index、Task templates、workflowを決定的生成または固定入力で検査する。AI Wiki取込はlocal `make sync`のみ |
 | 割当ワークツリー | ready | 現行work repoの`make worktree-create TASK=TASK-0033`で承認PLAN後にTask branch/worktreeを割り当て、統合後挙動はfixture内の一時repoで検証する |
 | Lapログの書込・Schema・`repository annotation` | `not_started`（計測対象外） | ユーザーはLap計測を要求していない。既存Lap30 Schema/JSONLは移行digest照合対象とし遡及変更しない |
 
 ### 未決事項
 
-- GitHub CLIまたは同等のPR作成actorの再認証と、repository auto-merge/required checks設定をDEV終了前にreadyへする。
-- work側`schemas/`と製品側`schemas/`の名前衝突を避ける単一repo内の正規配置をPLANで決定する。
+- なし。運用Schemaの正規配置はPLANで`schemas/operations/`に固定した。
 
 ### `Dependency-ready reconciliation`
 
 <!-- 依存ready時にMainがready参照、planning参照との差分、AC/設計/scope/QAへの影響、再承認結果を追記する。依存なし又は未readyならN/Aとする。 -->
 
-- N/A
+- 2026-07-23 Main: sandbox内`gh auth status`の無効token表示はmacOS Keychain非公開による観測差であり、昇格環境ではactor `autotaker`の認証、`repo`/`workflow` scope、public `autotaker/kakesu`への管理権限を確認した。
+- repositoryはmerge commit対応、auto-merge有効へ変更済み。required check contextを`Full check`、`Task check`、`Scope check`に固定し、workflow導入後にrulesetへ設定する。
+- planning時のpending値がreadyになってもAC、設計scope、QAの期待または範囲は変わらない。PLAN/QA_PLANは同じ内容をMainが承認する。
 
 ## 背景
 

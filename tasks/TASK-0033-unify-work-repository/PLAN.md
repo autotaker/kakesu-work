@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0033"
 change_class: product
-status: draft
+status: approved
 planner_agent: "planner-agent-terra-medium"
 approved_dev_profile: "sol-high"
 approved_dev_profile_reason: "二重repositoryのcutover、sparse worktree、main証跡トランザクション、Git競合/rebase retry、GitHub CI/auto-merge、post-merge書込みを同時に変更し、権限・状態遷移・fail-closed境界を横断して検証する必要があるため"
@@ -12,8 +12,8 @@ approved_dev_profile_risk_signals:
   - ci_automation
   - state_transition
   - cross_cutting
-approved_by: ""
-approved_at: ""
+approved_by: "main-agent-sol-high"
+approved_at: "2026-07-23T09:56:38+10:00"
 planning_reviewed_by: ""
 planning_review_decision: "pending"
 planning_reviewed_at: ""
@@ -118,8 +118,9 @@ silently replaced by manual merge or a weaker check.
    and branches, validate, and publish through the evidence transaction.
    `FAST=1` performs only synchronization and pruning, explicitly retaining
    Wiki ingestion and done state for a later normal run.
-8. Cut over only after source/target count and digest reports pass for existing
-   32 Tasks, backlog, Wiki/Decision content, Lap30, and viewer. Run the
+8. Cut over only after source/target count and digest reports pass for the 32
+   historical Done Tasks plus current TASK-0033 evidence, backlog,
+   Wiki/Decision content, Lap30, and viewer. Run the
    unified checks and fixture-based lifecycle/CI tests. Archive
    `autotaker/kakesu-work` only after successful cutover evidence. Rollback
    before archive restores the prior product main and retains the untouched

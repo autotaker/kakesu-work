@@ -576,7 +576,7 @@ tasks:
     status: plan
     change_class: product
     priority: P1
-    estimate_points: 1
+    estimate_points: 8
     task_dir: tasks/TASK-0033-unify-work-repository
     depends_on: []
     assignees:

@@ -1,10 +1,10 @@
 ---
 task_id: "TASK-0033"
 change_class: "product"
-status: draft
+status: approved
 qa_agent: "qa-agent-terra-medium"
-approved_by: ""
-approved_at: ""
+approved_by: "main-agent-sol-high"
+approved_at: "2026-07-23T09:56:38+10:00"
 revision: 1
 implementation_reviewed_at: ""
 expectation_changed: false
@@ -36,7 +36,7 @@ expectation_change_approved_by: ""
 | QA-006 | AC-6 | QA-005 の test PR に required checks が実際に付与され、merge candidate で full/task/scope check が走ることを確認する。1件を失敗させ auto-merge 保留、全成功後のみ merge を観測する。 | `live-e2e` / GitHub ruleset/required check と auto-merge 判定は外部 service の実設定でのみ確認できる。 | repository settings snapshot（secret-free）、check run 名/commit SHA/exit、失敗時 merge 保留、成功時 merge event、cleanup。 | required check 名/対象 SHA 不一致、失敗しても merge、check を bypass、権限/設定未確認は blocked/FAIL。 |
 | QA-007 | AC-7 | merged PR に対する `pull_request.closed` workflow を承認済み test repository で一度発火し、main の `merged_commit`/状態更新を確認する。同一 event 再送、未 merge close、push event、`workflow_run` 不在、Task/PR concurrency を negative で観測する。 | `live-e2e` / webhook event、GitHub concurrency と main 更新は環境固有の外部作用である。 | event payload/PR、main before/after digest、更新 commit、duplicate/no-op log、workflow graph、concurrency run IDs、cleanup/rollback。 | 非 merged close が書込、二重 commit、push CI 書込、workflow_run 連鎖、concurrency 未適用、cleanup 不明は blocked/FAIL。 |
 | QA-008 | AC-8 | clean/dirty/conflict/赤 CI、未取込/既取込 Task を持つ main fixture で `sync` を独立再実行する。実認証済みの隔離 local Codex 環境では Wiki ingest、done 化、receipt、worktree/branch cleanup、再実行 no-op を確認し、`FAST=1` が同期のみを行うことを確認する。 | `live-e2e` / local Codex Pro 認証による実 Wiki 取込と cleanup は外部認証・副作用を伴う。 | local environment identity（secret-free）、remote/HEAD、ingest receipt/digest、Task/backlog/Wiki 状態、worktree/branch before/after、FAST result、rollback/cleanup。 | dirty/conflict/red CI で継続、FAST が ingest/done、既取込で再更新、認証情報を保存、cleanup/rollback 不明は blocked/FAIL。 |
-| QA-009 | AC-9 | REF-2 の固定 snapshot と candidate の migration manifest から、32 Task、backlog、Wiki、判断、Lap30、viewer、schema/hook の件数と content digest を独立に再算出する。既存 Done/公開 Wiki/Lap30 の semantic diff と新旧 checker を確認する。 | `focused-rerun` / 固定入力の count/digest と semantic diff は bounded deterministic に再現できる。 | REF-2 revision、カテゴリ別 count/path manifest、旧新 digest、semantic-diff 出力、両 checker exit、除外リスト。 | 件数/digest 不一致、許容外意味差、未追跡 migration 入力、旧成果物を上書き、checker 省略は FAIL。 |
+| QA-009 | AC-9 | REF-2 の固定 snapshot にある historical Done Task 32件と current TASK-0033 evidence、および candidate の migration manifest から、backlog、Wiki、判断、Lap30、viewer、schema/hook の件数と content digest を独立に再算出する。既存 Done/公開 Wiki/Lap30 の semantic diff と新旧 checker を確認する。 | `focused-rerun` / 固定入力の count/digest と semantic diff は bounded deterministic に再現できる。 | REF-2 revision、historical Done Task 32件と current TASK-0033 evidence を区別したカテゴリ別 count/path manifest、旧新 digest、semantic-diff 出力、両 checker exit、除外リスト。 | 件数/digest 不一致、許容外意味差、未追跡 migration 入力、旧成果物を上書き、checker 省略は FAIL。 |
 | QA-010 | AC-9 | QA-009 の照合 PASS 後のみ、承認済み GitHub public repository で旧 `autotaker/kakesu-work` の archive を実行し、公開 repository に secret/AI auth が置かれないことを archive 前後の設定・tree・Actions artifact/log で観測する。復旧手順（unarchive と migration rollback decision）を dry-run で検証する。 | `live-e2e` / archive は外部の不可逆に近い repository 操作であり、public visibility/security boundary は実環境確認が必要である。 | archive actor/時刻、archive 前 QA-009 digest、public tree/Actions/secret-free scan、archive API/UI result、unarchive authority と rollback 手順。 | digest 照合前 archive、secret/auth 値または配置検出、public repo 誤対象、unarchive/rollback 権限・手順不明は blocked/FAIL。 |
 
 ## 境界・異常・回帰
@@ -70,4 +70,4 @@ expectation_change_approved_by: ""
 
 | 改訂 | 日付 | 変更者 | 変更内容 | main承認 |
 |---:|---|---|---|---|
-| 1 | 2026-07-22 | QA Agent | TASK packet 起点の独立初版 | `pending` |
+| 1 | 2026-07-22 | QA Agent | TASK packet 起点の独立初版 | `2026-07-23 main-agent-sol-high approved` |
