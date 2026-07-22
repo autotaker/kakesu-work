@@ -569,3 +569,13 @@ tasks:
       reviewer: reviewer-agent-terra-medium
       qa: qa-agent-terra-medium
     merged_commit: e3f6da75b597372db484ff722c2ccb414bf802fa
+  - id: TASK-0033
+    title: 運用リポジトリを製品リポジトリへ統合する
+    type: chore
+    epic: EPIC-001
+    status: backlog
+    priority: P1
+    estimate_points: 1
+    task_dir: tasks/TASK-0033-unify-work-repository
+    depends_on: []
+    assignees: {}
