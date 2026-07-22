@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0033"
 title: "運用リポジトリを製品リポジトリへ統合する"
-status: draft
+status: plan
 created_at: "2026-07-22"
 ---
 
@@ -91,7 +91,7 @@ created_at: "2026-07-22"
 
 | 確認対象 | 結果 | コマンドまたは根拠 |
 |---|---|---|
-| 完了checker | ready | 現行`make task-preflight TASK=TASK-0033`、`make task-check TASK=TASK-0033`、`make check`、`make work-check`。統合後の単一repo checkerは本Taskで追加しcandidate上で検査する |
+| 完了checker | ready | `make task-preflight TASK=TASK-0033`を2026-07-22にexit 0で実測。現行`make task-check`、`make check`、`make work-check`と、統合後に追加する単一repo checkerをcandidate上で実行する |
 | 権限 | pending | product/workのcommit/push権限はTASK-0032で実測済み。GitHub PR作成・auto-merge権限は`gh auth status`が無効tokenのためDEV終了前のdependency-ready reconciliation必須 |
 | 依存状態と参照 | planning-ready | REF-1〜REF-4を固定。GitHub権限以外はreadyで、権限に依存しないPLAN/QA_PLANを先行できる |
 | 生成物の有無と更新方法 | ready | backlog viewer、Wiki index/receipt、glossary index、Task templates、workflowを決定的生成または固定入力で検査する。AI Wiki取込はlocal `make sync`のみ |
