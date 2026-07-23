@@ -29,39 +29,48 @@ bootstrap_evidence_digest: ""
 
 - `candidate_commit`: Main固定待ち
 - `candidate_tree`: Main固定待ち
-- `managed_path_digest`: Main固定待ち。DEV working-tree manifestは32ファイル、SHA-256 `c038fcf42e86bd4b93ab7f852178b6019309e2cb963642d246a5e5349258cbc3`。
+- `managed_path_digest`: Main固定待ち。DEV working-tree manifestは33ファイル、SHA-256 `77dcb2599590fb8ab78a101de7addc403811e797844cdc1ceec8ac8b6c9fcdaa`。
 - `bootstrap_evidence_commit` / `bootstrap_evidence_digest`: Mainのbootstrap実施待ち。
 
 | ケース ID | コマンド/テスト | 環境/フィクスチャ | cache条件 | exit | 成果物 ダイジェスト | 未実施理由 |
 |---|---|---|---:|---:|---|---|
 | QA-001 | `rg -n 'WORK_ROOT|\.\./agent-harness-work|agent-harness-work' ...`; migration plan | Taskワークツリー、固定REF-2実リポジトリ | N/A | 0 | source tree `f5a5fde073836bc9965b9a05ae4ccf06f36eccaa`; plan digest（本HANDOVER追記前）`966ea7be65c663ff1d7ab37d39fed118d1ff6c6070d81757a781002f4ae69f4e` | なし。Mainは追記後にplanを再生成する |
-| QA-002 | `node --test scripts/task/unified-lifecycle.test.mjs` | 一時Git/bare remote、成功・allocation失敗・publish失敗注入 | N/A | 0 | test file `e2bd8f00c78e392861c1ca4ba84c1da61cff33e4781d5ff29a3d4780902b7259` | なし |
+| QA-002 | `node --test scripts/task/unified-lifecycle.test.mjs` | 一時Git/bare remote、成功・allocation失敗・publish失敗注入 | N/A | 0 | test file `bff5f3dcc647fbc6425fda54e3362a3965c9f3a22f87c94628c7ae45f54d89a1` | なし |
 | QA-003 | 同fixtureのfreeze/unfreeze、allowlist、lock、retry上限、sparse検査 | 一時Git/bare remote | N/A | 0 | lifecycle `9a663b07ec3e2e198a3eaff21a7728237a0b7d57f407d04da7a74888678660b6` | 実bootstrap/freezeはMain待ち |
 | QA-004 | workflow静的negativeと`make check` | ローカルfixture | `.build` cache使用 | 0 | main/pr/post workflow SHA-256: `55def6869b7a70bbabb75dfc2016e1392591366268287c90de090d3ed089138c`, `ebc683431449d75d15dfcbfc4997bfa605585953fa485d7c65b34c1f13c83ce1`, `d801ad9a982e625941e28e3d126e60d49a0c89887b3812657d5c1dd9e74eff56` | GitHub runはQA-006で確認 |
 | QA-005 | 未実施 | 承認済みGitHub repositoryが必要 | N/A | N/A | N/A | bootstrap後のcomposite candidate、REVIEW/QA PASS、実authが必要 |
 | QA-006 | 未実施 | GitHub ruleset/required checksが必要 | N/A | N/A | N/A | live-e2e |
 | QA-007 | 未実施 | merged PR eventが必要 | N/A | N/A | N/A | live-e2e |
-| QA-008 | FAST/no-op fixtureのみ実施。実Wiki取込は未実施 | fixture / 認証済みローカルCodex待ち | N/A | fixture 0 | test file `e2bd8f00c78e392861c1ca4ba84c1da61cff33e4781d5ff29a3d4780902b7259` | live-e2eの取込、done化、cleanupはQA待ち |
+| QA-008 | FAST/no-op fixtureのみ実施。実Wiki取込は未実施 | fixture / 認証済みローカルCodex待ち | N/A | fixture 0 | test file `bff5f3dcc647fbc6425fda54e3362a3965c9f3a22f87c94628c7ae45f54d89a1` | live-e2eの取込、done化、cleanupはQA待ち |
 | QA-009 | 固定REF-2 migration planとtamper negative fixture | 実source read-only + 一時target | N/A | 0 | 32 historical、1 current、229 entries、project digest `031b8315e0f96088be4efe8fc17cc018a77c779434599c8bf92b38ebc9d63a7f` | apply/commit/freezeはMain待ち |
 | QA-010 | 未実施 | 公開GitHub repository archive権限が必要 | N/A | N/A | N/A | QA-009とcutover完了後のみ実施可 |
 
-- QAへ渡すネガティブ検出証拠、テスト弱体化の有無を判定できる差分ダイジェスト: working-tree manifest `c038fcf42e86bd4b93ab7f852178b6019309e2cb963642d246a5e5349258cbc3`。既存process testを削除せず13件のunified lifecycle fixtureを追加した。
+- QAへ渡すネガティブ検出証拠、テスト弱体化の有無を判定できる差分ダイジェスト: working-tree manifest `77dcb2599590fb8ab78a101de7addc403811e797844cdc1ceec8ac8b6c9fcdaa`。既存process testを削除せず14件のunified lifecycle fixtureを追加した。
 
 ## 主要な変更
 
 - `project.yaml`、operations Schema、固定REF-2 migration manifest/verify/freeze/unfreezeを追加した。freezeは旧リポジトリの`core.hooksPath`を拒否hookへ切替え、unfreezeで元値へ戻す。
 - `task-start`をclean/current main、証跡commit/push、sparse branch/worktree、allocation/publish失敗訂正を一括する入口にした。
 - `evidence-commit`へ明示main root、action allowlist、共通lock、検査、完全staging、最大2回のfetch/rebase/revalidate/pushを実装した。
+- 共通lockをworking treeの`.locks/`からGit common dirの`agent-harness-locks/`へ移し、bootstrap前の旧`.gitignore`でもlock自身が変更scopeへ混入しないようにした。
 - composite candidate、PR scope、ready PRとmerge-commit auto-merge、read-only main CI、required PR checks、closed+merged post-merge、sync/FASTを実装した。
 - 外部`WORK_ROOT`依存を削除し、関連Make入口、文書、テンプレート、用語集を単一rootへ更新した。
 
 ## 検証結果
 
-- `make check`: PASS（92 process testsを含む）。最初のsandbox実行はisolated Python buildのDNS拒否でexit 2、同一差分をnetwork許可環境で再実行してexit 0。
-- `node --test scripts/task/unified-lifecycle.test.mjs`: 13/13 PASS。
+- `make check`: 修正後PASS（93 process testsを含む）。初回DEV時のsandbox実行はisolated Python buildのDNS拒否でexit 2、同一差分をnetwork許可環境で再実行してexit 0。差し戻し修正後はcache済みsandboxでexit 0。
+- `node --test scripts/task/unified-lifecycle.test.mjs`: 14/14 PASS。
+- `pnpm test:process`: 93/93 PASS。既存のactive owner拒否、stale owner回復、rollback後lock解放検査もcommon-dir配置でPASS。
 - `make lint-docs`: PASS。`git diff --check`: PASS。
 - tabletop validator: 4 scenarios / 124 sequence payloads / 119 canonical payloads PASS、negative 11件 PASS。
 - 固定REF-2 plan: source commit `d030db5dc2974056387616d047197823b94602ce`、tree `f5a5fde073836bc9965b9a05ae4ccf06f36eccaa`、historical 32、current 1、Task files 198、Wiki 29、Lap30 1。
+
+### bootstrap transaction FAIL分類と修正
+
+- 実行時FAIL: `Evidence scope violation for bootstrap: .locks/work-repository.lock/owner.json; transaction_start=e3f6da7`。
+- 分類: `implementation_defect`。bootstrap対象の旧product mainには`.locks/` ignoreがなく、`acquireWorkRepoLock`後に`changedFiles`がlock ownerを未追跡製品pathとして検出した。commit、push、freezeは発生していない。
+- 修正: `git rev-parse --path-format=absolute --git-common-dir`で共有Git metadata内のlockを解決する。排他、owner PID、stale復旧、release契約は維持した。
+- 回帰証拠: `.locks/` ignoreを持たない旧main fixtureでbootstrap transactionがmanifestだけをcommitし、working treeに`.locks/`を生成しないnegative/positive検査を追加した。`scripts/task/lib.mjs` SHA-256 `ace486297db5216673612f9553a1225edf98dafe3f2e15f15ab961faa4d81431`、回帰test SHA-256 `bff5f3dcc647fbc6425fda54e3362a3965c9f3a22f87c94628c7ae45f54d89a1`。
 
 安全契約変更では`safety_checks`を`process_tests`、`contract_scope`、`docs_lint`、`make_check`の4項目だけとし、すべて`pass`を記録する。`safety_check_digest`は案 tree、merge tree、上記順の検査名と結果を`key=value`の改行区切りで正規化し、末尾改行を含めたSHA-256とする。第2親の案 treeとmerge treeもフロントマターへ記録する。製品用のREVIEW/QA PASS、製品用の完了HANDOVER、Wiki取込記録を代用証跡として作成しない。
 
