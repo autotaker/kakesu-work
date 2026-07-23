@@ -573,7 +573,7 @@ tasks:
     title: 運用リポジトリを製品リポジトリへ統合する
     type: chore
     epic: EPIC-001
-    status: plan
+    status: dev
     change_class: product
     priority: P1
     estimate_points: 8

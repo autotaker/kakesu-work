@@ -1,7 +1,7 @@
 ---
 task_id: "TASK-0033"
 title: "運用リポジトリを製品リポジトリへ統合する"
-status: plan
+status: dev
 created_at: "2026-07-22"
 ---
 
