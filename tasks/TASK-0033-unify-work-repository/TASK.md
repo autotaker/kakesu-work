@@ -86,6 +86,7 @@ created_at: "2026-07-22"
 - `docs/99-glossary-index.md`
 - `package.json`
 - `pnpm-lock.yaml`
+- `project.yaml`
 
 ### 完了経路preflight
 
@@ -109,6 +110,13 @@ created_at: "2026-07-22"
 - 2026-07-23 Main: sandbox内`gh auth status`の無効token表示はmacOS Keychain非公開による観測差であり、昇格環境ではactor `autotaker`の認証、`repo`/`workflow` scope、public `autotaker/kakesu`への管理権限を確認した。
 - repositoryはmerge commit対応、auto-merge有効へ変更済み。required check contextを`Full check`、`Task check`、`Scope check`に固定し、workflow導入後にrulesetへ設定する。
 - planning時のpending値がreadyになってもAC、設計scope、QAの期待または範囲は変わらない。PLAN/QA_PLANは同じ内容をMainが承認する。
+
+### Cutover bootstrap clarification
+
+- TASK-0033自身のmain管理証跡をコードPRへ混入させないため、DEVが移行validatorを固定した後、Mainは`backlog.yaml`、`tasks/**`、`wiki/**`、`lap30/**`、単一root用`project.yaml`を移行元digestへ照合し、製品mainへ証跡commitとして直接pushする。
+- このbootstrap commit以降は製品mainを証跡正本とし、`agent-harness-work`への新規証跡書込みを停止する。Reviewer/QAはコードcandidate commit/digestとbootstrap evidence commit/digestの組を同一評価対象として独立に扱い、結果を製品mainへ記録する。
+- Task branchはbootstrap後の製品mainを取り込み、PR差分からmain管理証跡を消す。scope検査にTASK-0033専用のPR例外は設けず、以後のPRと同じ禁止規則を適用する。
+- これはAC-3、AC-5、AC-9の既存意図を実現する順序の明確化であり、受け入れ期待または範囲を変更しない。PLAN/QA_PLANはこの順序へ改訂・再承認してからDEVを開始する。
 
 ## 背景
 
